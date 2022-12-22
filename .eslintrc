@@ -1,0 +1,9 @@
+{
+    "extends": "@antfu",
+    "rules": {
+        "vue/html-indent": ["error", 4],
+        "@typescript-eslint/indent": ["error", 4],
+        "no-console": "off",
+        "curly": ["error", "all"]
+    }
+}
