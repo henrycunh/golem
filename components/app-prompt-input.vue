@@ -3,6 +3,7 @@ const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
 const { currentPreset, clearPreset } = usePreset()
+const textarea = ref()
 
 const onSend = () => {
     emit('send', props.modelValue)
@@ -17,33 +18,42 @@ const handleEnter = (e: KeyboardEvent) => {
     onSend()
 }
 
-const rows = computed(() => {
-    const lines = props.modelValue.split('\n')
-    return Math.min(10, lines.length)
-})
+const textareaStyle = ref()
+const onType = (event: any) => {
+    const { scrollHeight } = textarea.value
+
+    textareaStyle.value = {
+        height: `${scrollHeight}px`,
+    }
+
+    emit('update:modelValue', (event.target as any).value)
+}
 </script>
 
 <template>
-    <div relative>
+    <div
+        relative p-2
+        shadow-lg
+        text-gray-600 placeholder:text-gray-400 placeholder:transition
+        class="focus-within:placeholder:translate-x-2 bg-white"
+        ring-2 ring-inset
+        rounded-3
+        ring-gray-100 focus:ring-gray-200 focus-within:shadow-xl transition
+    >
         <textarea
+            ref="textarea"
             :value="modelValue"
-            :rows="rows"
+            :style="textareaStyle"
             w-full
-            p-3 b-0 shadow-lg resize-none
-            outline-none ring-2 ring-inset
-            ring-gray-100 focus:ring-primary-400 focus:shadow-xl transition
-            text-18px
-            text-gray-600 placeholder:text-primary-400 placeholder:transition
-            rounded-3 class="focus:placeholder:translate-x-2"
+            b-0 resize-none
+            text-14px outline-none
             placeholder="Type your prompt here..."
-            overflow-hidden
             relative z-2
-            @input="$emit('update:modelValue', ($event.target as any).value)" @keydown.enter="handleEnter"
+            @input="onType" @keydown.enter="handleEnter"
         />
-        <div absolute right-2 bottom-3 z-3>
+        <div absolute right-2 bottom-10px z-3>
             <UButton
                 rounded-3
-                py-6px
                 @click="onSend"
             >
                 <div i-tabler-send text-5 />

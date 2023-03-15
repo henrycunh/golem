@@ -12,10 +12,8 @@ useHead({
 </script>
 
 <template>
-    <div relative h-screen flex overflow-hidden>
-        <AppSidebar h-full />
-        <div grow flex flex-col>
-            <NuxtPage grow />
-        </div>
+    <div relative>
+        <!-- <AppSidebar h-full /> -->
+        <NuxtPage h-full />
     </div>
 </template>

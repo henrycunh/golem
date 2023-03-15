@@ -1,50 +1,38 @@
+import { ChatGPTAPI } from 'chatgpt'
+
 export default defineEventHandler(async (event) => {
     const token = getCookie(event, 'ungpt-session')
     const payload = await readBody(event)
+    const chatGPT = new ChatGPTAPI({ apiKey: token || '' })
 
-    try {
-        const response = await fetch(
-            'https://chat.openai.com/backend-api/conversation',
-            {
-                headers: {
-                    'accept': 'text/event-stream',
-                    'authorization': `Bearer ${token}`,
-                    'content-type': 'application/json',
-                    'cookie': 'cf_clearance=e8D2wV8FIqZr_HzmtDbQu5heSRlUXslArjpJ6PyYMAg-1670815167-0-250',
-                    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-                },
-                method: 'POST',
-                body: JSON.stringify(payload),
-            })
-
-        // Get stream
-        const stream = response.body
-
-        // Set stream
-        if (stream) {
-            // Set stream
-            const reader = stream.getReader()
-
-            // Read stream
-            while (true) {
-                const { done, value } = await reader.read()
-
-                // Done
-                if (done) {
-                    event.node.res.end()
-                    break
-                }
-
-                // Value
-                if (value) {
-                    event.node.res.write(value)
-                }
-            }
+    const { error, data } = await handle(async () => {
+        if (!token) {
+            throw new Error('No token')
         }
 
-        return response.text()
+        const { message, systemMessage, parentMessageId } = payload
+
+        const conversationMessage = await chatGPT.sendMessage(message, {
+            systemMessage,
+            parentMessageId,
+            onProgress(partial) {
+                event.node.res.write(`data: ${JSON.stringify(partial)}\r`)
+            },
+        })
+
+        event.node.res.write(`data: ${JSON.stringify(conversationMessage)}\r`)
+        event.node.res.end()
+
+        return conversationMessage
+    })
+
+    if (error) {
+        console.log(error)
+        event.node.res.statusCode = 500
+        return {
+            error: error.message,
+        }
     }
-    catch (e: any) {
-        console.error(e)
-    }
+
+    return data
 })

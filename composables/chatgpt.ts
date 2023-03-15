@@ -1,10 +1,11 @@
-import axios from 'axios'
+import { ChatGPTAPI } from 'chatgpt-web'
 
 export const useChatGPT = () => {
     const { token } = useAuth()
     const { currentPreset } = usePreset()
     const messageList = useState<Message[]>(() => [])
     const currentConversationId = useState<string | null>(() => null)
+    // const currentSystemMessage = useState<string>(() => '')
 
     const addMessage = (content: string, author: 'user' | 'bot', id?: string) => {
         const randomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -31,82 +32,25 @@ export const useChatGPT = () => {
         }
     }
 
-    const sendMessage = async (options: {
-        message: string
-        onChunk?: (chunk: ChatGPTMessage) => void
-    }) => {
-        addMessage(
-            options.message,
-            'user',
-        )
-
-        const payload: Payload = {
-            action: 'next',
-            messages: [
-                {
-                    id: crypto.randomUUID(),
-                    role: 'user',
-                    content: {
-                        content_type: 'text',
-                        parts: [
-                            messageList.value.length === 1 && currentPreset.value
-                                ? `${currentPreset.value.content} ${options.message}`
-                                : options.message,
-                        ],
-                    },
-                },
-            ],
-            parent_message_id: getLastBotMessage()?.id || crypto.randomUUID(),
-            model: 'text-davinci-002-render',
-        }
-
-        if (currentConversationId.value) {
-            payload.conversation_id = currentConversationId.value
-        }
-
-        const parseChunk = (chunk: any) => {
-            const lines = chunk.split('\n').filter(Boolean)
-            return JSON.parse(
-                lines[Math.max(lines.length - 2, 0)].substring('data: '.length),
-            ) as ChatGPTMessage
-        }
+    async function sendMessage(message: string) {
+        const chatGPT = new ChatGPTAPI({ apiKey: token.value || '' })
+        addMessage(message, 'user')
         addMessage('', 'bot')
-        try {
-            const { data } = await axios.post(
-                '/api/conversation',
-                payload,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token.value}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    onDownloadProgress: (progressEvent) => {
-                        const chunk = parseChunk(progressEvent.event.currentTarget.response)
-                        const currentMessageContent = chunk.message.content.parts[0]
-                        updateLastBotMessage({
-                            content: currentMessageContent,
-                            id: chunk.message.id,
-                        })
-                    },
-                },
-            )
-            const messageComplete = parseChunk(data)
-            console.log(messageComplete)
-            currentConversationId.value = messageComplete.conversation_id
-            updateLastBotMessage({
-                content: messageComplete.message.content.parts[0],
-                isTyping: false,
-            })
-        }
-        catch (e: any) {
-            console.error(e, e?.response?.data?.detail?.code)
-            updateLastBotMessage({
-                content: e?.response?.data?.detail?.code,
-                isTyping: false,
-                error: true,
-            })
-        }
+        const conversationMessage = await chatGPT.sendMessage(message, {
+            systemMessage: currentPreset.value?.content,
+            parentMessageId: getLastBotMessage()?.id,
+            onProgress(partial) {
+                updateLastBotMessage({
+                    content: partial.text,
+                    isTyping: true,
+                    id: partial.id,
+                })
+            },
+        })
+        updateLastBotMessage({
+            content: conversationMessage.text,
+            isTyping: false,
+        })
     }
 
     const clearMessages = () => {
@@ -136,20 +80,6 @@ export interface ChatGPTMessage {
     }
     conversation_id: string
     error: any
-}
-
-interface PayloadMessage {
-    id: string
-    role: string
-    content: { content_type: string; parts: string[] }
-}
-
-interface Payload {
-    action: string
-    messages: PayloadMessage[]
-    parent_message_id: string
-    model: string
-    conversation_id?: string
 }
 
 export interface Message {
