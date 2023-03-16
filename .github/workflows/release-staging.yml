@@ -1,8 +1,9 @@
-name: Deploy preview environment
+name: Deploy staging environment
 
 on:
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+  push:
+    branches:
+      - main
 
 jobs:
   release:
@@ -37,7 +38,7 @@ jobs:
         id: deploy
         uses: BetaHuhn/deploy-to-vercel-action@v1 # pin@ffcc89a6d79de43d964945ce053395c2958610b1
         env:
-          DOMAIN: geppeto-${{ steps.script.outputs.pr-number }}.vercel.app
+          DOMAIN: geppeto-staging.vercel.app
         with:
           GITHUB_TOKEN: ${{ steps.auth.outputs.token }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
