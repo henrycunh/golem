@@ -2,16 +2,10 @@
 const {
     sendMessage,
     currentConversation,
-    conversationList,
     isTyping,
     followupQuestions,
     knowledgeUsedInConversation,
-    createConversation,
-    updateConversationList,
-    switchConversation,
 } = useConversations()
-
-const { knowledgeList } = useKnowledge()
 
 const userMessageInput = ref('')
 const chatContainer = ref()
@@ -28,27 +22,6 @@ const messagesOrdered = computed(() => {
     }
     return currentConversation.value.messages
         .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())
-})
-
-// Knowledge used in the conversation
-
-watchEffect(async () => {
-    if (currentConversation.value === null) {
-        if (conversationList.value === null) {
-            await updateConversationList()
-            return
-        }
-        console.log('updating conversation list', conversationList.value)
-
-        if (conversationList.value && conversationList.value.length === 0) {
-            console.log('Creating new conversation')
-            const newConversation = await createConversation('Untitled Conversation')
-            await switchConversation(newConversation.id)
-        }
-        else {
-            await switchConversation(conversationList.value[0].id)
-        }
-    }
 })
 
 const chatScroll = useScroll(chatContainer)

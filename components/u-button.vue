@@ -11,8 +11,8 @@ const { elementX, elementY, elementWidth, isOutside } = useMouseInElement(button
 const backgroundCenterBase = computed(() =>
     !isOutside.value
         ? [elementX.value, elementY.value]
-        // Else, pin to the right top corner
-        : [elementWidth.value, 0],
+        // Else, pin to the top center
+        : [elementWidth.value / 2, 0],
 )
 const [toColor, fromColor] = ['#903597ff', '#e0b1e700']
 
