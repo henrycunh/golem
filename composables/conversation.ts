@@ -129,6 +129,9 @@ export const useConversations = () => {
 
     const sendMessage = async (message: string) => {
         // Creates the ChatGPT client
+        if (!process.client) {
+            return
+        }
         const chatGPT = new ChatGPTAPI({ apiKey: token.value || '' })
         const systemMessageList = (currentConversation.value?.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastSystemMessage = systemMessageList[systemMessageList.length - 1]

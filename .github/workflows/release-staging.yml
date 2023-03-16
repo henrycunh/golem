@@ -1,0 +1,52 @@
+name: Deploy staging environment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Push application to Vercel
+    runs-on: ubuntu-latest
+    steps:
+      - id: script
+        uses: actions/github-script@f05a81df23035049204b043b50c3322045ce7eb3 # pin@v3
+        with:
+          script: |
+            const isPr = [ 'pull_request', 'pull_request_target' ].includes(context.eventName)
+            core.setOutput('ref', isPr ? context.payload.pull_request.head.ref : context.ref)
+            core.setOutput('repo', isPr ? context.payload.pull_request.head.repo.full_name : context.repo.full_name)
+            core.setOutput('pr-number', context.payload.pull_request.number)
+            core.setOutput('repo-name', context.payload.pull_request.head.repo.full_name.split('/')[1])
+
+      - name: Get Token
+        id: auth
+        uses: peter-murray/workflow-application-token-action@e8782d687a306fb13d733244d0f2a50e272d3752 # pin@v1
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.script.outputs.ref }}
+          repository: ${{ steps.script.outputs.repo }}
+      
+      - name: Deploy to Vercel
+        id: deploy
+        uses: BetaHuhn/deploy-to-vercel-action@v1 # pin@ffcc89a6d79de43d964945ce053395c2958610b1
+        env:
+          DOMAIN: geppeto-staging.vercel.app
+        with:
+          GITHUB_TOKEN: ${{ steps.auth.outputs.token }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_SCOPE: ${{ secrets.VERCEL_ORG_ID }}
+          PR_PREVIEW_DOMAIN: ${{ env.DOMAIN }}
+          FORCE: true
+          BUILD_ENV: |
+            REDIRECT_URL=${{ env.DOMAIN }}
+            APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}

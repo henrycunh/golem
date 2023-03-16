@@ -18,13 +18,9 @@ const handleEnter = (e: KeyboardEvent) => {
     onSend()
 }
 
-const textareaStyle = ref()
 const onType = (event: any) => {
-    const { scrollHeight } = textarea.value
-
-    textareaStyle.value = {
-        height: `${scrollHeight}px`,
-    }
+    textarea.value.style.height = 'auto'
+    textarea.value.style.height = `${textarea.value.scrollHeight}px`
 
     emit('update:modelValue', (event.target as any).value)
 }
@@ -43,13 +39,12 @@ const onType = (event: any) => {
         <textarea
             ref="textarea"
             :value="modelValue"
-            :style="textareaStyle"
             w-full
-            b-0 resize-none
-            text-14px outline-none
-            placeholder="Type your prompt here..."
-            relative z-2
-            @input="onType" @keydown.enter="handleEnter"
+            text-14px outline-none overflow-hidden
+            placeholder="Type your prompt here..." leading-6
+            relative z-2 h-auto resize-none b-0
+            @input="onType"
+            @keydown.enter="handleEnter"
         />
         <div absolute right-2 bottom-10px z-3>
             <UButton

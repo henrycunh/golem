@@ -1,5 +1,34 @@
 export async function useSetup() {
-    const { updateKnowledgeList } = useKnowledge()
+    if (process.client) {
+        const {
+            currentConversation,
+            conversationList,
+            createConversation,
+            updateConversationList,
+            switchConversation,
+        } = useConversations()
 
-    await updateKnowledgeList()
+        const { updateKnowledgeList } = useKnowledge()
+
+        await updateKnowledgeList()
+
+        watchEffect(async () => {
+            if (currentConversation.value === null) {
+                if (conversationList.value === null) {
+                    await updateConversationList()
+                    return
+                }
+                console.log('updating conversation list', conversationList.value)
+
+                if (conversationList.value && conversationList.value.length === 0) {
+                    console.log('Creating new conversation')
+                    const newConversation = await createConversation('Untitled Conversation')
+                    await switchConversation(newConversation.id)
+                }
+                else {
+                    await switchConversation(conversationList.value[0].id)
+                }
+            }
+        })
+    }
 }
