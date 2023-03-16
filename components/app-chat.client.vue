@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-// const { sendMessage, messageList } = useChatGPT()
 const {
     sendMessage,
     currentConversation,
     conversationList,
     isTyping,
     followupQuestions,
+    knowledgeUsedInConversation,
     createConversation,
     updateConversationList,
     switchConversation,
 } = useConversations()
+
+const { knowledgeList } = useKnowledge()
 
 const userMessageInput = ref('')
 const chatContainer = ref()
@@ -27,6 +29,8 @@ const messagesOrdered = computed(() => {
     return currentConversation.value.messages
         .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())
 })
+
+// Knowledge used in the conversation
 
 watchEffect(async () => {
     if (currentConversation.value === null) {
@@ -47,16 +51,14 @@ watchEffect(async () => {
     }
 })
 
-const chatScroll = useScroll(chatContainer, {
-    behavior: 'smooth',
-})
+const chatScroll = useScroll(chatContainer)
 
 watch(() => currentConversation.value?.id, (newId, oldId) => {
     if (newId === oldId) {
         return
     }
     setTimeout(() => {
-        chatScroll.y.value = chatContainer.value.scrollHeight
+        chatScroll.y.value = chatContainer.value?.scrollHeight
     }, 10)
 })
 
@@ -66,7 +68,7 @@ watch(isTyping, (newState, oldState) => {
     }
     if (newState) {
         autoScrollInterval.value = setInterval(() => {
-            chatScroll.y.value = chatContainer.value.scrollHeight
+            chatScroll.y.value = chatContainer.value?.scrollHeight
         }, 100)
     }
     else {
@@ -84,10 +86,12 @@ watch(isTyping, (newState, oldState) => {
             class="bg-white/90"
         >
             <div max-w-768px mx-auto flex items-center>
-                <div text-5 font-bold text-gray-7>
-                    {{ currentConversation?.title }}
+                <div>
+                    <AnimatedText text-5 font-bold text-gray-7 :value="currentConversation?.title" />
+                    <div v-if="knowledgeUsedInConversation.length" text-gray-5 text-14px>
+                        Using {{ knowledgeUsedInConversation.length }} sources
+                    </div>
                 </div>
-
                 <UButton ml-auto>
                     Share
                 </UButton>

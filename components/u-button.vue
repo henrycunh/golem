@@ -50,8 +50,10 @@ const gradientStyle = computed(() => {
             px-3 py-6px bg="primary-800/70"
             text-white text-sm font-bold
             transition-all
-            box-border m-0.1rem
-            rounded-6px w-full
+            box-border
+            rounded-6px
+            v-bind="{ ...$attrs }"
+            class="!w-full !m-0.1rem"
         >
             <slot />
         </div>

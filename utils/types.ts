@@ -5,6 +5,7 @@ export namespace types {
         id: string
         title: string
         messages: Message[]
+        knowledge: string[]
         createdAt: Date
         updatedAt: Date
     }
@@ -12,4 +13,21 @@ export namespace types {
     export interface Message extends ChatMessage {
         updatedAt: Date
     }
+
+    export interface KnowledgeItem {
+        id: string
+        title: string
+        type: string
+        sections: { content: string; embedding?: number[]; url?: string }[]
+        updatedAt: Date
+        metadata: any
+    }
+
+    export interface WebScraperResult {
+        url: string
+        markdown: string
+        favicon: string
+        title: string
+    }
+
 }

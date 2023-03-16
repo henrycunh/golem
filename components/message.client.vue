@@ -86,30 +86,34 @@ const errorMessageMapping = {
             ]"
         >
             <div
-                flex flex-col
-                :class="[
-                    // message.role === 'assistant' && 'items-start',
-                    // message.role === 'user' && 'items-end',
-                ]"
+                flex flex-col relative
             >
                 <!-- Agent name -->
-                <div font-bold text-gray-7 mb-1>
+                <div font-bold text-gray-7 mb-1 mx-6>
                     {{ message.role === 'assistant' ? 'Gepeto' : 'You' }}
                 </div>
-                <div v-if="!message.text">
-                    <div i-eos-icons-three-dots-loading text-primary-500 text-8 />
+                <div
+                    w-8 h-8 rounded-2 absolute left--6 top-1 flex items-center justify-center
+                    class="bg-gray-2/70"
+                >
+                    <div
+                        text-22px
+                        :class="[
+                            message.role === 'assistant' && 'i-tabler-robot text-primary-500',
+                            message.role === 'user' && 'i-tabler-user text-gray-400',
+                        ]"
+                    />
                 </div>
-                <!-- <div v-else-if="message.error" flex items-center gap-2>
-                    <div i-tabler-send-off text-6 />
-                    <div>
-                        {{ (errorMessageMapping as any)[message.content] || message.content }}
+                <div px-6>
+                    <div v-if="!message.text">
+                        <div i-eos-icons-three-dots-loading text-primary-500 text-8 />
                     </div>
-                </div> -->
-                <div v-else-if="message.role === 'assistant'" class="message-content">
-                    <div v-html="messageHTML" />
-                </div>
-                <div v-else>
-                    {{ filteredUserMessage }}
+                    <div v-else-if="message.role === 'assistant'" class="message-content" w-full break-words>
+                        <div w-full v-html="messageHTML" />
+                    </div>
+                    <div v-else>
+                        {{ filteredUserMessage }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,6 +141,8 @@ const errorMessageMapping = {
         border-radius: 4px;
         padding: 0.6em 1.2em;
         display: block;
+        width: 100%;
+        white-space: pre-wrap;
     }
 
     p:first-of-type {

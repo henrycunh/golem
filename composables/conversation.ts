@@ -1,16 +1,24 @@
 import type { ChatMessage } from 'chatgpt-web'
 import { ChatGPTAPI } from 'chatgpt-web'
-import Dexie from 'dexie'
 import hyperid from 'hyperid'
 import { Configuration, OpenAIApi } from 'openai'
 import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
-    const db = setupIndexedDB()
+    const db = useIDB()
     const { token } = useAuth()
+    const { knowledgeList } = useKnowledge()
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
+    const knowledgeUsedInConversation = computed(() => {
+        if (currentConversation.value === null) {
+            return []
+        }
+        return currentConversation.value.knowledge?.map((knowledgeId) => {
+            return knowledgeList.value?.find(knowledge => knowledge.id === knowledgeId)
+        }).filter(knowledge => knowledge !== undefined) || [] as types.KnowledgeItem[]
+    })
     const isTyping = useState<boolean>(() => false)
     const followupQuestions = useState<Record<string, Array<string>> | null>(() => null)
 
@@ -101,9 +109,22 @@ export const useConversations = () => {
         await updateConversationList()
     }
 
-    const updateConversation = async (conversation: any) => {
-        await db.table('conversations').put(conversation)
+    const updateConversation = async (id: string, update: Partial<types.Conversation>) => {
+        const conversation = await db.table('conversations').get(id)
+        if (!conversation) {
+            throw new Error('Conversation not found')
+        }
+        const newConversation = {
+            ...conversation,
+            ...update,
+            updatedAt: new Date(),
+        }
+
+        await db.table('conversations').put(newConversation)
         await updateConversationList()
+        if (currentConversationId.value === id) {
+            currentConversation.value = newConversation
+        }
     }
 
     const sendMessage = async (message: string) => {
@@ -114,15 +135,32 @@ export const useConversations = () => {
 
         const userMessage = {
             id: hyperid()(),
-            role: 'user',
+            role: 'user' as const,
             text: message,
             parentMessageId: lastSystemMessage?.id,
-        } as const
+            updatedAt: new Date(),
+        }
 
         // Adds the user message to the conversation
         addMessageToConversation(currentConversationId.value, userMessage)
-
         const lastMessages = [...(currentConversation.value?.messages || [])]
+
+        if (knowledgeUsedInConversation.value.length > 0) {
+            let lastMessageId = lastSystemMessage?.id
+            for (const knowledge of knowledgeUsedInConversation.value) {
+                const messageId = hyperid()()
+                lastMessages.push({
+                    id: messageId,
+                    role: 'user',
+                    text: `Use this as knowledge for the rest of our conversation:\n${knowledge?.sections[0]?.content}\n---`,
+                    parentMessageId: lastMessageId,
+                    updatedAt: new Date(),
+                })
+                lastMessageId = messageId
+            }
+            userMessage.parentMessageId = lastMessageId
+        }
+
         if (lastMessages) {
             await chatGPT.loadMessages(lastMessages)
         }
@@ -152,7 +190,7 @@ export const useConversations = () => {
         isTyping.value = false
         await upsertSystemMessage(systemMessage)
         await updateConversationList()
-        getFollowupQuestions(message)
+        // getFollowupQuestions(message)
     }
 
     const switchConversation = async (id: string) => {
@@ -194,17 +232,8 @@ export const useConversations = () => {
         conversationList,
         isTyping,
         followupQuestions,
+        knowledgeUsedInConversation,
     }
-}
-
-function setupIndexedDB() {
-    const db = new Dexie('gepeto')
-
-    db.version(1).stores({
-        conversations: 'id, title, messages, createdAt, updatedAt',
-    })
-
-    return db
 }
 
 function getUpdatedMessage(message: ChatMessage): types.Message {

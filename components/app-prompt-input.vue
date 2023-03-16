@@ -32,7 +32,7 @@ const onType = (event: any) => {
 
 <template>
     <div
-        relative p-2
+        relative p-3 pr-20
         shadow-lg
         text-gray-600 placeholder:text-gray-400 placeholder:transition
         class="focus-within:placeholder:translate-x-2 bg-white"

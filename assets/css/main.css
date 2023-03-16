@@ -67,16 +67,66 @@ html.scroll-lock {
 
 .scale-enter-active {
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.18s cubic-bezier(0.5, 1, 0.89, 1);
+        opacity 0.18s cubic-bezier(0.5, 1, 0.89, 1),
+        margin 0.18s cubic-bezier(0.5, 1, 0.89, 1);
 }
 
 .scale-leave-active {
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.25s cubic-bezier(0, 0.55, 0.45, 1);
+        opacity 0.25s cubic-bezier(0, 0.55, 0.45, 1),
+        margin 0.25s cubic-bezier(0, 0.55, 0.45, 1);
 }
 
 .scale-enter-from,
 .scale-leave-to {
     opacity: 0;
     transform: scale(0.45) !important;
+    margin: 0 !important;
+}
+
+/* Appear from right */
+.appear-right-enter-active {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.18s cubic-bezier(0.5, 1, 0.89, 1),
+        width 0.18s cubic-bezier(0.5, 1, 0.89, 1),
+        margin 0.18s cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+.appear-right-leave-active {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.25s cubic-bezier(0, 0.55, 0.45, 1),
+        width 0.25s cubic-bezier(0, 0.55, 0.45, 1),
+        margin 0.25s cubic-bezier(0, 0.55, 0.45, 1);
+}
+
+.appear-right-enter-from,
+.appear-right-leave-to {
+    opacity: 0 !important;
+    transform: translateX(20px) !important;
+    width: 0 !important;
+    margin: 0 !important;
+}
+
+
+/* Appear from left */
+.appear-left-enter-active {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.18s cubic-bezier(0.5, 1, 0.89, 1),
+        width 0.18s cubic-bezier(0.5, 1, 0.89, 1),
+        margin 0.18s cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+.appear-left-leave-active {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.25s cubic-bezier(0, 0.55, 0.45, 1),
+        width 0.25s cubic-bezier(0, 0.55, 0.45, 1),
+        margin 0.25s cubic-bezier(0, 0.55, 0.45, 1);
+}
+
+.appear-left-enter-from,
+.appear-left-leave-to {
+    opacity: 0 !important;
+    transform: translateX(-20px) !important;
+    width: 0 !important;
+    margin: 0 !important;
 }

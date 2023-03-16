@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { token } = useAuth()
 
-const hasApiKey = computed(() => !token.value)
+const hasApiKey = computed(() => Boolean(token.value))
 const isDialogOpen = ref(false)
 const apiKey = ref('')
 
@@ -17,9 +17,6 @@ watch(token, (newToken) => {
 }, { immediate: true })
 
 watch(apiKey, (newApiKey) => {
-    if (!newApiKey) {
-        return
-    }
     token.value = newApiKey
 })
 </script>
@@ -28,7 +25,7 @@ watch(apiKey, (newApiKey) => {
     <div>
         <div
             flex gap-1
-            p-2 rounded-2 transition-all cursor-pointer
+            p-2 rounded-2 transition-all cursor-pointer w-full
             :class="[!hasApiKey && 'bg-orange-50 hover:bg-orange-100/80 ring-1 ring-orange-300']"
             @click="onClick"
         >
@@ -36,12 +33,24 @@ watch(apiKey, (newApiKey) => {
                 i-tabler-key text-primary text-5
                 :class="[!hasApiKey && '!text-orange-500']"
             />
-            <div text-15px>
-                <div text-gray-5 font-bold :class="[!hasApiKey && 'text-orange-900']">
-                    API Key
+            <div text-15px w-full>
+                <div
+                    text-gray-5 font-bold :class="[!hasApiKey && 'text-orange-900']"
+                    flex items-center w-full
+                >
+                    <div>
+                        API Key
+                    </div>
+                    <div v-if="hasApiKey" flex gap-1 items-center text-12px ml-auto>
+                        <div w-2 h-2 rounded-full bg-green-7 />
+                        <div>Ready to go</div>
+                    </div>
                 </div>
                 <div v-if="!hasApiKey" text-gray-4 :class="[!hasApiKey && 'text-red-700']">
                     Click to set your API Key
+                </div>
+                <div v-else text-right text-gray-4>
+                    <div>Click to change</div>
                 </div>
             </div>
         </div>
