@@ -8,6 +8,9 @@ export default defineNuxtConfig({
         '@unocss/nuxt',
         '@vueuse/nuxt',
     ],
+    buildModules: [
+        'floating-vue/nuxt',
+    ],
     unocss: {
         attributify: true,
         uno: true,

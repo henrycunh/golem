@@ -2,8 +2,11 @@
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
+const { token } = useAuth()
 const { currentPreset, clearPreset } = usePreset()
 const textarea = ref()
+
+const isLogged = computed(() => Boolean(token.value))
 
 const onSend = () => {
     emit('send', props.modelValue)
@@ -28,20 +31,25 @@ const onType = (event: any) => {
 
 <template>
     <div
-        relative p-3 pr-20
-        shadow-lg
-        text-gray-600 placeholder:text-gray-400 placeholder:transition
-        class="focus-within:placeholder:translate-x-2 bg-white"
-        ring-2 ring-inset
-        rounded-3
-        ring-gray-100 focus:ring-gray-200 focus-within:shadow-xl transition
+        relative p-3
+        pr-20 text-gray-600 placeholder:text-gray-400
+        placeholder:transition
+        class="focus-within:placeholder:translate-x-2 bg-gray-1/80" ring-2
+        ring-inset rounded-3 shadow-inset
+        shadow ring-gray-100 focus:ring-gray-200 focus-within:shadow-md
+        transition
+        :class="[
+            !isLogged ? 'cursor-not-allowed' : '',
+        ]"
     >
         <textarea
             ref="textarea"
             :value="modelValue"
+            :disabled="!token"
             w-full
-            text-14px outline-none overflow-hidden
-            placeholder="Type your prompt here..." leading-6
+            text-14px outline-none overflow-hidden bg-transparent
+            placeholder="Type your prompt here..."
+            leading-6
             relative z-2 h-auto resize-none b-0
             @input="onType"
             @keydown.enter="handleEnter"
@@ -49,6 +57,7 @@ const onType = (event: any) => {
         <div absolute right-2 bottom-10px z-3>
             <UButton
                 rounded-3
+                :disabled="!isLogged || !modelValue"
                 @click="onSend"
             >
                 <div i-tabler-send text-5 />

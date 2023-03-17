@@ -18,7 +18,6 @@ export async function useSetup() {
                     await updateConversationList()
                     return
                 }
-                console.log('updating conversation list', conversationList.value)
 
                 if (conversationList.value && conversationList.value.length === 0) {
                     console.log('Creating new conversation')

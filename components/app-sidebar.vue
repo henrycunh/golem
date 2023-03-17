@@ -28,7 +28,8 @@ const onCreateConversation = async () => {
 
 const isKnowledgeManagerOpen = ref(false)
 const onOpenKnowledgeManager = () => {
-    isKnowledgeManagerOpen.value = true
+    navigateTo('/knowledge')
+    // isKnowledgeManagerOpen.value = true
 }
 </script>
 
@@ -43,7 +44,10 @@ const onOpenKnowledgeManager = () => {
                 :key="conversation.id"
                 :conversation="conversation"
             />
-            <div
+            <UButton secondary icon="i-tabler-plus" w-full @click="onCreateConversation">
+                New chat
+            </UButton>
+            <!-- <div
                 hover:bg-primary-100 transition text-gray-600 cursor-pointer
                 p-2 px-4 rounded-2 mt-2
                 class="bg-primary-50/50 text-primary"
@@ -53,7 +57,7 @@ const onOpenKnowledgeManager = () => {
             >
                 <div i-tabler-plus />
                 <span>New chat</span>
-            </div>
+            </div> -->
         </div>
 
         <div uppercase font-bold text-13px text-primary mb-2 mt-6>
@@ -61,8 +65,7 @@ const onOpenKnowledgeManager = () => {
         </div>
 
         <div>
-            <UButton w-full flex items-center justify-center gap-2 @click="onOpenKnowledgeManager">
-                <div i-tabler-brain />
+            <UButton w-full icon="i-tabler-brain" @click="onOpenKnowledgeManager">
                 <span>Manage</span>
             </UButton>
 
