@@ -1,7 +1,4 @@
-import Prism from 'prismjs'
-
 export default defineNuxtPlugin(async () => {
-    console.log(Prism.languages)
     import('prismjs/components/prism-markdown')
     import('prismjs/components/prism-sql')
     import('prismjs/components/prism-python')

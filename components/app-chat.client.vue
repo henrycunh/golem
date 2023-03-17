@@ -51,7 +51,7 @@ watch(isTyping, (newState, oldState) => {
 </script>
 
 <template>
-    <div v-auto-animate h-98dvh overflow-hidden relative bg-white rounded-2 shadow-lg border>
+    <div v-auto-animate>
         <!-- Header -->
         <div
             absolute top-0 left-0 right-0 b-0 b-b-1 b-gray-1 b-solid py-3 px-5 z-1
@@ -65,7 +65,7 @@ watch(isTyping, (newState, oldState) => {
                         Using {{ knowledgeUsedInConversation.length }} sources
                     </div>
                 </div>
-                <UButton ml-auto>
+                <UButton ml-auto icon="i-tabler-share">
                     Share
                 </UButton>
             </div>

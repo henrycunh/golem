@@ -16,6 +16,7 @@ const {
 
 const element = ref()
 const isHovering = useElementHover(element)
+const route = useRoute()
 
 // Is current conversation
 const isCurrentConversation = computed(() => {
@@ -23,6 +24,7 @@ const isCurrentConversation = computed(() => {
         return false
     }
     return currentConversation.value.id === props.conversation.id
+        && route.path === '/'
 })
 
 // Conversation message count
@@ -32,6 +34,17 @@ const messageCount = computed(() => {
     }
     return props.conversation.messages.length
 })
+
+// On tab click
+const onClick = async () => {
+    if (route.path !== '/') {
+        navigateTo('/')
+    }
+    if (isCurrentConversation.value) {
+        return
+    }
+    await switchConversation(props.conversation.id)
+}
 
 // Tab title editing
 const conversationTitle = ref()
@@ -96,7 +109,7 @@ const onDeleteConversation = async (id: string) => {
                 ? 'bg-white text-gray-600 shadow-md'
                 : 'hover:bg-gray-100',
         ]"
-        @click="switchConversation(conversation.id)"
+        @click="onClick"
         @dblclick.stop="onTabDoubleClick"
     >
         <transition name="appear-left">

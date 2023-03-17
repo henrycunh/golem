@@ -1,0 +1,69 @@
+<script lang="ts" setup>
+import type { types } from '~~/utils/types'
+
+const { extractFromUrl, knowledgeList } = useKnowledge()
+const { updateConversation, currentConversation } = useConversations()
+
+const url = ref()
+
+const onAdd = () => {
+    extractFromUrl({
+        url: url.value,
+        title: '',
+    })
+    url.value = ''
+}
+
+const onAddKnowledgeToConversation = async (knowledge: types.KnowledgeItem) => {
+    if (!currentConversation.value?.id) {
+        return
+    }
+    await updateConversation(currentConversation.value?.id, {
+        knowledge: Array.from(new Set([
+            ...currentConversation.value?.knowledge || [],
+            knowledge.id,
+        ])),
+    })
+}
+</script>
+
+<template>
+    <div p-2>
+        <div grid grid-cols-4 gap-6>
+            <div flex flex-col gap-2 col-span-1>
+                <div font-bold text-gray-6 text-5>
+                    URLs
+                </div>
+                <UInput
+                    v-model="url"
+                    placeholder="Enter URL"
+                />
+                <UButton secondary icon="i-tabler-plus" @click="onAdd">
+                    Add
+                </UButton>
+            </div>
+            <div col-span-3>
+                <div font-bold text-gray-6 text-5>
+                    Knowledge list
+                </div>
+                <div
+                    v-for="knowledge in knowledgeList"
+                    :key="knowledge.id"
+                    bg-gray-1 p-2 rounded-2 w-full cursor-pointer
+                >
+                    <div flex items-center gap-2>
+                        <div>
+                            <img :src="knowledge.metadata.favicon" w-4 h-4>
+                        </div>
+                        <div text-14px text-gray-6 font-bold>
+                            {{ knowledge.title }}
+                        </div>
+                        <UButton @click="onAddKnowledgeToConversation(knowledge)">
+                            <div i-tabler-plus />
+                        </UButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

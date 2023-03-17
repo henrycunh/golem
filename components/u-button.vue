@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 const props = defineProps<{
     outline?: boolean
+    disabled?: boolean
+    secondary?: boolean
+    icon?: string
 }>()
 defineEmits(['click'])
 // Theres a radial gradient in the background of the button
@@ -43,7 +46,11 @@ const gradientStyle = computed(() => {
         box-border shadow-md select-none
         class="shadow-primary-900/10"
         active:scale-98 active:shadow-none cursor-pointer p-0
-        :style="gradientStyle"
+        :style="!disabled ? gradientStyle : {}"
+        :class="[
+            secondary && '!bg-none !bg-primary-50/50 !shadow-none',
+            disabled ? 'cursor-not-allowed !from-gray-5 !to-gray-2' : '',
+        ]"
         @click="$emit('click')"
     >
         <div
@@ -52,9 +59,14 @@ const gradientStyle = computed(() => {
             transition-all
             box-border
             rounded-6px
+            :class="[
+                secondary && '!bg-transparent !text-primary-600',
+                disabled ? '!bg-gray-5' : '',
+            ]"
             v-bind="{ ...$attrs }"
-            class="!w-full !m-0.1rem"
+            class="!w-full !m-0.12rem" flex items-center justify-center gap-1
         >
+            <div v-if="icon" :class="icon" />
             <slot />
         </div>
     </button>
