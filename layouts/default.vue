@@ -15,7 +15,7 @@ useSetup()
             </ClientOnly>
         </div>
         <div ml-17.5rem>
-            <div h-97.5dvh overflow-hidden relative bg-white rounded-2 shadow-lg border>
+            <div h-97.5dvh overflow-hidden relative bg-white dark:bg-dark-2 rounded-2 shadow-lg border>
                 <slot h-full />
             </div>
         </div>

@@ -1,5 +1,11 @@
-export async function useSetup() {
+import type { types } from '~~/utils/types'
+
+export async function useSetup(options?: { disableStorage: boolean }) {
     if (process.client) {
+        if (options?.disableStorage) {
+            useIDB({ disableStorage: true })
+        }
+
         const {
             currentConversation,
             conversationList,
@@ -25,7 +31,10 @@ export async function useSetup() {
                     await switchConversation(newConversation.id)
                 }
                 else {
-                    await switchConversation(conversationList.value[0].id)
+                    const mostRecentConversation = conversationList.value.sort((a: types.Conversation, b: types.Conversation) => {
+                        return b.updatedAt.getTime() - a.updatedAt.getTime()
+                    })[0]
+                    await switchConversation(mostRecentConversation.id)
                 }
             }
         })

@@ -1,4 +1,4 @@
-import type { ChatMessage } from 'chatgpt-web'
+import type { ChatGPTError, ChatMessage } from 'chatgpt-web'
 import { ChatGPTAPI } from 'chatgpt-web'
 import hyperid from 'hyperid'
 import { Configuration, OpenAIApi } from 'openai'
@@ -6,8 +6,10 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
-    const { token } = useAuth()
+    const { apiKey } = useAuth()
     const { knowledgeList } = useKnowledge()
+    const { complete } = useLanguageModel()
+    const modelUsed = useLocalStorage<string>('geppeto-model', 'gpt-3.5-turbo')
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
@@ -34,13 +36,14 @@ export const useConversations = () => {
         return await db.table('conversations').get(id)
     }
 
-    async function createConversation(title: string) {
+    async function createConversation(title: string, options?: Partial<types.Conversation>) {
         const newConversation = {
             id: hyperid()(),
             title,
             messages: [],
             createdAt: new Date(),
             updatedAt: new Date(),
+            ...options,
         }
         const newKey = await db.table('conversations').add(newConversation)
         if (!newKey) {
@@ -64,16 +67,16 @@ export const useConversations = () => {
         currentConversation.value = newConversation
     }
 
-    async function getMessageById(id: string) {
-        const conversation = await db.table('conversations').get(currentConversationId.value)
+    async function getMessageById(conversationId: string, id: string) {
+        const conversation = await db.table('conversations').get(conversationId)
         if (!conversation) {
             throw new Error('Conversation not found')
         }
         return conversation.messages.find((message: ChatMessage) => message.id === id) as ChatMessage
     }
 
-    async function updateLastSystemMessageInConversation(message: string) {
-        const conversation = await db.table('conversations').get(currentConversationId.value)
+    async function updateLastSystemMessageInConversation(conversationId: string, message: string) {
+        const conversation = await db.table('conversations').get(conversationId)
         if (!conversation) {
             throw new Error('Conversation not found')
         }
@@ -101,7 +104,9 @@ export const useConversations = () => {
             updatedAt: new Date(),
         }
         await db.table('conversations').put(newConversation)
-        currentConversation.value = newConversation
+        if (currentConversationId.value === conversationId) {
+            currentConversation.value = newConversation
+        }
     }
 
     const deleteConversation = async (id: string) => {
@@ -132,7 +137,11 @@ export const useConversations = () => {
         if (!process.client) {
             return
         }
-        const chatGPT = new ChatGPTAPI({ apiKey: token.value || '' })
+
+        const fromConversation = currentConversation.value
+        if (!fromConversation) {
+            return
+        }
         const systemMessageList = (currentConversation.value?.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastSystemMessage = systemMessageList[systemMessageList.length - 1]
 
@@ -145,8 +154,8 @@ export const useConversations = () => {
         }
 
         // Adds the user message to the conversation
-        addMessageToConversation(currentConversationId.value, userMessage)
-        const lastMessages = [...(currentConversation.value?.messages || [])]
+        addMessageToConversation(fromConversation.id, userMessage)
+        const lastMessages = [...(fromConversation?.messages || [])]
 
         if (knowledgeUsedInConversation.value.length > 0) {
             let lastMessageId = lastSystemMessage?.id
@@ -158,53 +167,91 @@ export const useConversations = () => {
                     text: `Use this as knowledge for the rest of our conversation:\n${knowledge?.sections[0]?.content}\n---`,
                     parentMessageId: lastMessageId,
                     updatedAt: new Date(),
+                    createdAt: new Date(),
                 })
                 lastMessageId = messageId
             }
             userMessage.parentMessageId = lastMessageId
         }
 
-        if (lastMessages) {
-            await chatGPT.loadMessages(lastMessages)
-        }
-
         let thisMessage: ChatMessage | null = null
         const upsertSystemMessage = async (messageResponse: ChatMessage) => {
             if (!thisMessage) {
-                thisMessage = await getMessageById(messageResponse.id)
+                thisMessage = await getMessageById(fromConversation.id, messageResponse.id)
             }
             if (thisMessage) {
-                await updateLastSystemMessageInConversation(messageResponse.text)
+                await updateLastSystemMessageInConversation(fromConversation.id, messageResponse.text)
             }
             else {
-                await addMessageToConversation(currentConversationId.value, messageResponse)
+                await addMessageToConversation(fromConversation.id, messageResponse)
             }
         }
 
-        isTyping.value = true
-        // Adds the bot message to the conversation
-        const systemMessage = await chatGPT.sendMessage(message, {
-            parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
-            messageId: userMessage.id,
-            async onProgress(partial) {
-                await upsertSystemMessage(partial)
-            },
-        })
-        isTyping.value = false
-        await upsertSystemMessage(systemMessage)
-        await updateConversationList()
+        for (const tryNumber of Array(6).keys()) {
+            const chatGPT = new ChatGPTAPI({
+                apiKey: apiKey.value || '',
+                completionParams: {
+                    model: modelUsed.value,
+                },
+            })
+            chatGPT._getTokenCount = async (message: string) => message.length / 2
+            if (lastMessages) {
+                await chatGPT.loadMessages(lastMessages.slice(tryNumber))
+            }
+
+            try {
+                isTyping.value = true
+                // Adds the bot message to the conversation
+                const systemMessage = await chatGPT.sendMessage(message, {
+                    parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
+                    messageId: userMessage.id,
+                    async onProgress(partial: ChatMessage) {
+                        await upsertSystemMessage(partial)
+                    },
+                    systemMessage: fromConversation.systemMessage,
+                })
+                isTyping.value = false
+                await upsertSystemMessage(systemMessage)
+                await updateConversationList()
+                break
+            }
+            catch (e: any) {
+                const error = e as ChatGPTError
+                console.log(error.message)
+            }
+        }
+        if (fromConversation.title.trim() === 'Untitled Conversation') {
+            await generateConversationTitle(fromConversation.id)
+        }
+        // TODO: Add follow up questions feature
         // getFollowupQuestions(message)
     }
 
     const switchConversation = async (id: string) => {
         currentConversationId.value = id
         currentConversation.value = await getConversationById(id)
-        await updateConversationList()
+    }
+
+    async function generateConversationTitle(conversationId: string) {
+        const conversation = await getConversationById(conversationId)
+        if (!conversation) {
+            return ''
+        }
+        const lastMessages = conversation.messages.slice(-3)
+        const lastMessagesContent = lastMessages.map((message: ChatMessage) => message.text)
+        const conversationTitle = await complete(lastMessagesContent.join('\n'), {
+            systemMessage: 'You are a very clever machine that can determine a very short title for a conversation. The user sends you the content of a conversation and you only output a very short title for it, really concise. Title:',
+            temperature: 0,
+        })
+
+        conversation.title = conversationTitle?.replace(/Title\:/g, '').replace(/\"/g, '').trim()
+        console.log('conversationTitle', conversationTitle)
+        await updateConversation(conversationId, conversation)
     }
 
     async function getFollowupQuestions(text: string) {
         const client = new OpenAIApi(new Configuration({
-            apiKey: token.value || '',
+            apiKey: apiKey.value || '',
         }))
         const response = await client.createCompletion({
             model: 'text-davinci-003',
@@ -236,6 +283,7 @@ export const useConversations = () => {
         isTyping,
         followupQuestions,
         knowledgeUsedInConversation,
+        modelUsed,
     }
 }
 
@@ -243,5 +291,6 @@ function getUpdatedMessage(message: ChatMessage): types.Message {
     return {
         ...message,
         updatedAt: new Date(),
+        createdAt: (message as types.Message).createdAt || new Date(),
     }
 }

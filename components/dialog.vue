@@ -26,6 +26,13 @@ if (!props.persistent) {
 useDOMScrollLock(toRef(props, 'modelValue') as Ref<boolean>)
 </script>
 
+<script lang="ts">
+export default {
+    name: 'UDialog',
+    inheritAttrs: false,
+}
+</script>
+
 <template>
     <Teleport
         v-if="isMounted"
@@ -41,7 +48,7 @@ useDOMScrollLock(toRef(props, 'modelValue') as Ref<boolean>)
                         v-show="props.modelValue"
                         ref="refCard"
                         class="shadow-2xl w-[500px] z-[53] backface-hidden transform translate-z-0 max-w-[calc(100vw-2rem)] shadow-dark-900/20"
-                        bg-white rounded-2 p-4
+                        bg-white dark:bg-dark-1 rounded-2 overflow-hidden
                         v-bind="{ ...$attrs, ...props }"
                     >
                         <!-- ℹ️ Recursively pass down slots to child -->

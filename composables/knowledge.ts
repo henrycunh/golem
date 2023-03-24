@@ -7,7 +7,7 @@ export const useKnowledge = () => {
 
     async function listKnowledge() {
         // Get only the title, type, id, and updatedAt fields
-        return await db.table('knowledge').toArray()
+        return await db.table('knowledge').toArray() as types.KnowledgeItem[]
     }
 
     async function addKnowledgeItem(item: types.KnowledgeItem) {
@@ -19,6 +19,11 @@ export const useKnowledge = () => {
         if (!newKey) {
             throw new Error('Failed to create knowledge item')
         }
+        await updateKnowledgeList()
+    }
+
+    async function deleteKnowledgeItem(id: string) {
+        await db.table('knowledge').delete(id)
         await updateKnowledgeList()
     }
 
@@ -62,6 +67,7 @@ export const useKnowledge = () => {
         addKnowledgeItem,
         extractFromUrl,
         updateKnowledgeList,
+        deleteKnowledgeItem,
         knowledgeList,
     }
 }

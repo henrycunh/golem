@@ -35,6 +35,14 @@ const messageCount = computed(() => {
     return props.conversation.messages.length
 })
 
+// Last message
+const lastMessage = computed(() => {
+    if (props.conversation.messages.length === 0) {
+        return null
+    }
+    return props.conversation.messages[props.conversation.messages.length - 1]
+})
+
 // On tab click
 const onClick = async () => {
     if (route.path !== '/') {
@@ -98,59 +106,68 @@ const onDeleteConversation = async (id: string) => {
 <template>
     <div
         ref="element"
-        transition text-gray-600 cursor-pointer
+        transition text-gray-600 dark:text-gray-3 cursor-pointer
         p-2 px-4 rounded-2
         class="shadow-gray-900/5"
-        text-14px mb-1 last:mb-0
-        flex items-center
+        text-15px mb-1 last:mb-0
         active:translate-y-2px
         :class="[
             isCurrentConversation
-                ? 'bg-white text-gray-600 shadow-md'
-                : 'hover:bg-gray-100',
+                ? 'bg-white text-gray-600 shadow-md dark:bg-dark-1 dark:text-gray-1'
+                : 'hover:bg-gray-100 hover:dark:bg-dark-3',
         ]"
         @click="onClick"
         @dblclick.stop="onTabDoubleClick"
     >
-        <transition name="appear-left">
-            <div v-if="isEditingTitle" i-tabler-edit mr-1 />
-        </transition>
-        <input
-            v-model="conversationTitle"
-            :readonly="!isEditingTitle"
-            bg-transparent border-none outline-none p-0
-            transition
-            :class="[
-                isEditingTitle
-                    ? 'text-gray-600 select-all'
-                    : 'text-gray-500 select-none cursor-pointer',
-            ]"
-            @blur="isEditingTitle = false"
-            @input="onInput"
-        >
-        <div
-            ml-auto text-11px font-bold text-white py-2px px-6px rounded-full my-1
-            :class="[
-                isCurrentConversation ? 'bg-primary' : 'bg-gray-2 !text-gray-4',
-            ]"
-        >
-            {{ messageCount }}
-        </div>
-        <transition name="appear-right">
-            <div
-                v-if="isHovering"
-                text-gray-5 ml-2
-                class="bg-gray-2/50 hover:bg-gray-3/50"
-                hover:text-gray-7
-                rounded active:scale-95
-                w-6 h-6 flex items-center justify-center
+        <div flex items-center>
+            <transition name="appear-left">
+                <div v-if="isEditingTitle" i-tabler-edit mr-1 />
+            </transition>
+            <input
+                v-model="conversationTitle"
+                :readonly="!isEditingTitle"
+                bg-transparent border-none outline-none p-0
+                transition font-bold grow mr-2 truncate
                 :class="[
-                    isHovering ? 'op100' : 'op0',
+                    isEditingTitle
+                        ? 'text-gray-900 dark:text-gray-1 select-all'
+                        : 'text-gray-700 dark:text-gray-3 select-none cursor-pointer',
                 ]"
-                @click.stop="onDeleteConversation(conversation.id)"
+                @blur="isEditingTitle = false"
+                @input="onInput"
             >
-                <div i-tabler-x text-18px />
+            <div
+                ml-auto text-11px font-bold text-white py-2px px-6px rounded-full my-1
+                :class="[
+                    isCurrentConversation ? 'bg-primary' : 'bg-gray-2 !text-gray-4 dark:bg-dark-2 !text-gray-1',
+                ]"
+            >
+                {{ messageCount }}
             </div>
-        </transition>
+            <transition name="appear-right">
+                <div
+                    v-if="isHovering"
+                    text-gray-5 dark:text-gray-1 ml-2
+                    class="bg-gray-2/50 hover:bg-gray-3/50 dark:bg-dark-2 hover:dark:bg-white/10"
+                    hover:text-gray-7 dark:hover:text-gray-1
+                    rounded active:scale-95 transition-all
+                    w-6 h-6 flex items-center justify-center
+                    :class="[
+                        isHovering ? 'op100' : 'op0',
+                    ]"
+                    @click.stop="onDeleteConversation(conversation.id)"
+                >
+                    <div i-tabler-x text-18px />
+                </div>
+            </transition>
+        </div>
+        <div
+            v-if="lastMessage"
+            text-gray-5 text-13px
+            dark:text-gray-4
+            w-full truncate inline-block
+        >
+            {{ lastMessage.text }}
+        </div>
     </div>
 </template>

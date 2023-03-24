@@ -23,8 +23,6 @@ const backgroundCenter = useTransition(backgroundCenterBase, {
     duration: 200,
 })
 
-const { pressed: isMousePressed } = useMousePressed({ target: buttonElement })
-
 const gradientStyle = computed(() => {
     // If the mouse is outside the button, use `backgroundCenter`
     // Else, use the mouse position in the button
@@ -39,7 +37,7 @@ const gradientStyle = computed(() => {
 <template>
     <button
         ref="buttonElement"
-        rounded-2 flex items-center
+        rounded-6px flex items-center
         justify-center bg-gradient-to-tr from-primary-600
         to-primary-100 border-0
         transition-all
@@ -48,7 +46,7 @@ const gradientStyle = computed(() => {
         active:scale-98 active:shadow-none cursor-pointer p-0
         :style="!disabled ? gradientStyle : {}"
         :class="[
-            secondary && '!bg-none !bg-primary-50/50 !shadow-none',
+            secondary && '!bg-none !bg-primary-50/50 !shadow-none dark:!bg-primary-600/30',
             disabled ? 'cursor-not-allowed !from-gray-5 !to-gray-2' : '',
         ]"
         @click="$emit('click')"
@@ -60,7 +58,7 @@ const gradientStyle = computed(() => {
             box-border
             rounded-6px
             :class="[
-                secondary && '!bg-transparent !text-primary-600',
+                secondary && '!bg-transparent !text-primary-600 dark:!text-primary-300',
                 disabled ? '!bg-gray-5' : '',
             ]"
             v-bind="{ ...$attrs }"

@@ -8,10 +8,13 @@ export namespace types {
         knowledge: string[]
         createdAt: Date
         updatedAt: Date
+        type?: 'chat' | 'embbeded'
+        systemMessage?: string
     }
 
     export interface Message extends ChatMessage {
         updatedAt: Date
+        createdAt: Date
     }
 
     export interface KnowledgeItem {

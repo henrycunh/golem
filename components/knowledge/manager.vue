@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import type { types } from '~~/utils/types'
 
 defineProps<{ modelValue: boolean }>()
@@ -10,7 +10,7 @@ const onUpdateModelValue = (value: boolean) => {
 const { extractFromUrl, knowledgeList } = useKnowledge()
 const { updateConversation, currentConversation } = useConversations()
 
-const url = ref()
+const url = ref('')
 
 const onAdd = () => {
     extractFromUrl({
@@ -78,4 +78,4 @@ const onAddKnowledgeToConversation = async (knowledge: types.KnowledgeItem) => {
             </div>
         </Dialog>
     </div>
-</template>
+</template> -->

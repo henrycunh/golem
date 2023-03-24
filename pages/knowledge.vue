@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { types } from '~~/utils/types'
 
-const { extractFromUrl, knowledgeList } = useKnowledge()
+const { extractFromUrl, knowledgeList, deleteKnowledgeItem } = useKnowledge()
 const { updateConversation, currentConversation } = useConversations()
 
-const url = ref()
+const url = ref('')
 
 const onAdd = () => {
     extractFromUrl({
@@ -25,43 +25,45 @@ const onAddKnowledgeToConversation = async (knowledge: types.KnowledgeItem) => {
         ])),
     })
 }
+
+async function onDeleteKnowledge(knowledgeId: string) {
+    await deleteKnowledgeItem(knowledgeId)
+}
 </script>
 
 <template>
-    <div p-2>
-        <div grid grid-cols-4 gap-6>
-            <div flex flex-col gap-2 col-span-1>
-                <div font-bold text-gray-6 text-5>
-                    URLs
-                </div>
-                <UInput
-                    v-model="url"
-                    placeholder="Enter URL"
-                />
-                <UButton secondary icon="i-tabler-plus" @click="onAdd">
-                    Add
-                </UButton>
-            </div>
-            <div col-span-3>
-                <div font-bold text-gray-6 text-5>
-                    Knowledge list
-                </div>
-                <div
-                    v-for="knowledge in knowledgeList"
-                    :key="knowledge.id"
-                    bg-gray-1 p-2 rounded-2 w-full cursor-pointer
-                >
-                    <div flex items-center gap-2>
-                        <div>
-                            <img :src="knowledge.metadata.favicon" w-4 h-4>
-                        </div>
-                        <div text-14px text-gray-6 font-bold>
-                            {{ knowledge.title }}
-                        </div>
-                        <UButton @click="onAddKnowledgeToConversation(knowledge)">
-                            <div i-tabler-plus />
-                        </UButton>
+    <div p-4>
+        <div text-gray-7 dark:text-gray-1 font-bold text-6>
+            Knowledge
+        </div>
+        <div mt-2 text-gray-5 dark:text-gray-3 max-w-640px leading-6>
+            You can ask about anything you want to know. <br>You just need to provide the knowledge.<br>
+            Here you can add sources of knowledge from many different sources, from the web, through Notion, to your PDF files.
+        </div>
+        <div grid grid-cols-3 gap-2>
+            <div
+                v-for="knowledge in knowledgeList"
+                :key="knowledge.id"
+                p-3 rounded-2 dark:bg-dark-1 bg-gray-1
+                cursor-pointer dark:text-gray-3
+            >
+                <div font-bold flex>
+                    <div>
+                        {{ knowledge.title }}
                     </div>
+                    <div
+                        text-gray-5 dark:text-gray-1 ml-2
+                        class="bg-gray-2/50 hover:bg-gray-3/50 dark:bg-dark-2 hover:dark:bg-white/10"
+                        hover:text-gray-7 dark:hover:text-gray-1
+                        rounded active:scale-95 transition-all
+                        w-6 h-6 flex items-center justify-center
+                        @click.stop="onDeleteKnowledge(knowledge.id)"
+                    >
+                        <div i-tabler-x text-18px />
+                    </div>
+                </div>
+                <div>
+                    {{ knowledge.id }}
                 </div>
             </div>
         </div>
