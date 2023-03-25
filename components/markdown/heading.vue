@@ -7,7 +7,7 @@ defineProps<{
 <template>
     <component
         :is="`h${depth}`"
-        text-gray-5
+        text-gray-7 dark:text-gray-1
     >
         <slot />
     </component>

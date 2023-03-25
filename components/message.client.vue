@@ -49,6 +49,7 @@ const errorMessageMapping = {
                     <MarkdownRenderer
                         v-if="message.role === 'assistant'"
                         :value="message.text"
+                        text-14px
                     />
                     <div v-else>
                         <div

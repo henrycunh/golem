@@ -3,7 +3,7 @@ import transformerDirectives from '@unocss/transformer-directives'
 
 export default defineConfig({
     shortcuts: [
-        { link: 'text-primary-500 hover:text-primary-400 decoration-none ' },
+        { 'text-color': 'text-gray-7 dark:text-gray-2' },
     ],
     theme: {
         colors: {

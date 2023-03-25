@@ -3,6 +3,7 @@ import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
 import type { Content, Root } from 'mdast'
 import type { Lang } from 'shiki-es'
+import GpLink from '../gp/link.vue'
 import Paragraph from './paragraph.vue'
 import Heading from './heading.vue'
 import CodeBlock from './code-block.vue'
@@ -65,7 +66,7 @@ export default defineComponent({
                 return h('span', node.value)
             }
             if (node.type === 'link') {
-                return h('a', { href: node.url }, node.children.map(render))
+                return h(GpLink, { to: node.url }, () => node.children.map(render))
             }
             if (node.type === 'image') {
                 return h('img', { src: node.url })

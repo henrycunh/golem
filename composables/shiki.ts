@@ -67,7 +67,6 @@ export function highlightCode(code: string, lang: Lang) {
         return escapeHtml(code)
     }
     const theme = useShikiTheme()
-    console.log(theme)
     return shiki.codeToHtml(code, {
         lang,
         theme,
