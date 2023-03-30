@@ -3,7 +3,10 @@ useSetup()
 </script>
 
 <template>
-    <div relative m-0.5rem>
+    <div
+        relative m-0.5rem
+        class="2xl:max-w-1366px 2xl:mx-auto"
+    >
         <div absolute top-0.5rem left-0.5rem bottom-0.5rem w-16rem>
             <ClientOnly>
                 <AppSidebar />

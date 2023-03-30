@@ -51,7 +51,7 @@ const handleEnter = (e: KeyboardEvent) => {
             ref="textarea"
             :value="modelValue"
             w-full
-            text-16px outline-none overflow-y-scroll bg-transparent
+            text-16px outline-none overflow-y-auto bg-transparent overflow-x-hidden
             placeholder="Type your message here..." leading-6
             relative z-2 h-auto resize-none b-0
             dark:placeholder:text-gray-4

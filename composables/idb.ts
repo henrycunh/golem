@@ -29,7 +29,7 @@ export function useIDB(options?: { disableStorage: boolean }) {
         }
     }
 
-    if (isStorageAvailable()) {
+    if (isStorageAvailable() && process.client) {
         const db = new Dexie('gepeto')
 
         db.version(1).stores({

@@ -49,7 +49,7 @@ const onOpenKnowledgeManager = () => {
                 {{ conversationList?.length }} conversations
             </div>
         </div>
-        <div max-h-100 overflow-y-scroll>
+        <div max-h-100 overflow-y-auto overflow-x-hidden w-full>
             <ConversationTab
                 v-for="conversation in conversationsSortedByUpdatedAt"
                 :key="conversation.id"
@@ -88,8 +88,16 @@ const onOpenKnowledgeManager = () => {
                 mt-3
                 @click="navigateTo('/settings/api-key')"
             />
-            <div text-gray-3 dark:text-dark-1 my-6 text-5 font-black tracking--1px w-full text-center>
-                geppeto
+            <div
+                text-gray-4 dark:text-dark-1 my-6 text-5 tracking--1px w-full
+                flex-col flex justify-center items-center
+            >
+                <div font-black>
+                    geppeto
+                </div>
+                <div text-3 tracking-wide flex items-center gap-1 op-60>
+                    made with <div i-tabler-heart-filled text-red /> by Caret
+                </div>
             </div>
         </div>
     </div>

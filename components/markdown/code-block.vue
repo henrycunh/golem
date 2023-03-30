@@ -96,18 +96,3 @@ function onMaximize() {
         </Dialog>
     </div>
 </template>
-
-<style>
-/* pre {
-    white-space: pre;
-    word-spacing: normal;
-    word-break: normal;
-    overflow-wrap: normal;
-    tab-size: 4;
-    hyphens: none;
-    overflow-x: scroll;
-}
-.shiki code {
-    font-family: 'DM Mono', monospace !important;
-} */
-</style>
