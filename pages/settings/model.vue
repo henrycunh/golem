@@ -22,7 +22,7 @@ function onClick(model: string) {
 
 <template>
     <div>
-        <div font-bold text-gray-6 dark:text-gray-3 mb-3>
+        <div font-bold text-color mb-6 text-5>
             Model
         </div>
         <div flex gap-3>
@@ -44,18 +44,6 @@ function onClick(model: string) {
                 <div>{{ option.label }}</div>
             </div>
         </div>
-        <div mt-10 font-bold text-gray-6 dark:text-gray-3 mb-3>
-            MAX TOKENS
-        </div>
-        <div flex gap-3>
-            <div>
-                <div  text-6 />
-                <UInput
-                    v-model="maxTokens"
-                    placeholder="Openai max tokens"
-                    w-full text-gray-5 dark:text-gray-1
-                />
-            </div>
-        </div>
+        <SettingsModelOptions />
     </div>
 </template>

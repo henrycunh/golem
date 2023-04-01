@@ -8,7 +8,7 @@
     background-image: linear-gradient(to right, #e2e9e4 0%, #d3ded6 20%, #e2e9e4 40%, #e2e9e4 100%);
     background-repeat: no-repeat;
     background-size: 800px 1920px;
-    display: inline-block;
+    display: block;
     position: relative;
     animation-duration: .8s;
     animation-fill-mode: forwards;

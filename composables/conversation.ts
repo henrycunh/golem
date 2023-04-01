@@ -6,10 +6,10 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
-    const { apiKey, maxTokens } = useAuth()
+    const { apiKey } = useSettings()
+    const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
-    const modelUsed = useLocalStorage<string>('geppeto-model', 'gpt-3.5-turbo')
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
@@ -192,6 +192,7 @@ export const useConversations = () => {
                 apiKey: apiKey.value || '',
                 completionParams: {
                     model: modelUsed.value,
+                    max_tokens: Number(maxTokens.value),
                 },
             })
             chatGPT._getTokenCount = async (message: string) => message.length / 2
