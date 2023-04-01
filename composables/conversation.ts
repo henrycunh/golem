@@ -6,7 +6,7 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
-    const { apiKey } = useAuth()
+    const { apiKey, maxTokens } = useAuth()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
     const modelUsed = useLocalStorage<string>('geppeto-model', 'gpt-3.5-turbo')
@@ -242,6 +242,7 @@ export const useConversations = () => {
         const conversationTitle = await complete(lastMessagesContent.join('\n'), {
             systemMessage: 'You are a very clever machine that can determine a very short title for a conversation. The user sends you the content of a conversation and you only output a very short title for it, really concise. Title:',
             temperature: 0,
+            maxTokens: Number(maxTokens),
         })
 
         conversation.title = conversationTitle?.replace(/Title\:/g, '').replace(/\"/g, '').trim()
