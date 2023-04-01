@@ -9,7 +9,7 @@ definePageMeta({
         <ClientOnly>
             <AppChat h-full />
             <template #placeholder>
-                <Skeleton w-full h-full m-1em />
+                <Skeleton w-full h-full m-1em rounded-4 />
             </template>
         </ClientOnly>
     </div>

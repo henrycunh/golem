@@ -6,7 +6,7 @@ const {
 } = useConversations()
 
 const route = useRoute()
-const { apiKey } = useAuth()
+const { apiKey } = useSettings()
 
 const conversationsSortedByUpdatedAt = computed(() => {
     if (conversationList.value === null) {

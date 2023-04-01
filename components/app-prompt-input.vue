@@ -2,7 +2,7 @@
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
-const { apiKey } = useAuth()
+const { apiKey } = useSettings()
 // const { currentPreset, clearPreset } = usePreset()
 const textarea = ref()
 const isLogged = computed(() => Boolean(apiKey.value))

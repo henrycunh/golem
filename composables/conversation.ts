@@ -6,10 +6,10 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
-    const { apiKey } = useAuth()
+    const { apiKey } = useSettings()
+    const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
-    const modelUsed = useLocalStorage<string>('geppeto-model', 'gpt-3.5-turbo')
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
@@ -192,6 +192,7 @@ export const useConversations = () => {
                 apiKey: apiKey.value || '',
                 completionParams: {
                     model: modelUsed.value,
+                    max_tokens: Number(maxTokens.value),
                 },
             })
             chatGPT._getTokenCount = async (message: string) => message.length / 2
@@ -242,6 +243,7 @@ export const useConversations = () => {
         const conversationTitle = await complete(lastMessagesContent.join('\n'), {
             systemMessage: 'You are a very clever machine that can determine a very short title for a conversation. The user sends you the content of a conversation and you only output a very short title for it, really concise. Title:',
             temperature: 0,
+            maxTokens: Number(maxTokens),
         })
 
         conversation.title = conversationTitle?.replace(/Title\:/g, '').replace(/\"/g, '').trim()

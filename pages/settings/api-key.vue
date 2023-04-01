@@ -1,16 +1,6 @@
 <script lang="ts" setup>
-const { token, login, apiKey } = useAuth()
-
-watch(token, (newToken) => {
-    if (!newToken) {
-        return
-    }
-    apiKey.value = newToken
-}, { immediate: true })
-
-watch(apiKey, async (newApiKey) => {
-    await login(newApiKey)
-})
+const { apiKey } = useSettings()
+const apiKeyInput = syncStorageRef(apiKey)
 </script>
 
 <template>
@@ -25,7 +15,7 @@ watch(apiKey, async (newApiKey) => {
         </div>
         <div text-gray-5 dark:text-gray-1 mt-3>
             <UInput
-                v-model="apiKey"
+                v-model="apiKeyInput"
                 placeholder="Enter your API Key"
                 w-full text-gray-5 dark:text-gray-1
             />
