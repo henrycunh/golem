@@ -2,6 +2,7 @@ import type { types } from '~~/utils/types'
 
 export async function useSetup(options?: { disableStorage: boolean }) {
     if (process.client) {
+        useColorMode()
         if (options?.disableStorage) {
             useIDB({ disableStorage: true })
         }

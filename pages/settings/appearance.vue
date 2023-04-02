@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type { BasicColorSchema } from '@vueuse/core'
-
-const currentColorMode = useColorMode({
-    emitAuto: true,
-})
+const currentColorMode = useColorMode()
 
 const options = [
     { value: 'light', label: 'Light', icon: 'i-tabler-sun' },
     { value: 'dark', label: 'Dark', icon: 'i-tabler-moon' },
-    { value: 'auto', label: 'System', icon: 'i-tabler-3d-cube-sphere' },
+    { value: 'system', label: 'System', icon: 'i-tabler-3d-cube-sphere' },
 ] as const
 
-function onClick(colorMode: BasicColorSchema) {
-    currentColorMode.value = colorMode
+function onClick(colorMode: string) {
+    currentColorMode.preference = colorMode
 }
 </script>
 
@@ -32,7 +28,7 @@ function onClick(colorMode: BasicColorSchema) {
                 text-gray-5
                 dark:text-gray-3 gap-2
                 :class="[
-                    currentColorMode === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary' : '',
+                    currentColorMode.preference === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary' : '',
                 ]"
                 @click="onClick(option.value)"
             >
