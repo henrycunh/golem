@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai'
 
 export function useLanguageModel() {
-    const { apiKey } = useAuth()
+    const { apiKey } = useSettings()
 
     async function complete(prompt: string, params?: LMCompleteParams) {
         const client = new OpenAIApi(new Configuration({
