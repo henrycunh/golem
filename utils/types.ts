@@ -15,6 +15,7 @@ export namespace types {
     export interface Message extends ChatMessage {
         updatedAt: Date
         createdAt: Date
+        isError?: boolean
     }
 
     export interface KnowledgeItem {
