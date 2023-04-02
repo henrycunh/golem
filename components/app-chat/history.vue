@@ -25,12 +25,14 @@ const isAssistantTyping = computed(() => isTyping.value && !isLastMessageFromAss
 
 <template>
     <AppChatHistoryContainer>
-        <Message
-            v-for="message in currentConversation?.messages || []"
-            :key="message.id + message.createdAt.getTime()"
-            :message="message"
-            mb-2 last:mb-0
-        />
+        <TransitionGroup name="fade">
+            <Message
+                v-for="message in currentConversation?.messages || []"
+                :key="message.id + message.createdAt.getTime()"
+                :message="message"
+                mb-2 last:mb-0
+            />
+        </TransitionGroup>
 
         <AppChatHistoryTyping
             :is-typing="isAssistantTyping"
