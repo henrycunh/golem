@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { modelUsed } = useConversations()
+const { modelUsed } = useSettings()
 
 const options = [
     { value: 'gpt-3.5-turbo', label: 'GPT 3.5', icon: 'i-tabler-brand-openai' },
