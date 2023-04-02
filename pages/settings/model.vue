@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-const { modelUsed } = useConversations()
-
-const { maxTokens } = useAuth()
-
-watch(maxTokens, (newMaxTokens) => {
-    if (!newMaxTokens) {
-        return
-    }
-    maxTokens.value = newMaxTokens
-}, { immediate: true })
+const { modelUsed } = useSettings()
 
 const options = [
     { value: 'gpt-3.5-turbo', label: 'GPT 3.5', icon: 'i-tabler-brand-openai' },

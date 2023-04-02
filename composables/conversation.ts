@@ -332,7 +332,6 @@ export const useConversations = () => {
         isTyping,
         followupQuestions,
         knowledgeUsedInConversation,
-        modelUsed,
     }
 }
 
