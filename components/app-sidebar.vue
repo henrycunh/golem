@@ -6,7 +6,7 @@ const {
 } = useConversations()
 
 const route = useRoute()
-const { apiKey } = useAuth()
+const { apiKey } = useSettings()
 
 const conversationsSortedByUpdatedAt = computed(() => {
     if (conversationList.value === null) {
@@ -49,7 +49,7 @@ const onOpenKnowledgeManager = () => {
                 {{ conversationList?.length }} conversations
             </div>
         </div>
-        <div max-h-100 overflow-y-auto overflow-x-hidden w-full>
+        <div max-h-100 overflow-y-auto overflow-x-hidden w-full pb-2>
             <ConversationTab
                 v-for="conversation in conversationsSortedByUpdatedAt"
                 :key="conversation.id"
@@ -89,7 +89,7 @@ const onOpenKnowledgeManager = () => {
                 @click="navigateTo('/settings/api-key')"
             />
             <div
-                text-gray-4 dark:text-dark-1 my-6 text-5 tracking--1px w-full
+                text-color-lighter my-6 text-5 tracking--1px w-full
                 flex-col flex justify-center items-center
             >
                 <div font-black>

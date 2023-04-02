@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 const { modelUsed } = useConversations()
 
+const { maxTokens } = useAuth()
+
+watch(maxTokens, (newMaxTokens) => {
+    if (!newMaxTokens) {
+        return
+    }
+    maxTokens.value = newMaxTokens
+}, { immediate: true })
+
 const options = [
     { value: 'gpt-3.5-turbo', label: 'GPT 3.5', icon: 'i-tabler-brand-openai' },
     { value: 'gpt-4', label: 'GPT 4', icon: 'i-tabler-brand-openai' },
@@ -13,7 +22,7 @@ function onClick(model: string) {
 
 <template>
     <div>
-        <div font-bold text-gray-6 dark:text-gray-3 mb-3>
+        <div font-bold text-color mb-6 text-5>
             Model
         </div>
         <div flex gap-3>
@@ -35,5 +44,6 @@ function onClick(model: string) {
                 <div>{{ option.label }}</div>
             </div>
         </div>
+        <SettingsModelOptions />
     </div>
 </template>

@@ -2,14 +2,17 @@
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
-const { apiKey } = useAuth()
+const { apiKey } = useSettings()
+const { isTyping } = useConversations()
 // const { currentPreset, clearPreset } = usePreset()
 const textarea = ref()
 const isLogged = computed(() => Boolean(apiKey.value))
 
 const onSend = () => {
-    emit('send', props.modelValue)
-    emit('update:modelValue', '')
+    if (!isTyping.value) {
+        emit('send', props.modelValue)
+        emit('update:modelValue', '')
+    }
 }
 
 const onType = (event?: any) => {
@@ -70,7 +73,12 @@ const handleEnter = (e: KeyboardEvent) => {
                 :disabled="!isLogged"
                 @click="onSend"
             >
-                <div i-tabler-send text-5 />
+                <div
+                    text-5
+                    :class="[
+                        !isTyping ? 'i-tabler-send' : 'i-eos-icons-bubble-loading',
+                    ]"
+                />
             </UButton>
         </div>
     </div>

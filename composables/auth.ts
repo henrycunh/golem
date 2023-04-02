@@ -3,7 +3,6 @@ export const useAuth = () => {
     const token = useCookie('geppeto-api-key', {
         watch: 'shallow',
     })
-    const apiKey = useState<string>(() => '')
 
     const login = async (accessToken: string) => {
         const response = await $fetch('/api/auth/login', {
@@ -12,13 +11,11 @@ export const useAuth = () => {
         })
         user.value = response
         token.value = accessToken
-        apiKey.value = accessToken
     }
 
     return {
         user,
         token,
-        apiKey,
         login,
     }
 }

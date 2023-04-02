@@ -6,10 +6,10 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
-    const { apiKey } = useAuth()
+    const { apiKey } = useSettings()
+    const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
-    const modelUsed = useLocalStorage<string>('geppeto-model', 'gpt-3.5-turbo')
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
@@ -132,6 +132,35 @@ export const useConversations = () => {
         }
     }
 
+    async function addErrorMessage(message: string) {
+        if (!currentConversation.value) {
+            return
+        }
+        const newMessage: types.Message = {
+            id: hyperid()(),
+            role: 'assistant' as const,
+            text: message,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            isError: true,
+        }
+        await addMessageToConversation(currentConversation.value.id, newMessage)
+    }
+
+    async function clearErrorMessages() {
+        if (!currentConversation.value) {
+            return
+        }
+        const conversation = await getConversationById(currentConversation.value.id)
+        if (!conversation) {
+            return
+        }
+        const newMessages = conversation.messages.filter((message: types.Message) => !message.isError)
+        await updateConversation(currentConversation.value.id, {
+            messages: [...newMessages],
+        })
+    }
+
     const sendMessage = async (message: string) => {
         // Creates the ChatGPT client
         if (!process.client) {
@@ -192,6 +221,7 @@ export const useConversations = () => {
                 apiKey: apiKey.value || '',
                 completionParams: {
                     model: modelUsed.value,
+                    max_tokens: Number(maxTokens.value),
                 },
             })
             chatGPT._getTokenCount = async (message: string) => message.length / 2
@@ -213,15 +243,33 @@ export const useConversations = () => {
                 isTyping.value = false
                 await upsertSystemMessage(systemMessage)
                 await updateConversationList()
+
+                if (fromConversation.title.trim() === 'Untitled Conversation') {
+                    await generateConversationTitle(fromConversation.id)
+                }
                 break
             }
             catch (e: any) {
                 const error = e as ChatGPTError
-                console.log(error.message)
+                let errorCode = ''
+                try {
+                    if (error.reason) {
+                        const message = JSON.parse(error.reason)
+                        errorCode = message.error.code
+                    }
+                }
+                catch (e) {
+                    console.error(e)
+                }
+
+                if (errorCode === 'model_not_found') {
+                    await addErrorMessage('The model you are using is not available. Please select another model in the settings.')
+                    break
+                }
             }
-        }
-        if (fromConversation.title.trim() === 'Untitled Conversation') {
-            await generateConversationTitle(fromConversation.id)
+            finally {
+                isTyping.value = false
+            }
         }
         // TODO: Add follow up questions feature
         // getFollowupQuestions(message)
@@ -242,10 +290,10 @@ export const useConversations = () => {
         const conversationTitle = await complete(lastMessagesContent.join('\n'), {
             systemMessage: 'You are a very clever machine that can determine a very short title for a conversation. The user sends you the content of a conversation and you only output a very short title for it, really concise. Title:',
             temperature: 0,
+            maxTokens: Number(maxTokens),
         })
 
         conversation.title = conversationTitle?.replace(/Title\:/g, '').replace(/\"/g, '').trim()
-        console.log('conversationTitle', conversationTitle)
         await updateConversation(conversationId, conversation)
     }
 
@@ -278,6 +326,7 @@ export const useConversations = () => {
         switchConversation,
         sendMessage,
         updateConversationList,
+        clearErrorMessages,
         currentConversation,
         conversationList,
         isTyping,

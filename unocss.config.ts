@@ -4,6 +4,7 @@ import transformerDirectives from '@unocss/transformer-directives'
 export default defineConfig({
     shortcuts: [
         { 'text-color': 'text-gray-7 dark:text-gray-2' },
+        { 'text-color-lighter': 'text-gray-5 dark:text-gray-4' },
     ],
     theme: {
         colors: {

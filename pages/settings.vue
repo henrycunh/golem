@@ -66,8 +66,13 @@ const route = useRoute()
                     </div>
                 </div>
             </div>
-            <div col-span-4 mt-8>
-                <NuxtPage />
+            <div col-span-4 mt-6>
+                <ClientOnly>
+                    <NuxtPage />
+                    <template #placeholder>
+                        <Skeleton rounded-4 w-full min-h-128 m-0.25rem />
+                    </template>
+                </ClientOnly>
             </div>
         </div>
     </div>
