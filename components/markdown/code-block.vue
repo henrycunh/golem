@@ -41,7 +41,11 @@ function onMaximize() {
         w-full relative overflow-hidden flex flex-col border shadow
         mt-2
     >
-        <div pt-1 pb-2 px-3 text-gray-5 dark:text-gray-2 text-14px flex items-center font-bold>
+        <div
+            pt-1 pb-2 px-3 text-gray-5 dark:text-gray-2
+            text-11px sm:text-14px
+            flex items-center font-bold
+        >
             <div flex items-center gap-1>
                 <div i-tabler-code />
                 <span>
@@ -51,19 +55,19 @@ function onMaximize() {
             <UButton
                 v-if="!isOnMaximizeScreen"
                 secondary
-                icon="i-tabler-maximize text-5"
+                icon="i-tabler-maximize text-1.25em"
                 :disabled="copied"
                 class="!p-1px !px-1"
                 :class="[
                     copied && 'op-50',
                 ]" ml-auto
-                transition
+                transition text-10px sm:text-14px
                 @click="onMaximize"
             />
             <UButton
                 secondary
                 icon="i-tabler-copy"
-                class="!p-1px !px-2 !text-12px"
+                class="!p-1px !px-2 text-11px sm:text-14px"
                 :disabled="copied"
                 ml-2 transition
                 :class="[

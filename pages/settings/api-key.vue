@@ -4,7 +4,10 @@ const apiKeyInput = syncStorageRef(apiKey)
 </script>
 
 <template>
-    <div text-gray-6 dark:text-gray-2>
+    <div
+        text-gray-6 dark:text-gray-2
+        text-11px sm:text-4
+    >
         <div>
             To use the application you need to provide an OpenAI API key.
         </div>
@@ -17,6 +20,7 @@ const apiKeyInput = syncStorageRef(apiKey)
             <UInput
                 v-model="apiKeyInput"
                 placeholder="Enter your API Key"
+                text-11px sm:text-4
                 w-full text-gray-5 dark:text-gray-1
             />
         </div>

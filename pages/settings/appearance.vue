@@ -14,10 +14,13 @@ function onClick(colorMode: string) {
 
 <template>
     <div>
-        <div font-bold text-gray-6 dark:text-gray-3 mb-3>
+        <div
+            font-bold text-gray-6 dark:text-gray-3 mb-3
+            text-14px sm:text-5
+        >
             Color Mode
         </div>
-        <div flex gap-3>
+        <div grid grid-cols-3 gap-2 sm:gap-3>
             <div
                 v-for="option in options"
                 :key="option.value"
@@ -27,12 +30,13 @@ function onClick(colorMode: string) {
                 class="dark:ring-white/10 ring-gray-2"
                 text-gray-5
                 dark:text-gray-3 gap-2
+                text-11px sm:text-4
                 :class="[
                     currentColorMode.preference === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary' : '',
                 ]"
                 @click="onClick(option.value)"
             >
-                <div :class="option.icon" text-6 />
+                <div :class="option.icon" text-5 sm:text-6 />
                 <div>{{ option.label }}</div>
             </div>
         </div>

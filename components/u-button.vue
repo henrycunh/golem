@@ -52,8 +52,8 @@ const gradientStyle = computed(() => {
         @click="$emit('click')"
     >
         <div
-            px-3 py-6px bg="primary-800/70"
-            text-white text-sm font-bold
+            px-.75em py-.45em bg="primary-800/70"
+            text-white text-1em font-bold
             transition-all
             box-border
             rounded-6px

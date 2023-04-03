@@ -17,9 +17,11 @@ const filteredUserMessage = computed(() =>
         w-full
     >
         <div
-            p-3 leading-6
+            py-2 sm:py-3
+            px-1 sm:px-3
+            leading-4 sm:leading-6
             rounded-2
-            text-15px justify-start text-color
+            text-11px sm:text-15px justify-start text-color
             :class="[
                 message.role === 'user' && 'bg-gray-1 dark:bg-gray-1/5',
                 message.isError && 'bg-red-100 dark:bg-red-9/20',
@@ -30,7 +32,7 @@ const filteredUserMessage = computed(() =>
             >
                 <!-- Agent name -->
                 <div
-                    font-bold text-color mb-1 mx-6
+                    font-bold text-color mb-1 mx-3 sm:mx-6
                     :class="[
                         message.isError && 'text-red-9 dark:text-red-3',
                     ]"
@@ -38,14 +40,18 @@ const filteredUserMessage = computed(() =>
                     {{ message.role === 'assistant' ? 'Gepeto' : 'You' }}
                 </div>
                 <div
-                    w-8 h-8 rounded-2 absolute left--6 top-1 flex items-center justify-center
+                    w-5 h-5 sm:w-8 sm:h-8
+                    rounded sm:rounded-2
+                    absolute
+                    left--14px sm:left--6
+                    top-0 flex items-center justify-center
                     class="bg-gray-2/70 dark:bg-white/10"
                     :class="[
                         message.isError && '!bg-red-3 dark:!bg-red-5/20',
                     ]"
                 >
                     <div
-                        text-22px
+                        text-3 sm:text-22px
                         :class="[
                             message.role === 'assistant' && 'i-tabler-robot text-primary-500',
                             message.role === 'user' && 'i-tabler-user text-gray-400',
@@ -53,17 +59,17 @@ const filteredUserMessage = computed(() =>
                         ]"
                     />
                 </div>
-                <div px-6>
+                <div px-3 sm:px-6>
                     <MarkdownRenderer
                         v-if="message.role === 'assistant' && !message.isError"
                         :value="message.text"
-                        text-14px
+                        text-10px sm:text-14px
                     />
                     <div v-else-if="message.role === 'user'">
                         <div
                             v-for="line in filteredUserMessage.split('\n')"
                             :key="line"
-                            whitespace-pre-wrap
+                            whitespace-pre-wrap overflow-x-auto max-w-full
                         >
                             {{ line }}
                         </div>
@@ -73,11 +79,12 @@ const filteredUserMessage = computed(() =>
                     </div>
                 </div>
 
-                <div v-if="message.isError" px-6 flex mt-2>
+                <div v-if="message.isError" px-3 sm:px-6 flex mt-2>
                     <div
                         bg-red-200 text-red-7
                         class="dark:bg-red-5/20 dark:text-red-4"
-                        p-1 px-2 rounded-2 font-bold text-14px
+                        p-2px px-2 sm:py-1 sm:px-2 rounded-2 font-bold
+                        text-9px sm:text-14px
                         active:translate-y-2px hover:op-80
                         cursor-pointer select-none
                         transition
