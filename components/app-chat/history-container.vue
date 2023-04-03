@@ -59,7 +59,10 @@ function onFileDrop(event: any) {
     <div
         ref="container"
         :key="currentConversation?.id"
-        px-16 max-w-1080px mx-auto relative pt-20 h-full overflow-y-auto pb-50
+        pl-4 pr-4 lg:px-16
+        max-w-1080px mx-auto relative
+        pt-16 sm:pt-20
+        h-full overflow-y-auto pb-50
         z-0
         :class="[
             embedded && '!pt-2',

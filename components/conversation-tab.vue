@@ -14,6 +14,8 @@ const {
     updateConversation,
 } = useConversations()
 
+const { isMobile } = useDevice()
+
 const element = ref()
 const isHovering = useElementHover(element)
 const route = useRoute()
@@ -24,7 +26,7 @@ const isCurrentConversation = computed(() => {
         return false
     }
     return currentConversation.value.id === props.conversation.id
-        && route.path === '/'
+        && (route.path === '/' || route.path === '/history')
 })
 
 // Conversation message count
@@ -107,9 +109,11 @@ const onDeleteConversation = async (id: string) => {
     <div
         ref="element"
         transition text-gray-600 dark:text-gray-3 cursor-pointer
-        p-2 px-4 rounded-2
+        p-1 px-3 sm:p-2 sm:px-4
+        rounded-2
         class="shadow-gray-900/5"
-        text-15px mb-1 last:mb-0
+        text-12px sm:text-15px
+        mb-1 last:mb-0
         active:translate-y-2px
         :class="[
             isCurrentConversation
@@ -128,6 +132,8 @@ const onDeleteConversation = async (id: string) => {
                 :readonly="!isEditingTitle"
                 bg-transparent border-none outline-none p-0
                 transition font-bold grow mr-2 truncate
+                text-10px sm:text-15px
+
                 :class="[
                     isEditingTitle
                         ? 'text-gray-900 dark:text-gray-1 select-all'
@@ -137,7 +143,9 @@ const onDeleteConversation = async (id: string) => {
                 @input="onInput"
             >
             <div
-                ml-auto text-11px font-bold text-white py-2px px-6px rounded-full my-1
+                ml-auto
+                text-9px sm:text-11px
+                font-bold text-white py-2px px-6px rounded-full my-1
                 :class="[
                     isCurrentConversation ? 'bg-primary' : 'bg-gray-2 !text-gray-4 dark:bg-dark-2 !text-gray-1',
                 ]"
@@ -146,24 +154,26 @@ const onDeleteConversation = async (id: string) => {
             </div>
             <transition name="appear-right">
                 <div
-                    v-if="isHovering"
+                    v-if="isHovering || isMobile"
                     text-gray-5 dark:text-gray-1 ml-2
                     class="bg-gray-2/50 hover:bg-gray-3/50 dark:bg-dark-2 hover:dark:bg-white/10"
                     hover:text-gray-7 dark:hover:text-gray-1
                     rounded active:scale-95 transition-all
-                    w-6 h-6 flex items-center justify-center
+                    w-4 h-4 sm:w-6 sm:h-6
+                    flex items-center justify-center
                     :class="[
-                        isHovering ? 'op100' : 'op0',
+                        isHovering || isMobile ? 'op100' : 'op0',
                     ]"
                     @click.stop="onDeleteConversation(conversation.id)"
                 >
-                    <div i-tabler-x text-18px />
+                    <div i-tabler-x text-3 sm:text-18px />
                 </div>
             </transition>
         </div>
         <div
             v-if="lastMessage"
-            text-gray-5 text-13px
+            text-gray-5
+            text-10px sm:text-13px
             dark:text-gray-4
             w-full truncate inline-block
         >

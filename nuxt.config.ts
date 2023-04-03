@@ -6,10 +6,11 @@ export default defineNuxtConfig({
     modules: [
         '@unocss/nuxt',
         '@vueuse/nuxt',
+        '@nuxtjs/color-mode',
     ],
-    buildModules: [
-        'floating-vue/nuxt',
-    ],
+    colorMode: {
+        classSuffix: '',
+    },
     unocss: {
         attributify: true,
         uno: true,

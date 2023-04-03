@@ -20,10 +20,11 @@ const conversationTitle = computed(() => currentConversation.value?.title)
             embedded && '!w-full !max-w-full',
         ]"
     >
-        <div w-full mx-auto flex items-center px-14 max-w-1080px>
+        <div w-full mx-auto flex items-center px-4 sm:px-14 max-w-1080px>
             <div>
                 <AnimatedText
-                    text-5 font-bold text-color
+                    text-14px sm:text-5
+                    font-bold text-color
                     :value="conversationTitle"
                 />
                 <div v-if="knowledgeUsedInConversation.length" text-gray-5 dark:text-gray-3 text-14px>

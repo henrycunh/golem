@@ -7,6 +7,7 @@
         flex items-center justify-center
     >
         <GpSplash
+            text-3 sm:text-4
             title="No messages yet!"
             subtitle="Start a conversation by typing a message below."
             icon="i-tabler-message-2-off"

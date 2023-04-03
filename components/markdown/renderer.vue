@@ -8,6 +8,7 @@ import Paragraph from './paragraph.vue'
 import Heading from './heading.vue'
 import CodeBlock from './code-block.vue'
 import CodeInline from './code-inline.vue'
+import UnorderedList from './unordered-list.vue'
 
 export default defineComponent({
     props: {
@@ -35,7 +36,7 @@ export default defineComponent({
                 return h(Paragraph, {}, () => node.children.map(render))
             }
             if (node.type === 'list') {
-                return h('ul', node.children.map(render))
+                return h(UnorderedList, {}, () => node.children.map(render))
             }
             if (node.type === 'listItem') {
                 return h('li', node.children.map(render))
