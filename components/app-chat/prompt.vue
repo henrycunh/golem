@@ -11,13 +11,19 @@ const onSendMessage = () => {
 }
 
 const showPromptTooltip = ref(false)
+let tooltipTimeout: any
 function onHandlePromptClick() {
-    console.log('onHandlePromptClick')
-    if (!apiKey.value) {
+    if (!apiKey.value && !showPromptTooltip.value) {
         showPromptTooltip.value = true
-        setTimeout(() => {
+        tooltipTimeout = setTimeout(() => {
             showPromptTooltip.value = false
         }, 4000)
+    }
+    else {
+        showPromptTooltip.value = false
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout)
+        }
     }
 }
 </script>
