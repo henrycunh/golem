@@ -160,3 +160,13 @@ html.scroll-lock {
 .fade-leave-to {
     opacity: 0;
 }
+
+.v-popper__inner {
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .v-popper__inner {
+        font-size: 11px;
+    }
+}

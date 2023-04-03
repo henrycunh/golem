@@ -1,12 +1,24 @@
 <script lang="ts" setup>
 const { sendMessage } = useConversations()
 const { isMobile } = useDevice()
+const { apiKey } = useSettings()
 
 const userMessageInput = ref('')
 
 const onSendMessage = () => {
     sendMessage(userMessageInput.value)
     userMessageInput.value = ''
+}
+
+const showPromptTooltip = ref(false)
+function onHandlePromptClick() {
+    console.log('onHandlePromptClick')
+    if (!apiKey.value) {
+        showPromptTooltip.value = true
+        setTimeout(() => {
+            showPromptTooltip.value = false
+        }, 4000)
+    }
 }
 </script>
 
@@ -27,9 +39,16 @@ const onSendMessage = () => {
             px-6 lg:px-16
         >
             <AppPromptInput
-                v-model="userMessageInput" mx-auto
+                v-model="userMessageInput"
+                v-tooltip="{
+                    content: 'You have to add an API Key in the settings to send messages.',
+                    shown: showPromptTooltip,
+                    triggers: [],
+                }"
+                mx-auto
                 max-w-1080px
                 @send="onSendMessage"
+                @click="onHandlePromptClick"
             />
         </div>
     </div>

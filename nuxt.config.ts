@@ -8,9 +8,6 @@ export default defineNuxtConfig({
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
     ],
-    buildModules: [
-        'floating-vue/nuxt',
-    ],
     colorMode: {
         classSuffix: '',
     },

@@ -35,7 +35,7 @@ const { isMobile } = useDevice()
                         <slot h-full />
                         <div
                             v-if="isMobile"
-                            fixed bottom-1 left-0
+                            fixed bottom-4.75 left-0
                             right-0 flex items-center
                             justify-center
                         >
