@@ -38,7 +38,7 @@ function onShare() {
             </div>
             <!-- TODO: implement sharing -->
             <UButton
-                v-if="!embedded || isDetaEnabled" ml-auto icon="i-tabler-share"
+                v-if="!embedded && isDetaEnabled" ml-auto icon="i-tabler-share"
                 @click="onShare"
             >
                 Share

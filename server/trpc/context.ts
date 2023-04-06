@@ -6,7 +6,7 @@ import { getDetaBase } from '../db/deta'
  */
 export const createContext = () => ({
     deta: {
-        conversations: getDetaBase('conversation'),
+        conversations: getDetaBase('conversations'),
         messages: getDetaBase('messages'),
     },
 })
