@@ -34,4 +34,24 @@ export namespace types {
         title: string
     }
 
+    // Deta namespace
+    export namespace deta {
+        export interface Conversation {
+            key: string
+            title: string
+            updatedAt: string
+            createdAt: string
+        }
+
+        export interface Message {
+            key: string
+            conversationId: string
+            text: string
+            role: string
+            updatedAt: string
+            createdAt: string
+            parentMessageId?: string
+        }
+    }
+
 }

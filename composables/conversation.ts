@@ -1,11 +1,12 @@
 import type { ChatGPTError, ChatMessage } from 'chatgpt-web'
 import { ChatGPTAPI } from 'chatgpt-web'
-import hyperid from 'hyperid'
+import { nanoid } from 'nanoid'
 import { Configuration, OpenAIApi } from 'openai'
 import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
+    const { isDetaEnabled, deta } = useDeta()
     const { apiKey } = useSettings()
     const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
@@ -37,17 +38,21 @@ export const useConversations = () => {
     }
 
     async function createConversation(title: string, options?: Partial<types.Conversation>) {
-        const newConversation = {
-            id: hyperid()(),
+        const newConversation: types.Conversation = {
+            id: nanoid(),
             title,
             messages: [],
             createdAt: new Date(),
             updatedAt: new Date(),
+            knowledge: [],
             ...options,
         }
         const newKey = await db.table('conversations').add(newConversation)
         if (!newKey) {
             throw new Error('Failed to create conversation')
+        }
+        if (isDetaEnabled) {
+            deta.conversation.create(newConversation)
         }
         await updateConversationList()
         return newConversation
@@ -58,12 +63,17 @@ export const useConversations = () => {
         if (!conversation) {
             throw new Error('Conversation not found')
         }
+        const updatedMessage = getUpdatedMessage(message, conversation.id)
+
         const newConversation = {
             ...conversation,
-            messages: [...conversation.messages, getUpdatedMessage(message)],
+            messages: [...conversation.messages, updatedMessage],
             updatedAt: new Date(),
         }
         await db.table('conversations').put(newConversation)
+        if (isDetaEnabled) {
+            deta.message.create(updatedMessage)
+        }
         currentConversation.value = newConversation
     }
 
@@ -111,6 +121,9 @@ export const useConversations = () => {
 
     const deleteConversation = async (id: string) => {
         await db.table('conversations').delete(id)
+        if (isDetaEnabled) {
+            deta.conversation.delete(id)
+        }
         await updateConversationList()
     }
 
@@ -126,6 +139,9 @@ export const useConversations = () => {
         }
 
         await db.table('conversations').put(newConversation)
+        if (isDetaEnabled) {
+            deta.conversation.update(newConversation)
+        }
         await updateConversationList()
         if (currentConversationId.value === id) {
             currentConversation.value = newConversation
@@ -137,7 +153,7 @@ export const useConversations = () => {
             return
         }
         const newMessage: types.Message = {
-            id: hyperid()(),
+            id: nanoid(),
             role: 'assistant' as const,
             text: message,
             updatedAt: new Date(),
@@ -175,7 +191,7 @@ export const useConversations = () => {
         const lastSystemMessage = systemMessageList[systemMessageList.length - 1]
 
         const userMessage = {
-            id: hyperid()(),
+            id: nanoid(),
             role: 'user' as const,
             text: message,
             parentMessageId: lastSystemMessage?.id,
@@ -189,7 +205,7 @@ export const useConversations = () => {
         if (knowledgeUsedInConversation.value.length > 0) {
             let lastMessageId = lastSystemMessage?.id
             for (const knowledge of knowledgeUsedInConversation.value) {
-                const messageId = hyperid()()
+                const messageId = nanoid()
                 lastMessages.push({
                     id: messageId,
                     role: 'user',
@@ -204,14 +220,23 @@ export const useConversations = () => {
         }
 
         let thisMessage: ChatMessage | null = null
-        const upsertSystemMessage = async (messageResponse: ChatMessage) => {
+        let messageCreated = false
+        const upsertSystemMessage = async (messageResponse: ChatMessage, finalUpdate?: boolean) => {
             if (!thisMessage) {
                 thisMessage = await getMessageById(fromConversation.id, messageResponse.id)
             }
+
             if (thisMessage) {
                 await updateLastSystemMessageInConversation(fromConversation.id, messageResponse.text)
+                if (finalUpdate) {
+                    if (isDetaEnabled) {
+                        deta.message.update(getUpdatedMessage(messageResponse, fromConversation.id))
+                    }
+                }
             }
-            else {
+
+            else if (!messageCreated) {
+                messageCreated = true
                 await addMessageToConversation(fromConversation.id, messageResponse)
             }
         }
@@ -235,13 +260,13 @@ export const useConversations = () => {
                 const systemMessage = await chatGPT.sendMessage(message, {
                     parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
                     messageId: userMessage.id,
-                    async onProgress(partial: ChatMessage) {
-                        await upsertSystemMessage(partial)
+                    onProgress(partial: ChatMessage) {
+                        upsertSystemMessage(partial)
                     },
                     systemMessage: fromConversation.systemMessage,
                 })
                 isTyping.value = false
-                await upsertSystemMessage(systemMessage)
+                await upsertSystemMessage(systemMessage, true)
                 await updateConversationList()
 
                 if (fromConversation.title.trim() === 'Untitled Conversation') {
@@ -278,6 +303,7 @@ export const useConversations = () => {
     const switchConversation = async (id: string) => {
         currentConversationId.value = id
         currentConversation.value = await getConversationById(id)
+        logger.info('Switched to conversation', currentConversation.value?.id)
     }
 
     async function generateConversationTitle(conversationId: string) {
@@ -335,10 +361,11 @@ export const useConversations = () => {
     }
 }
 
-function getUpdatedMessage(message: ChatMessage): types.Message {
+function getUpdatedMessage(message: ChatMessage, conversationId: string): types.Message {
     return {
         ...message,
         updatedAt: new Date(),
         createdAt: (message as types.Message).createdAt || new Date(),
+        conversationId,
     }
 }

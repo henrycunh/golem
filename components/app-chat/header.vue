@@ -4,8 +4,13 @@ defineProps<{
 }>()
 
 const { currentConversation, knowledgeUsedInConversation } = useConversations()
+const { isDetaEnabled } = useDeta()
 
 const conversationTitle = computed(() => currentConversation.value?.title)
+
+function onShare() {
+    navigateTo(`/chat/${currentConversation.value?.id}`)
+}
 </script>
 
 <template>
@@ -32,9 +37,12 @@ const conversationTitle = computed(() => currentConversation.value?.title)
                 </div>
             </div>
             <!-- TODO: implement sharing -->
-            <!-- <UButton v-if="!embedded" ml-auto icon="i-tabler-share">
-                    Share
-                </UButton> -->
+            <UButton
+                v-if="!embedded || isDetaEnabled" ml-auto icon="i-tabler-share"
+                @click="onShare"
+            >
+                Share
+            </UButton>
         </div>
     </div>
 </template>

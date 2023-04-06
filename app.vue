@@ -9,8 +9,6 @@ useHead({
         { rel: 'icon', type: 'image/svg+xml', href: 'https://api.iconify.design/fluent-emoji:robot.svg?color=%230fbd3b' },
     ],
 })
-
-useSetup()
 </script>
 
 <template>

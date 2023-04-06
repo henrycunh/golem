@@ -1,4 +1,4 @@
-import hyperid from 'hyperid'
+import { nanoid } from 'nanoid'
 import type { types } from '~~/utils/types'
 
 export const useKnowledge = () => {
@@ -40,7 +40,7 @@ export const useKnowledge = () => {
         })
         const data = response as types.WebScraperResult
         const knowledgeItem = {
-            id: hyperid()(),
+            id: nanoid(),
             title: data.title,
             type: 'url',
             sections: [
