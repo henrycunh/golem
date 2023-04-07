@@ -2,10 +2,10 @@
 defineProps<{ embedded?: boolean }>()
 
 const { currentConversation, isTyping } = useConversations()
+const { isOnSharePage } = useSession()
 const container = ref()
 const chatScroll = useScroll(container)
 const autoScrollInterval = ref()
-
 function scrollToBottom() {
     setTimeout(() => {
         chatScroll.y.value = container.value?.scrollHeight
@@ -66,6 +66,7 @@ function onFileDrop(event: any) {
         z-0
         :class="[
             embedded && '!pt-2',
+            isOnSharePage && '!pt-6',
         ]"
         @dragover.prevent @drop="onFileDrop"
     >

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { isDetaEnabled } = useDeta()
+
 const settingsPageList = [
     {
         name: 'API Key',
@@ -15,7 +17,12 @@ const settingsPageList = [
         icon: 'i-tabler-box-model-2',
         path: '/settings/model',
     },
-]
+    isDetaEnabled && {
+        name: 'Deta',
+        icon: 'i-tabler-database',
+        path: '/settings/deta',
+    },
+].filter(Boolean)
 
 const route = useRoute()
 </script>

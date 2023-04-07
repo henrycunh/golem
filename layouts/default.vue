@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const { isMobile } = useDevice()
+useSetup()
 </script>
 
 <template>

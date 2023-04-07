@@ -1,11 +1,14 @@
+import pLimit from 'p-limit'
 import type { types } from '~~/utils/types'
-
-export async function useSetup(options?: { disableStorage: boolean }) {
+export async function useSetup(options?: { disableStorage: boolean; embedded?: boolean }) {
     if (process.client) {
+        const { isOnSharePage } = useSession()
         useColorMode()
         if (options?.disableStorage) {
             useIDB({ disableStorage: true })
         }
+
+        const { isDetaEnabled, deta } = useDeta()
 
         const {
             currentConversation,
@@ -18,6 +21,23 @@ export async function useSetup(options?: { disableStorage: boolean }) {
         const { updateKnowledgeList } = useKnowledge()
 
         await updateKnowledgeList()
+        if (options?.embedded) {
+            logger.info('Embedded mode enabled')
+        }
+
+        if (isDetaEnabled && !isOnSharePage.value) {
+            logger.info('Deta is enabled, syncing conversations')
+            deta.conversation.list().then((conversations) => {
+                const limit = pLimit(10)
+                logger.info(`Syncing ${conversations.length} conversations`)
+                Promise.all(
+                    conversations.map(conversation => limit(() => deta.conversation.sync(conversation.key as string))),
+                ).then(() => {
+                    logger.info('Finished syncing conversations')
+                    updateConversationList()
+                })
+            })
+        }
 
         watchEffect(async () => {
             if (currentConversation.value === null) {
@@ -26,12 +46,13 @@ export async function useSetup(options?: { disableStorage: boolean }) {
                     return
                 }
 
-                if (conversationList.value && conversationList.value.length === 0) {
-                    console.log('Creating new conversation')
+                if (conversationList.value && conversationList.value.length === 0 && !options?.embedded) {
+                    logger.info('No conversations present, creating a new one')
                     const newConversation = await createConversation('Untitled Conversation')
                     await switchConversation(newConversation.id)
                 }
-                else {
+                else if (!options?.embedded) {
+                    logger.info('Switching to most recent conversation')
                     const mostRecentConversation = conversationList.value.sort((a: types.Conversation, b: types.Conversation) => {
                         return b.updatedAt.getTime() - a.updatedAt.getTime()
                     })[0]

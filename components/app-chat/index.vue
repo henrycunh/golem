@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 defineProps<{ embedded?: boolean }>()
+
+const { isOnSharePage } = useSession()
 </script>
 
 <template>
@@ -10,6 +12,6 @@ defineProps<{ embedded?: boolean }>()
         <AppChatHistory
             :embedded="embedded"
         />
-        <AppChatPrompt />
+        <AppChatPrompt v-if="!isOnSharePage" />
     </div>
 </template>

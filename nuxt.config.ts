@@ -24,7 +24,9 @@ export default defineNuxtConfig({
     vite: {
         define: {
             'process.env.VSCODE_TEXTMATE_DEBUG': 'false',
+            '__DEV__': process.env.NODE_ENV === 'development',
         },
+
     },
     hooks: {
         'vite:extendConfig': function (config, { isServer }) {
@@ -38,5 +40,13 @@ export default defineNuxtConfig({
     },
     app: {
         pageTransition: { name: 'page', mode: 'out-in' },
+    },
+    runtimeConfig: {
+        detaKey: process.env.DETA_PROJECT_KEY,
+        public: {
+        },
+    },
+    build: {
+        transpile: ['trpc-nuxt', 'dexie'],
     },
 })
