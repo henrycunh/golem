@@ -53,7 +53,7 @@ const transitionStyle = computed(() => {
         px-.75em py-.45em
         bg-transparent
         relative cursor-pointer
-        class="ring-#EFEFF0 !bg-#FCFCFC hover:bg-white dark:bg-#474747 dark:ring-#4F4F50 dark:hover:bg-#4C4C4C"
+        class="ring-#EFEFF0 !bg-#FCFCFC hover:bg-white dark:!bg-#474747 dark:ring-#4F4F50 dark:hover:bg-#4C4C4C"
         rounded-6px
         overflow-hidden
         text-color font-bold
