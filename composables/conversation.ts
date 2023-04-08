@@ -202,6 +202,8 @@ export const useConversations = () => {
 
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
+        isTyping.value = true
+
         // Checks if the message exceeds the maximum token count
         try {
             const tokenCount = await client.model.getTokenCount.mutate(message)
@@ -270,7 +272,6 @@ export const useConversations = () => {
             }
 
             try {
-                isTyping.value = true
                 // Adds the bot message to the conversation
                 const systemMessage = await chatGPT.sendMessage(message, {
                     parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
