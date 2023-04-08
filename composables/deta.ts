@@ -26,7 +26,7 @@ export function useDeta() {
                 const messageIds = conversationMessageList.map(item => item.key)
                 const limit = pLimit(10)
                 await Promise.all(messageIds.map(id => limit(() => client.deta.messages.delete.mutate({ id }))))
-                console.log('Deleted messages', messageIds)
+                logger.info('Deleted conversation', id, 'and', messageIds.length, 'messages')
                 return res
             },
             async list() {

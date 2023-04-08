@@ -43,8 +43,8 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         detaKey: process.env.DETA_PROJECT_KEY,
-        public: {
-        },
+        apiKey: process.env.OPENAI_API_KEY,
+        password: process.env.GEPPETO_PASSWORD,
     },
     build: {
         transpile: ['trpc-nuxt', 'dexie'],
