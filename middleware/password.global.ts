@@ -10,4 +10,13 @@ export default defineNuxtRouteMiddleware((from) => {
     ) {
         return navigateTo('/password')
     }
+    else if (
+        from.path === '/password'
+        && (
+            !isPasswordRequired.value
+            || isLoggedIn.value
+        )
+    ) {
+        return navigateTo('/')
+    }
 })
