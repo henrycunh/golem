@@ -6,6 +6,14 @@ An elegant, open-source alternative to the official UI for ChatGPT.
 
 Visit at [geppeto.chat](https://geppeto.chat).
 
+## Configuration
+You can use **environment variables** to customize your instance.
+
+| Variable | Description |
+| -------- | ----------- |
+| **`GEPPETO_PASSWORD`** | Protects the instance with this password, which will be prompted at every usage. |
+| **`OPENAI_API_KEY`** | Enforces the usage of this API Key on the instance. |
+
 ## Roadmap 🗺️
 
 - [ ] Support external knowledge 🧠 - Allow making questions about documents
