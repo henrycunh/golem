@@ -17,12 +17,16 @@ const settingsPageList = [
         icon: 'i-tabler-box-model-2',
         path: '/settings/model',
     },
-    isDetaEnabled && {
+    isDetaEnabled.value && {
         name: 'Deta',
         icon: 'i-tabler-database',
         path: '/settings/deta',
     },
-].filter(Boolean)
+].filter(Boolean) as {
+    name: string
+    icon: string
+    path: string
+}[]
 
 const route = useRoute()
 </script>

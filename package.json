@@ -35,6 +35,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.3",
     "@trpc/client": "^10.18.0",
     "@trpc/server": "^10.18.0",
     "@vueuse/nuxt": "^9.13.0",

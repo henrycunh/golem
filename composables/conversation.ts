@@ -8,6 +8,7 @@ export const useConversations = () => {
     const db = useIDB()
     const { isDetaEnabled, deta } = useDeta()
     const { apiKey } = useSettings()
+    const client = useClient()
     const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
@@ -51,7 +52,7 @@ export const useConversations = () => {
         if (!newKey) {
             throw new Error('Failed to create conversation')
         }
-        if (isDetaEnabled) {
+        if (isDetaEnabled.value) {
             deta.conversation.create(newConversation)
         }
         await updateConversationList()
@@ -71,7 +72,7 @@ export const useConversations = () => {
             updatedAt: new Date(),
         }
         await db.table('conversations').put(newConversation)
-        if (isDetaEnabled) {
+        if (isDetaEnabled.value) {
             deta.message.create(updatedMessage)
         }
         currentConversation.value = newConversation
@@ -121,7 +122,7 @@ export const useConversations = () => {
 
     const deleteConversation = async (id: string) => {
         await db.table('conversations').delete(id)
-        if (isDetaEnabled) {
+        if (isDetaEnabled.value) {
             deta.conversation.delete(id)
         }
         await updateConversationList()
@@ -139,7 +140,7 @@ export const useConversations = () => {
         }
 
         await db.table('conversations').put(newConversation)
-        if (isDetaEnabled) {
+        if (isDetaEnabled.value) {
             deta.conversation.update(newConversation)
         }
         await updateConversationList()
@@ -200,6 +201,13 @@ export const useConversations = () => {
 
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
+        // Checks if the message exceeds the maximum token count
+        const tokenCount = await client.model.getTokenCount.query(message)
+        if (tokenCount > 3200) {
+            await addErrorMessage('Your message is too long, please try again.')
+            return
+        }
+
         const lastMessages = [...(fromConversation?.messages || [])]
 
         if (knowledgeUsedInConversation.value.length > 0) {
@@ -229,7 +237,7 @@ export const useConversations = () => {
             if (thisMessage) {
                 await updateLastSystemMessageInConversation(fromConversation.id, messageResponse.text)
                 if (finalUpdate) {
-                    if (isDetaEnabled) {
+                    if (isDetaEnabled.value) {
                         deta.message.update(getUpdatedMessage(messageResponse, fromConversation.id))
                     }
                 }
@@ -246,7 +254,7 @@ export const useConversations = () => {
                 apiKey: apiKey.value || '',
                 completionParams: {
                     model: modelUsed.value,
-                    max_tokens: Number(maxTokens.value),
+                    max_tokens: Number(maxTokens.value) || undefined,
                 },
             })
             chatGPT._getTokenCount = async (message: string) => message.length / 2
@@ -323,6 +331,18 @@ export const useConversations = () => {
         await updateConversation(conversationId, conversation)
     }
 
+    async function removeMessageFromConversation(conversationId: string, messageId: string) {
+        const conversation = await getConversationById(conversationId)
+        if (!conversation) {
+            return
+        }
+        conversation.messages = conversation.messages.filter((message: ChatMessage) => message.id !== messageId)
+        await updateConversation(conversationId, conversation)
+        if (isDetaEnabled.value) {
+            deta.message.delete(messageId)
+        }
+    }
+
     async function getFollowupQuestions(text: string) {
         const client = new OpenAIApi(new Configuration({
             apiKey: apiKey.value || '',
@@ -353,6 +373,7 @@ export const useConversations = () => {
         sendMessage,
         updateConversationList,
         clearErrorMessages,
+        removeMessageFromConversation,
         currentConversation,
         conversationList,
         isTyping,

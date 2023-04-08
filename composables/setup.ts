@@ -25,7 +25,7 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
             logger.info('Embedded mode enabled')
         }
 
-        if (isDetaEnabled && !isOnSharePage.value) {
+        if (isDetaEnabled.value && !isOnSharePage.value) {
             logger.info('Deta is enabled, syncing conversations')
             deta.conversation.list().then((conversations) => {
                 const limit = pLimit(10)

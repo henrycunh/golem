@@ -26,7 +26,7 @@ const isCurrentConversation = computed(() => {
         return false
     }
     return currentConversation.value.id === props.conversation.id
-        && (route.path === '/' || route.path === '/history')
+        && (['/', '/chat', '/history'].includes(route.path))
 })
 
 // Conversation message count
