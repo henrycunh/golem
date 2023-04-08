@@ -40,4 +40,5 @@ jobs:
           FORCE: true
           BUILD_ENV: |
             REDIRECT_URL=${{ env.DOMAIN }}
+            GEPPETO_PASSWORD=${{ secrets.GEPPETO_PASSWORD }}#${{ steps.script.outputs.pr-number }}
             APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}
