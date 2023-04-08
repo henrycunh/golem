@@ -202,8 +202,14 @@ export const useConversations = () => {
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
         // Checks if the message exceeds the maximum token count
-        const tokenCount = await client.model.getTokenCount.query(message)
-        if (tokenCount > 3200) {
+        try {
+            const tokenCount = await client.model.getTokenCount.query(message)
+            if (tokenCount > 3200) {
+                await addErrorMessage('Your message is too long, please try again.')
+                return
+            }
+        }
+        catch (e) {
             await addErrorMessage('Your message is too long, please try again.')
             return
         }
