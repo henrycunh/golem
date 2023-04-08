@@ -5,7 +5,7 @@ import { publicProcedure, router } from '~/server/trpc/trpc'
 export const modelRouter = router({
     getTokenCount: publicProcedure
         .input(z.string())
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const encoding = encoding_for_model('gpt-3.5-turbo')
             return encoding.encode(input).length
         }),

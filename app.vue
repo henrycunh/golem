@@ -25,5 +25,7 @@ body {
     margin: 0;
     /* background-color: #f9fafb; */
     font-family: ColfaxAI, -system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none !important;
 }
 </style>

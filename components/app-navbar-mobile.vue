@@ -42,11 +42,11 @@ const route = useRoute()
             active:translate-y-2px transition
             relative
             :class="[
-                route.path.startsWith(item.path) ? '!bg-primary-50/50 dark:!bg-primary-600/30 !text-primary-600' : 'op-40',
+                route.path.startsWith(item.path) ? '!bg-primary-50/50 dark:!bg-primary-600/30 !text-primary-400' : 'op-40',
             ]"
             @click="navigateTo(item.path)"
         >
-            <div :class="item.icon" text-4 />
+            <div :class="item.icon" text-18px />
             <div
                 v-if="hasSettingsNotification && item.path === '/settings'"
                 bg-primary rounded-full text-white
