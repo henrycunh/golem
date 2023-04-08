@@ -4,16 +4,26 @@ import type { types } from '~~/utils/types'
 const props = defineProps<{ message: types.Message }>()
 
 const { currentPreset } = usePreset()
+const element = ref()
 
-const { clearErrorMessages } = useConversations()
+const isHovering = useElementHover(element)
+const { clearErrorMessages, removeMessageFromConversation, currentConversation } = useConversations()
 
 const filteredUserMessage = computed(() =>
     currentPreset.value ? props.message.text.replace(currentPreset.value.content, '') : props.message.text,
 )
+
+async function removeMessage() {
+    if (!currentConversation.value) {
+        return
+    }
+    await removeMessageFromConversation(currentConversation.value?.id, props.message.id)
+}
 </script>
 
 <template>
     <div
+        ref="element"
         w-full
     >
         <div
@@ -73,6 +83,25 @@ const filteredUserMessage = computed(() =>
                         >
                             {{ line }}
                         </div>
+                        <Transition name="appear-right">
+                            <div
+                                v-if="isHovering"
+                                rounded-full w-9 h-9 text-color
+                                absolute
+                                right--7.5 bottom-2 flex items-center justify-center
+                                ring-2
+                                class="dark:bg-#474747 dark:ring-#4F4F50 dark:hover:bg-#4C4C4C"
+                                hover:translate-y--2px
+                                cursor-pointer select-none transition-all
+                                shadow hover:shadow-lg
+                                @click="removeMessage"
+                            >
+                                <div
+                                    i-tabler-trash
+                                    text-12px sm:text-6
+                                />
+                            </div>
+                        </Transition>
                     </div>
                     <div v-else text-red-8 dark:text-red-4>
                         {{ message.text }}

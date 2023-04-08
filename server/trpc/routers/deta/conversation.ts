@@ -32,7 +32,6 @@ export const conversationRouter = router({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            console.log('input', input)
             const { title, id, updatedAt, createdAt } = input
             const conversation = await ctx.deta.conversations.insert({
                 key: id,
