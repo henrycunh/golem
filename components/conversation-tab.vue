@@ -163,7 +163,7 @@ const onDeleteConversation = async (id: string) => {
                         text-gray-5
                         text-10px sm:text-13px
                         dark:text-gray-4
-                        max-w-210px truncate inline-block
+                        max-w-190px truncate inline-block
                     >
                         {{ lastMessage.text }}
                     </div>
