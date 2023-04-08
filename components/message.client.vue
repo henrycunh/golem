@@ -84,23 +84,18 @@ async function removeMessage() {
                             {{ line }}
                         </div>
                         <Transition name="appear-right">
-                            <div
+                            <GpLongPressButton
                                 v-if="isHovering"
-                                rounded-full w-9 h-9 text-color
-                                absolute
-                                right--7.5 bottom-2 flex items-center justify-center
-                                ring-2
-                                class="dark:bg-#474747 dark:ring-#4F4F50 dark:hover:bg-#4C4C4C"
-                                hover:translate-y--2px
-                                cursor-pointer select-none transition-all
-                                shadow hover:shadow-lg
-                                @click="removeMessage"
-                            >
-                                <div
-                                    i-tabler-trash
-                                    text-12px sm:text-6
-                                />
-                            </div>
+                                :duration="1500"
+                                progress-bar-style="bg-red/50"
+                                success-style="!ring-red !text-red-7"
+                                icon="i-tabler-trash !text-6"
+                                right--3 sm:right--7.5
+                                bottom-2
+                                class="!absolute"
+                                w-10 rounded-full
+                                @success="removeMessage"
+                            />
                         </Transition>
                     </div>
                     <div v-else text-red-8 dark:text-red-4>

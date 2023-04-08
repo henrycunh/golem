@@ -3,6 +3,7 @@ const {
     conversationList,
     createConversation,
     switchConversation,
+    clearConversations,
 } = useConversations()
 
 const route = useRoute()
@@ -56,9 +57,20 @@ const onOpenKnowledgeManager = () => {
                 :conversation="conversation"
             />
         </div>
-        <UButton secondary icon="i-tabler-plus" w-full mt-2 @click="onCreateConversation">
-            New chat
-        </UButton>
+        <div flex items-center mt-2 gap-2>
+            <UButton secondary icon="i-tabler-plus" grow @click="onCreateConversation">
+                New chat
+            </UButton>
+            <GpLongPressButton
+                :duration="1500"
+                icon="i-tabler-arrow-bar-to-up"
+                progress-bar-style="bg-red/50"
+                success-style="!ring-red"
+                @success="clearConversations"
+            >
+                Clear
+            </GpLongPressButton>
+        </div>
 
         <!-- TODO: Add knowledge section -->
         <!-- <div uppercase font-bold text-13px text-primary mb-2 mt-6>

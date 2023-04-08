@@ -2,6 +2,7 @@ import type { ChatGPTError, ChatMessage } from 'chatgpt-web'
 import { ChatGPTAPI } from 'chatgpt-web'
 import { nanoid } from 'nanoid'
 import { Configuration, OpenAIApi } from 'openai'
+import pLimit from 'p-limit'
 import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
@@ -201,9 +202,11 @@ export const useConversations = () => {
 
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
+        isTyping.value = true
+
         // Checks if the message exceeds the maximum token count
         try {
-            const tokenCount = await client.model.getTokenCount.query(message)
+            const tokenCount = await client.model.getTokenCount.mutate(message)
             if (tokenCount > 3200) {
                 await addErrorMessage('Your message is too long, please try again.')
                 return
@@ -263,13 +266,12 @@ export const useConversations = () => {
                     max_tokens: Number(maxTokens.value) || undefined,
                 },
             })
-            chatGPT._getTokenCount = async (message: string) => message.length / 2
+            chatGPT._getTokenCount = client.model.getTokenCount.mutate
             if (lastMessages) {
                 await chatGPT.loadMessages(lastMessages.slice(tryNumber))
             }
 
             try {
-                isTyping.value = true
                 // Adds the bot message to the conversation
                 const systemMessage = await chatGPT.sendMessage(message, {
                     parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
@@ -349,6 +351,18 @@ export const useConversations = () => {
         }
     }
 
+    async function clearConversations() {
+        if (!conversationList.value) {
+            return
+        }
+        const limit = pLimit(10)
+        await Promise.all(conversationList.value.map(
+            (conversation: types.Conversation) => limit(() => deleteConversation(conversation.id)),
+        ))
+        const newConversation = await createConversation('Untitled Conversation')
+        await switchConversation(newConversation.id)
+    }
+
     async function getFollowupQuestions(text: string) {
         const client = new OpenAIApi(new Configuration({
             apiKey: apiKey.value || '',
@@ -380,6 +394,7 @@ export const useConversations = () => {
         updateConversationList,
         clearErrorMessages,
         removeMessageFromConversation,
+        clearConversations,
         currentConversation,
         conversationList,
         isTyping,
