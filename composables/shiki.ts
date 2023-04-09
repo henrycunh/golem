@@ -19,6 +19,14 @@ export function useHighlighter(lang: Lang) {
                         'js',
                         'css',
                         'html',
+                        'json',
+                        'yaml',
+                        'md',
+                        'rust',
+                        'go',
+                        'python',
+                        'vue',
+                        'ruby',
                     ],
                 })
             })

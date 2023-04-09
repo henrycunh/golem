@@ -12,6 +12,7 @@ const highlightedCode = ref(props.content)
 
 watchEffect(() => {
     if (props.content && colorMode.value) {
+        highlightedCode.value = props.content
         new Promise<string>((resolve, _reject) => {
             const code = highlightCode(props.content, props.syntax)
                 .match(/<code>(.*)<\/code>/s)?.[1] || ''

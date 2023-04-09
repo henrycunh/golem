@@ -4,6 +4,7 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
     if (process.client) {
         const { isOnSharePage } = useSession()
         useColorMode()
+        useHighlighter('md')
         if (options?.disableStorage) {
             useIDB({ disableStorage: true })
         }
