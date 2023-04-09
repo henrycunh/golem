@@ -88,12 +88,12 @@ async function removeMessage() {
                                 v-if="isHovering"
                                 :duration="1500"
                                 progress-bar-style="bg-red/50"
-                                success-style="!ring-red !text-red-7"
+                                success-style="!ring-red !scale-110"
                                 icon="i-tabler-trash !text-6"
-                                right--3 sm:right--7.5
+                                right--3 sm:right--5
                                 bottom-2
                                 class="!absolute"
-                                w-10 rounded-full m-0
+                                w-10 rounded-3 m-0
                                 @success="removeMessage"
                             />
                         </Transition>

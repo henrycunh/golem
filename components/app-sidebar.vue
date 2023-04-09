@@ -38,8 +38,11 @@ const onOpenKnowledgeManager = () => {
 </script>
 
 <template>
-    <div flex flex-col h-full>
-        <div uppercase font-bold text-13px text-primary mb-2 flex items-center>
+    <div
+        flex flex-col h-full
+        px-2
+    >
+        <div uppercase font-bold text-13px text-primary my-3 flex items-center>
             <div>
                 Chats
             </div>

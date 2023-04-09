@@ -8,6 +8,7 @@ const props = defineProps<{
 const {
     currentConversation,
     conversationList,
+    isTyping,
     switchConversation,
     deleteConversation,
     createConversation,
@@ -27,6 +28,14 @@ const isCurrentConversation = computed(() => {
     }
     return currentConversation.value.id === props.conversation.id
         && (['/', '/chat', '/history'].includes(route.path))
+})
+
+// Is typing in the current conversation
+const isTypingInCurrentConversation = computed(() => {
+    if (currentConversation.value === null) {
+        return false
+    }
+    return isTyping.value[props.conversation.id]
 })
 
 // Conversation message count
@@ -113,7 +122,7 @@ const onDeleteConversation = async (id: string) => {
     >
         <div
             transition text-gray-600 dark:text-gray-3 cursor-pointer
-            p-1 px-3 sm:p-2 sm:px-4
+            p-1 px-3 sm:p-2 sm:px-10px
             rounded-2
             class="shadow-gray-900/5"
             text-12px sm:text-15px
@@ -126,19 +135,24 @@ const onDeleteConversation = async (id: string) => {
             @click="onClick"
             @dblclick.stop="onTabDoubleClick"
         >
-            <div flex>
+            <div flex items-center>
                 <div grow>
                     <div flex items-center>
                         <transition name="appear-left">
-                            <div v-if="isEditingTitle" i-tabler-edit mr-1 />
+                            <div v-if="isEditingTitle" i-tabler-edit text-18px mr-1 />
+                        </transition>
+                        <transition name="appear-left">
+                            <div v-if="!isEditingTitle && isTypingInCurrentConversation" i-eos-icons-bubble-loading text-18px mr-1 />
+                        </transition>
+                        <transition name="appear-left">
+                            <div v-if="!isEditingTitle && !isTypingInCurrentConversation" i-tabler-message-chatbot text-18px mr-1 />
                         </transition>
                         <input
                             v-model="conversationTitle"
                             :readonly="!isEditingTitle"
                             bg-transparent border-none outline-none p-0
-                            transition font-bold grow mr-2 truncate
-                            text-10px sm:text-15px
-
+                            transition font-bold grow mr-3 truncate
+                            text-10px sm:text-14px h-1.75em
                             :class="[
                                 isEditingTitle
                                     ? 'text-gray-900 dark:text-gray-1 select-all'
@@ -147,16 +161,6 @@ const onDeleteConversation = async (id: string) => {
                             @blur="isEditingTitle = false"
                             @input="onInput"
                         >
-                        <div
-                            ml-auto
-                            text-9px sm:text-11px
-                            font-bold text-white py-2px px-6px rounded-full my-1
-                            :class="[
-                                isCurrentConversation ? 'bg-primary' : 'bg-gray-2 !text-gray-4 dark:bg-dark-2 !text-gray-1',
-                            ]"
-                        >
-                            {{ messageCount }}
-                        </div>
                     </div>
                     <div
                         v-if="lastMessage"
@@ -169,20 +173,16 @@ const onDeleteConversation = async (id: string) => {
                     </div>
                 </div>
                 <transition name="appear-right">
-                    <div
+                    <GpLongPressButton
                         v-if="isHovering || isMobile"
-                        w-8 ml-2 flex h-full items-center
-                    >
-                        <GpLongPressButton
-                            :duration="800"
-                            icon="i-tabler-x"
-                            rounded-2px
-                            small
-                            success-style="!ring-red-500 !text-red-7"
-                            progress-bar-style="bg-red/50"
-                            @success="onDeleteConversation(props.conversation.id)"
-                        />
-                    </div>
+                        :duration="800"
+                        icon="i-tabler-x"
+                        rounded-2px
+                        small
+                        success-style="!ring-red-500 !text-red-7"
+                        progress-bar-style="bg-red/50"
+                        @success="onDeleteConversation(props.conversation.id)"
+                    />
                 </transition>
             </div>
         </div>

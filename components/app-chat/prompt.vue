@@ -32,7 +32,7 @@ function onHandlePromptClick() {
     <div
         sticky left-0 right-0
         :class="[
-            !isMobile ? 'bottom-3' : 'bottom-2.75rem',
+            !isMobile ? 'bottom-3' : 'bottom-3.25rem',
         ]"
     >
         <div

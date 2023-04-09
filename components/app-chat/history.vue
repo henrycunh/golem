@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps<{ embedded?: boolean }>()
 
-const { currentConversation, isTyping } = useConversations()
+const { currentConversation, isTypingInCurrentConversation } = useConversations()
 
 const isLastMessageFromAssistant = computed(() => {
     if (!currentConversation.value) {
@@ -20,7 +20,7 @@ const messagesOrdered = computed(() => {
         || []
 })
 
-const isAssistantTyping = computed(() => isTyping.value && !isLastMessageFromAssistant.value)
+const isAssistantTyping = computed(() => isTypingInCurrentConversation.value && !isLastMessageFromAssistant.value)
 </script>
 
 <template>
