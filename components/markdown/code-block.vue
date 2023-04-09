@@ -20,7 +20,9 @@ watchEffect(async () => {
                 })
         })
         logger.info('Code block highlighted', code)
-        highlightedCode.value = code
+        if (code) {
+            highlightedCode.value = code
+        }
     }
 })
 
