@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const colorMode = useColorMode()
 const highlightedCode = ref(props.content)
+const loadingLanguage = ref(true)
 
 watchEffect(async () => {
     if (props.content && colorMode.value) {
@@ -21,6 +22,7 @@ watchEffect(async () => {
         })
         logger.info('Code block highlighted', code)
         if (code) {
+            loadingLanguage.value = false
             highlightedCode.value = code
         }
     }
@@ -93,6 +95,15 @@ function onMaximize() {
                 {{ copied ? 'copied!' : 'copy' }}
             </UButton>
         </div>
+        <Transition name="appear-right">
+            <div
+                v-if="loadingLanguage"
+                i-eos-icons-bubble-loading
+                absolute right-5 top-16
+                text-7
+                text-color
+            />
+        </Transition>
         <div
             rounded-1
             w-full
