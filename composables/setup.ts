@@ -4,7 +4,7 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
     if (process.client) {
         const { isOnSharePage } = useSession()
         useColorMode()
-        useHighlighter('md')
+        useShiki().setupShikiLanguages()
         if (options?.disableStorage) {
             useIDB({ disableStorage: true })
         }

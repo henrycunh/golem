@@ -7,6 +7,7 @@ const props = defineProps<{
     isOnMaximizeScreen?: boolean
 }>()
 
+const { highlightCode } = useShiki()
 const colorMode = useColorMode()
 const highlightedCode = ref(props.content)
 const loadingLanguage = ref(true)
@@ -20,7 +21,6 @@ watchEffect(async () => {
                     resolve(code.match(/<code>(.*)<\/code>/s)?.[1] || '')
                 })
         })
-        logger.info('Code block highlighted', code)
         if (code) {
             loadingLanguage.value = false
             highlightedCode.value = code
