@@ -93,7 +93,7 @@ async function removeMessage() {
                                 right--3 sm:right--7.5
                                 bottom-2
                                 class="!absolute"
-                                w-10 rounded-full
+                                w-10 rounded-full m-0
                                 @success="removeMessage"
                             />
                         </Transition>

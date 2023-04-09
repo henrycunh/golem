@@ -10,7 +10,7 @@ const props = defineProps<{
 const colorMode = useColorMode()
 const highlightedCode = ref(props.content)
 
-watchEffect(() => {
+watchEffect(async () => {
     if (props.content && colorMode.value) {
         highlightedCode.value = props.content
         new Promise<string>((resolve, _reject) => {
@@ -21,6 +21,10 @@ watchEffect(() => {
             highlightedCode.value = code
         })
     }
+})
+
+onMounted(() => {
+    highlightedCode.value = props.content
 })
 
 const clipboard = useClipboard()
