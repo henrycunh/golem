@@ -51,7 +51,7 @@ export default defineComponent({
                 return h('td', node.children.map(render))
             }
             if (node.type === 'code') {
-                const lang = (node.lang as Lang) || detectLang(value)
+                const lang = (node.lang as Lang) || 'md'
                 return h(CodeBlock, { content: node.value, syntax: lang }, () => node.value)
             }
             if (node.type === 'strong') {

@@ -24,7 +24,10 @@ export const useConversations = () => {
             return knowledgeList.value?.find(knowledge => knowledge.id === knowledgeId)
         }).filter(knowledge => knowledge !== undefined) || [] as types.KnowledgeItem[]
     })
-    const isTyping = useState<boolean>(() => false)
+    const isTyping = useState<Record<string, boolean>>(() => ({}))
+    const isTypingInCurrentConversation = computed(() => {
+        return isTyping.value[currentConversationId.value] || false
+    })
     const followupQuestions = useState<Record<string, Array<string>> | null>(() => null)
 
     async function listConversations() {
@@ -76,7 +79,9 @@ export const useConversations = () => {
         if (isDetaEnabled.value) {
             deta.message.create(updatedMessage)
         }
-        currentConversation.value = newConversation
+        if (currentConversationId.value === id) {
+            currentConversation.value = newConversation
+        }
     }
 
     async function getMessageById(conversationId: string, id: string) {
@@ -189,7 +194,7 @@ export const useConversations = () => {
         if (!fromConversation) {
             return
         }
-        const systemMessageList = (currentConversation.value?.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
+        const systemMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastSystemMessage = systemMessageList[systemMessageList.length - 1]
 
         const userMessage = {
@@ -202,7 +207,7 @@ export const useConversations = () => {
 
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
-        isTyping.value = true
+        setConversationTypingStatus(fromConversation.id, true)
 
         // Checks if the message exceeds the maximum token count
         try {
@@ -281,7 +286,7 @@ export const useConversations = () => {
                     },
                     systemMessage: fromConversation.systemMessage,
                 })
-                isTyping.value = false
+                setConversationTypingStatus(fromConversation.id, false)
                 await upsertSystemMessage(systemMessage, true)
                 await updateConversationList()
 
@@ -309,7 +314,7 @@ export const useConversations = () => {
                 }
             }
             finally {
-                isTyping.value = false
+                setConversationTypingStatus(fromConversation.id, false)
             }
         }
         // TODO: Add follow up questions feature
@@ -363,6 +368,13 @@ export const useConversations = () => {
         await switchConversation(newConversation.id)
     }
 
+    function setConversationTypingStatus(conversationId: string, status: boolean) {
+        isTyping.value = {
+            ...isTyping.value,
+            [conversationId]: status,
+        }
+    }
+
     async function getFollowupQuestions(text: string) {
         const client = new OpenAIApi(new Configuration({
             apiKey: apiKey.value || '',
@@ -395,6 +407,7 @@ export const useConversations = () => {
         clearErrorMessages,
         removeMessageFromConversation,
         clearConversations,
+        isTypingInCurrentConversation,
         currentConversation,
         conversationList,
         isTyping,

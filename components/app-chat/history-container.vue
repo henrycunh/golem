@@ -1,11 +1,32 @@
 <script lang="ts" setup>
 defineProps<{ embedded?: boolean }>()
 
-const { currentConversation, isTyping } = useConversations()
+const { currentConversation, isTypingInCurrentConversation } = useConversations()
 const { isOnSharePage } = useSession()
 const container = ref()
-const chatScroll = useScroll(container)
+const lockToBottom = ref(true)
+const chatScroll = useScroll(container, {
+    onScroll: (event) => {
+        if (event) {
+            // Detect if the user is at the bottom of the chat
+            const el = (event.target as HTMLElement)
+            if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
+                lockToBottom.value = true
+            }
+            else {
+                lockToBottom.value = false
+            }
+        }
+    },
+})
 const autoScrollInterval = ref()
+const isScrollToBottomButtonVisible = computed(() => {
+    if (!container.value) {
+        return false
+    }
+    const el = container.value
+    return chatScroll.y.value + 200 < el.scrollHeight - el.clientHeight
+})
 function scrollToBottom() {
     setTimeout(() => {
         chatScroll.y.value = container.value?.scrollHeight
@@ -20,16 +41,18 @@ watch(() => currentConversation.value?.id, (newId, oldId) => {
     scrollToBottom()
 })
 
-scrollToBottom()
+onMounted(() => scrollToBottom())
 
-watch(isTyping, (newState, oldState) => {
+watch(isTypingInCurrentConversation, (newState, oldState) => {
     if (newState === oldState) {
         return
     }
     if (newState) {
         autoScrollInterval.value = setInterval(() => {
-            chatScroll.y.value = container.value?.scrollHeight
-        }, 100)
+            if (lockToBottom.value) {
+                chatScroll.y.value = container.value?.scrollHeight
+            }
+        }, 300)
     }
     else {
         clearInterval(autoScrollInterval.value)
@@ -70,6 +93,34 @@ function onFileDrop(event: any) {
         ]"
         @dragover.prevent @drop="onFileDrop"
     >
+        <!-- <div
+                v-if="isScrollToBottomButtonVisible"
+                fixed bottom-20
+                right-20 z-0 w-10
+                h-10 text-color
+                text-5
+                cursor-pointer
+                class="dark:bg-white/10" flex items-center
+                justify-center
+                rounded-3
+            >
+                <div i-tabler-arrow-bar-down />
+            </div> -->
+        <Transition name="appear-right">
+            <GpLongPressButton
+                v-if="isScrollToBottomButtonVisible"
+                icon="i-tabler-arrow-bar-down !text-6"
+                :duration="0"
+                success-style="!ring-primary !text-primary"
+                progress-bar-style="!bg-primary/20"
+
+                class="!fixed"
+                bottom-30
+                right-20 w-10
+                z-10 @success="scrollToBottom"
+            />
+        </Transition>
+
         <slot />
     </div>
 </template>

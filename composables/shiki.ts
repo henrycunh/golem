@@ -1,53 +1,18 @@
 import type { Highlighter, Lang } from 'shiki-es'
 
-const shiki = ref<Highlighter>()
-
-const registeredLang = ref(new Map<string, boolean>())
-let shikiImport: Promise<void> | undefined
-
-export function useHighlighter(lang: Lang) {
-    if (!shikiImport) {
-        shikiImport = import('shiki-es')
-            .then(async (r) => {
-                r.setCDN('/shiki/')
-                shiki.value = await r.getHighlighter({
-                    themes: [
-                        'vitesse-dark',
-                        'vitesse-light',
-                    ],
-                    langs: [
-                        'js',
-                        'css',
-                        'html',
-                    ],
-                })
-            })
-    }
-
-    if (!shiki.value) {
-        return undefined
-    }
-
-    if (!registeredLang.value.get(lang)) {
-        shiki.value.loadLanguage(lang)
-            .then(() => {
-                registeredLang.value.set(lang, true)
-            })
-            .catch(() => {
-                const fallbackLang = 'md'
-                shiki.value?.loadLanguage(fallbackLang).then(() => {
-                    registeredLang.value.set(fallbackLang, true)
-                })
-            })
-        return undefined
-    }
-
-    return shiki.value
-}
-
-export function useShikiTheme() {
-    return useColorMode().value === 'dark' ? 'vitesse-dark' : 'vitesse-light'
-}
+const langs = [
+    'js',
+    'css',
+    'html',
+    'json',
+    'yaml',
+    'md',
+    'rust',
+    'go',
+    'python',
+    'vue',
+    'ruby',
+] as Lang[]
 
 const HTML_ENTITIES = {
     '<': '&lt;',
@@ -57,62 +22,83 @@ const HTML_ENTITIES = {
     '"': '&quot;',
 } as Record<string, string>
 
-export function escapeHtml(text: string) {
-    return text.replace(/[<>&'"]/g, ch => HTML_ENTITIES[ch])
-}
-
-export function highlightCode(code: string, lang: Lang) {
-    const shiki = useHighlighter(lang)
-    if (!shiki) {
-        return escapeHtml(code)
-    }
-    const theme = useShikiTheme()
-    return shiki.codeToHtml(code, {
-        lang,
-        theme,
-    })
-}
-
 export function useShiki() {
-    return shiki
-}
+    const shiki = useState<Highlighter | null>('shiki-highlighter', () => null)
+    const registeredLang = useState('shiki-registered-lang', () => new Map<string, boolean>())
+    const shikiImport = useState<Promise<void> | undefined>('shiki-import', () => undefined)
 
-export function detectLang(message: string) {
-    const lang = message.match(/```([a-z]+)\s+/)?.[1]
-    if (lang) {
-        return lang as Lang
-    }
-    const possibleLanguages = [
-        'javascript',
-        'typescript',
-        'html',
-        'css',
-        'json',
-        'markdown',
-        'bash',
-        'shell',
-        'yaml',
-        'yml',
-        'toml',
-        'python',
-        'php',
-        'java',
-        'cpp',
-        'csharp',
-        'ruby',
-        'rust',
-    ]
-    const matches = possibleLanguages.reduce((acc, lang) => {
-        const regex = new RegExp(`\\b${lang}\\b`, 'i')
-        if (!(lang in acc)) {
-            acc[lang] = 0
+    function initShiki() {
+        if (!shikiImport.value) {
+            shikiImport.value = import('shiki-es')
+                .then(async (r) => {
+                    r.setCDN('/shiki/')
+                    shiki.value = await r.getHighlighter({
+                        themes: [
+                            'vitesse-dark',
+                            'vitesse-light',
+                        ],
+                        langs,
+                    })
+                })
         }
-        acc[lang] += (message.match(regex) || []).length
-        return acc
-    }, {} as Record<string, number>)
-    const topMatch = Object.entries(matches).sort((a, b) => b[1] - a[1])[0]
-    if (topMatch[1] > 0) {
-        return topMatch[0] as Lang
+
+        if (!shiki.value) {
+            return undefined
+        }
     }
-    return 'md'
+
+    function useHighlighter(lang: Lang) {
+        initShiki()
+
+        if (!registeredLang.value.get(lang) && shiki.value) {
+            shiki.value.loadLanguage(lang)
+                .then(() => {
+                    registeredLang.value.set(lang, true)
+                })
+                .catch(() => {
+                    const fallbackLang = 'md'
+                    shiki.value?.loadLanguage(fallbackLang).then(() => {
+                        registeredLang.value.set(fallbackLang, true)
+                    })
+                })
+            return undefined
+        }
+
+        return shiki.value
+    }
+
+    function useShikiTheme() {
+        return useColorMode().value === 'dark' ? 'vitesse-dark' : 'vitesse-light'
+    }
+
+    function escapeHtml(text: string) {
+        return text.replace(/[<>&'"]/g, ch => HTML_ENTITIES[ch])
+    }
+
+    async function highlightCode(code: string, lang: Lang) {
+        const shiki = useHighlighter(lang)
+        if (!shiki) {
+            return escapeHtml(code)
+        }
+        const theme = useShikiTheme()
+        return shiki.codeToHtml(code, {
+            lang,
+            theme,
+        })
+    }
+
+    function setupShikiLanguages() {
+        initShiki()
+        if (!shiki.value) {
+            return
+        }
+        for (const lang of langs) {
+            shiki.value.loadLanguage(lang)
+        }
+    }
+
+    return {
+        highlightCode,
+        setupShikiLanguages,
+    }
 }

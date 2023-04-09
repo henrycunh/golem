@@ -7,13 +7,29 @@ const props = defineProps<{
     isOnMaximizeScreen?: boolean
 }>()
 
+const { highlightCode } = useShiki()
 const colorMode = useColorMode()
 const highlightedCode = ref(props.content)
+const loadingLanguage = ref(true)
 
-watchEffect(() => {
+watchEffect(async () => {
     if (props.content && colorMode.value) {
-        highlightedCode.value = highlightCode(props.content, props.syntax).match(/<code>(.*)<\/code>/s)?.[1] || ''
+        highlightedCode.value = props.content
+        const code = await new Promise<string>((resolve, _reject) => {
+            highlightCode(props.content, props.syntax)
+                .then((code) => {
+                    resolve(code.match(/<code>(.*)<\/code>/s)?.[1] || '')
+                })
+        })
+        if (code) {
+            loadingLanguage.value = false
+            highlightedCode.value = code
+        }
     }
+})
+
+onMounted(() => {
+    highlightedCode.value = props.content
 })
 
 const clipboard = useClipboard()
@@ -79,6 +95,15 @@ function onMaximize() {
                 {{ copied ? 'copied!' : 'copy' }}
             </UButton>
         </div>
+        <Transition name="appear-right">
+            <div
+                v-if="loadingLanguage"
+                i-eos-icons-bubble-loading
+                absolute right-5 top-16
+                text-7
+                text-color
+            />
+        </Transition>
         <div
             rounded-1
             w-full
