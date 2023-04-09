@@ -69,7 +69,7 @@ export function escapeHtml(text: string) {
     return text.replace(/[<>&'"]/g, ch => HTML_ENTITIES[ch])
 }
 
-export function highlightCode(code: string, lang: Lang) {
+export async function highlightCode(code: string, lang: Lang) {
     const shiki = useHighlighter(lang)
     if (!shiki) {
         return escapeHtml(code)

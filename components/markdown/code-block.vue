@@ -13,13 +13,14 @@ const highlightedCode = ref(props.content)
 watchEffect(async () => {
     if (props.content && colorMode.value) {
         highlightedCode.value = props.content
-        new Promise<string>((resolve, _reject) => {
-            const code = highlightCode(props.content, props.syntax)
-                .match(/<code>(.*)<\/code>/s)?.[1] || ''
-            resolve(code)
-        }).then((code) => {
-            highlightedCode.value = code
+        const code = await new Promise<string>((resolve, _reject) => {
+            highlightCode(props.content, props.syntax)
+                .then((code) => {
+                    resolve(code.match(/<code>(.*)<\/code>/s)?.[1] || '')
+                })
         })
+        logger.info('Code block highlighted', code)
+        highlightedCode.value = code
     }
 })
 
