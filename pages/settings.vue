@@ -92,7 +92,7 @@ const route = useRoute()
                         text-gray-5 dark:text-gray-2
                         text-9px sm:text-4
                         :class="[
-                            route.path === setting.path ? '!text-primary !font-bold' : '',
+                            route.path === setting.path ? '!text-primary-500 dark:!text-primary-400 !font-bold' : '',
                         ]"
                     >
                         {{ setting.name }}

@@ -27,7 +27,7 @@
             <div>
                 Provide your API key to start a conversation.
             </div>
-            <div text-primary mt-1>
+            <div text-primary-600 dark:text-primary-400 mt-1>
                 Click here
             </div>
         </div>

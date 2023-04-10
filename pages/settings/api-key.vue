@@ -33,7 +33,7 @@ const maskedApiKey = computed(() => {
                 w-full text-gray-5 dark:text-gray-1
             />
         </div>
-        <div>
+        <div v-else>
             <div
                 font-bold text-gray-6 dark:text-gray-3 mt-7
                 text-14px sm:text-5
