@@ -5,6 +5,7 @@ const props = defineProps<{
     secondary?: boolean
     icon?: string
 }>()
+
 defineEmits(['click'])
 // Theres a radial gradient in the background of the button
 // that follows the mouse cursor
@@ -17,7 +18,10 @@ const backgroundCenterBase = computed(() =>
         // Else, pin to the top center
         : [elementWidth.value / 2, 0],
 )
-const [toColor, fromColor] = ['#903597ff', '#e0b1e700']
+const [fromColor, toColor] = [
+    'rgba(var(--color-primary-300), 1)',
+    'rgba(var(--color-primary-700), 1)',
+]
 
 const backgroundCenter = useTransition(backgroundCenterBase, {
     duration: 200,
@@ -42,17 +46,17 @@ const gradientStyle = computed(() => {
         to-primary-100 border-0
         transition-all
         box-border shadow-md select-none
-        class="shadow-primary-900/10"
+        class="shadow-900/10"
         active:scale-98 active:shadow-none cursor-pointer p-0
         :style="!disabled ? gradientStyle : {}"
         :class="[
-            secondary && '!bg-none !bg-primary-50/50 !shadow-none dark:!bg-primary-600/30',
+            secondary && '!bg-none !bg-200/30 !shadow-none dark:!bg-500/20',
             disabled ? 'cursor-not-allowed !from-gray-5 !to-gray-2' : '',
         ]"
         @click="$emit('click')"
     >
         <div
-            px-.75em py-.45em bg="primary-800/70"
+            px-.75em py-.45em
             text-white text-1em font-bold
             transition-all
             box-border
@@ -62,7 +66,8 @@ const gradientStyle = computed(() => {
                 disabled ? '!bg-gray-5' : '',
             ]"
             v-bind="{ ...$attrs }"
-            class="!w-full !m-0.12rem" flex items-center justify-center gap-1
+            class="!w-full !m-0.12rem bg-600/65"
+            flex items-center justify-center gap-1
         >
             <div v-if="icon" :class="icon" />
             <slot />

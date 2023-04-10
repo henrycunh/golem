@@ -63,7 +63,7 @@ async function removeMessage() {
                     <div
                         text-3 sm:text-22px
                         :class="[
-                            message.role === 'assistant' && 'i-tabler-robot text-primary-500',
+                            message.role === 'assistant' && 'i-tabler-robot text-primary-500 dark:text-primary-400',
                             message.role === 'user' && 'i-tabler-user text-gray-400',
                             message.isError && '!i-tabler-alert-triangle !text-red-700',
                         ]"
@@ -89,11 +89,12 @@ async function removeMessage() {
                                 :duration="1500"
                                 progress-bar-style="bg-red/50"
                                 success-style="!ring-red !scale-110"
-                                icon="i-tabler-trash !text-6"
-                                right--3 sm:right--5
+                                icon="i-tabler-trash !text-4 sm:!text-6"
+                                right-1 sm:right--5
                                 bottom-2
                                 class="!absolute"
-                                w-10 rounded-3 m-0
+                                w-8 sm:w-10
+                                rounded-3 m-0
                                 @success="removeMessage"
                             />
                         </Transition>

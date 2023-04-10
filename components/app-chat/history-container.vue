@@ -109,14 +109,14 @@ function onFileDrop(event: any) {
         <Transition name="appear-right">
             <GpLongPressButton
                 v-if="isScrollToBottomButtonVisible"
-                icon="i-tabler-arrow-bar-down !text-6"
+                icon="i-tabler-arrow-bar-down !text-4 sm:!text-6"
                 :duration="0"
                 success-style="!ring-primary !text-primary"
-                progress-bar-style="!bg-primary/20"
-
+                progress-bar-style="!bg-500/20"
                 class="!fixed"
                 bottom-30
-                right-20 w-10
+                right-8 sm:right-20
+                w-8 sm:w-10
                 z-10 @success="scrollToBottom"
             />
         </Transition>

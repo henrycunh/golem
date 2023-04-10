@@ -55,7 +55,7 @@ const route = useRoute()
         </div>
         <div
             mt-2 max-w-1080px mx-auto
-            px-4 sm:px-16
+            px-4 md:px-6 sm:px-16
             grid
             grid-cols-12 sm:grid-cols-6
             gap-3 sm:gap-12 items-start
@@ -82,17 +82,17 @@ const route = useRoute()
                 >
                     <div
                         text-14px sm:text-5
-                        text-primary-400
+                        class="!text-primary-500 dark:!text-primary-400"
                         :class="[
                             setting.icon,
-                            route.path === setting.path ? '!text-primary dark:!text-primary-400 !text-bold' : '',
+                            route.path === setting.path ? '!text-primary !text-bold' : '',
                         ]"
                     />
                     <div
                         text-gray-5 dark:text-gray-2
                         text-9px sm:text-4
                         :class="[
-                            route.path === setting.path ? '!text-primary dark:!text-primary-400 !font-bold' : '',
+                            route.path === setting.path ? '!text-primary !font-bold' : '',
                         ]"
                     >
                         {{ setting.name }}

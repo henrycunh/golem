@@ -32,7 +32,7 @@ function onClick(model: string) {
                 dark:text-gray-3 gap-2
                 text-11px sm:text-4
                 :class="[
-                    modelUsed === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary' : '',
+                    modelUsed === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary-600 dark:!text-primary-400' : '',
                 ]"
                 @click="onClick(option.value)"
             >
