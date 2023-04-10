@@ -16,7 +16,7 @@ useSetup()
             >
                 <div
                     v-if="!isMobile"
-                    absolute top-0 left-0 bottom-0
+                    absolute top-1rem left-0 bottom-1rem
                     w-17.5rem
                 >
                     <ClientOnly>
@@ -30,7 +30,7 @@ useSetup()
                 </div>
                 <div
                     overflow-hidden
-                    absolute top-0.5rem bottom-0.5rem right-0.5rem
+                    absolute top-1.5rem bottom-1.5rem right-0.5rem
                     bg-white dark:bg-dark-2 rounded-2 shadow-lg border
                     :class="[
                         !isMobile ? 'left-17.5rem' : 'left-0.5rem',

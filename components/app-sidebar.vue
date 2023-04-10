@@ -40,7 +40,7 @@ const onOpenKnowledgeManager = () => {
 <template>
     <div
         flex flex-col h-full
-        px-2
+        px-2 pr-4
     >
         <div uppercase font-bold text-13px text-primary-600 dark:text-primary-400 my-3 flex items-center>
             <div>
