@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 const { apiKey } = useSettings()
 const apiKeyInput = syncStorageRef(apiKey)
+const { instanceApiKey } = useSettings()
+
+const maskedApiKey = computed(() => {
+    if (!instanceApiKey.value) {
+        return ''
+    }
+    const apiKeyLength = instanceApiKey.value.length
+    return instanceApiKey.value.slice(0, 4) + '•'.repeat(apiKeyLength - 8) + instanceApiKey.value.slice(apiKeyLength - 4)
+})
 </script>
 
 <template>
@@ -16,13 +25,33 @@ const apiKeyInput = syncStorageRef(apiKey)
                 OpenAI dashboard
             </GpLink>.
         </div>
-        <div text-gray-5 dark:text-gray-1 mt-3>
+        <div v-if="!instanceApiKey" text-gray-5 dark:text-gray-1 mt-3>
             <UInput
                 v-model="apiKeyInput"
                 placeholder="Enter your API Key"
                 text-11px sm:text-4
                 w-full text-gray-5 dark:text-gray-1
             />
+        </div>
+        <div v-else>
+            <div
+                font-bold text-gray-6 dark:text-gray-3 mt-7
+                text-14px sm:text-5
+            >
+                Instance API Key
+            </div>
+            <div my-3>
+                This instance has a shared API key already set up.
+            </div>
+            <div
+                text-color mt-3 font-code
+                p-1 sm:px-3 sm:py-2
+                rounded
+                text-6px sm:text-3 break-all
+                class="bg-gray-1 dark:bg-gray-1/5 ring-1 ring-gray-2 dark:ring-white/10"
+            >
+                {{ maskedApiKey }}
+            </div>
         </div>
     </div>
 </template>

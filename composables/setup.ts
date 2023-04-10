@@ -3,7 +3,9 @@ import type { types } from '~~/utils/types'
 export async function useSetup(options?: { disableStorage: boolean; embedded?: boolean }) {
     if (process.client) {
         const { isOnSharePage } = useSession()
+        const { setPalette } = useAppearance()
         useColorMode()
+        setPalette()
         useShiki().setupShikiLanguages()
         if (options?.disableStorage) {
             useIDB({ disableStorage: true })

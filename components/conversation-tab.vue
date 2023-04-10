@@ -18,6 +18,7 @@ const {
 const { isMobile } = useDevice()
 
 const element = ref()
+const inputElement = ref()
 const isHovering = useElementHover(element)
 const route = useRoute()
 
@@ -88,6 +89,10 @@ const onInput = async (event: any) => {
     })
 }
 
+onClickOutside(inputElement, () => {
+    isEditingTitle.value = false
+})
+
 // Delete conversation
 const onDeleteConversation = async (id: string) => {
     if (conversationList.value === null) {
@@ -133,7 +138,6 @@ const onDeleteConversation = async (id: string) => {
                     : 'hover:bg-gray-100 hover:dark:bg-dark-3',
             ]"
             @click="onClick"
-            @dblclick.stop="onTabDoubleClick"
         >
             <div flex items-center>
                 <div grow>
@@ -148,6 +152,7 @@ const onDeleteConversation = async (id: string) => {
                             <div v-if="!isEditingTitle && !isTypingInCurrentConversation" i-tabler-message-chatbot text-18px mr-1 />
                         </transition>
                         <input
+                            ref="inputElement"
                             v-model="conversationTitle"
                             :readonly="!isEditingTitle"
                             bg-transparent border-none outline-none p-0
@@ -160,6 +165,7 @@ const onDeleteConversation = async (id: string) => {
                             ]"
                             @blur="isEditingTitle = false"
                             @input="onInput"
+                            @dblclick.stop="onTabDoubleClick"
                         >
                     </div>
                     <div

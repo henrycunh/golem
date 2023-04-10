@@ -42,7 +42,7 @@ const onOpenKnowledgeManager = () => {
         flex flex-col h-full
         px-2
     >
-        <div uppercase font-bold text-13px text-primary my-3 flex items-center>
+        <div uppercase font-bold text-13px text-primary-600 dark:text-primary-400 my-3 flex items-center>
             <div>
                 Chats
             </div>
@@ -92,7 +92,7 @@ const onOpenKnowledgeManager = () => {
                 :active="route.path.startsWith('/settings')"
                 @click="navigateTo('/settings')"
             >
-                <span i-tabler-settings mr-2 text-primary text-5 />
+                <span i-tabler-settings mr-2 text-primary-500 dark:text-primary-400 text-5 />
                 <span>
                     Settings
                 </span>

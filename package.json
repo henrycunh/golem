@@ -21,6 +21,7 @@
     "@types/marked": "^4.0.8",
     "@types/mdast": "^3.0.10",
     "@types/prismjs": "^1.26.0",
+    "@types/tinycolor2": "^1.4.3",
     "@unocss/nuxt": "^0.50.4",
     "@unocss/transformer-directives": "^0.50.6",
     "eslint": "^8.36.0",
@@ -35,6 +36,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@bobthered/tailwindcss-palette-generator": "^3.1.1",
     "@dqbd/tiktoken": "^1.0.3",
     "@trpc/client": "^10.18.0",
     "@trpc/server": "^10.18.0",
@@ -61,6 +63,7 @@
     "remark": "^14.0.2",
     "remark-gfm": "^3.0.1",
     "shiki-es": "^0.2.0",
+    "tinycolor2": "^1.6.0",
     "trpc-nuxt": "^0.8.0",
     "undici": "^5.21.0",
     "zod": "^3.21.4"
