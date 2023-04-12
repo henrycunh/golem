@@ -1,0 +1,5 @@
+node_modules
+.output
+.vercel
+.nuxt
+.github

@@ -21,7 +21,7 @@ useHead({
 
 <style>
 body {
-    @apply dark:bg-dark-4 light:bg-gray-1/40 transition;
+    @apply dark:bg-primary-950 light:bg-primary-50 transition;
     margin: 0;
     /* background-color: #f9fafb; */
     font-family: ColfaxAI, -system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;

@@ -20,16 +20,13 @@ export default defineConfig({
     theme: {
         colors: {
             primary: {
-                50: 'rgb(var(--color-primary-50))',
-                100: 'rgb(var(--color-primary-100))',
-                200: 'rgb(var(--color-primary-200))',
-                300: 'rgb(var(--color-primary-300))',
-                400: 'rgb(var(--color-primary-400))',
-                500: 'rgb(var(--color-primary-500))',
-                600: 'rgb(var(--color-primary-600))',
-                700: 'rgb(var(--color-primary-700))',
-                800: 'rgb(var(--color-primary-800))',
-                900: 'rgb(var(--color-primary-900))',
+                ...Array.from({ length: 40 }, (_, i) => ({
+                    name: 50 + i * 25,
+                    lightness: 97 - i * 2.5,
+                })).reduce((acc, { name }) => ({
+                    ...acc,
+                    [name]: `rgb(var(--color-primary-${name}))`,
+                }), {}),
                 DEFAULT: 'rgb(var(--color-primary-500))',
                 // 50: '#eadbf0',
                 // 100: '#efd8f3',

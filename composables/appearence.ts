@@ -8,7 +8,13 @@ export function useAppearance() {
         if (newColor) {
             color.value = newColor
         }
-        const palette = tailwindcssPaletteGenerator(color.value)
+        const palette = tailwindcssPaletteGenerator({
+            colors: [color.value],
+            shades: Array.from({ length: 40 }, (_, i) => ({
+                name: 50 + i * 25,
+                lightness: 97 - i * 2.5,
+            })),
+        })
         for (const [shade, color] of Object.entries(palette.primary)) {
             const hexToRgb = (hex: string) => {
                 hex = hex.replace('#', '')

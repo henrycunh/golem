@@ -16,11 +16,11 @@ function onShare() {
 <template>
     <div
         v-if="!embedded"
-        absolute top-0 left-0 right-0 b-0 b-b-1 b-gray-1 dark:b-dark-1 b-solid py-3
+        absolute top-0 left-0 right-0 b-0 b-b-1 b-gray-1 dark:b-primary-825 b-solid py-3
         z-1
         backdrop-blur-4
         mx-auto
-        class="bg-white/90 dark:bg-dark-1/90"
+        class="bg-25/80 dark:bg-900/90"
         :class="[
             embedded && '!w-full !max-w-full',
         ]"

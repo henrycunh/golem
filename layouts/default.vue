@@ -31,7 +31,7 @@ useSetup()
                 <div
                     overflow-hidden
                     absolute top-1.5rem bottom-1.5rem right-0.5rem
-                    bg-white dark:bg-dark-2 rounded-2 shadow-lg border
+                    bg-white dark:bg-primary-925 rounded-2 shadow-lg border
                     :class="[
                         !isMobile ? 'left-17.5rem' : 'left-0.5rem',
                     ]"

@@ -15,7 +15,7 @@ defineEmits(['click', 'doubleClick'])
         active:translate-y-2px
         :class="[
             active
-                ? 'bg-white text-gray-600 shadow-md dark:bg-dark-1 dark:!text-gray-1'
+                ? 'bg-white dark:bg-primary-850 text-gray-600 shadow-md  dark:!text-gray-1'
                 : 'hover:bg-gray-100 hover:dark:bg-dark-3',
         ]"
         @click="$emit('click')"

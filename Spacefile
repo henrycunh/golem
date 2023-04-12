@@ -3,5 +3,20 @@ v: 0
 micros:
     - name: ungpt
       src: .
-      engine: nuxt
+      engine: custom
       primary: true
+      commands:
+        # - apt upgrade -y
+        # - zip -v
+        # - curl -fsSL https://get.pnpm.io/install.sh | bash -
+        # - /root/.local/share/pnpm/pnpm install
+
+        # TODO: try bun later
+        # - apt install -y unzip
+        # - curl -fsSL https://bun.sh/install | bash
+        # - ~/.bun/bin/bun install
+        # - ~/.bun/bin/bun run build
+
+        - npm i
+        - npm run build
+
