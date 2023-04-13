@@ -10,9 +10,6 @@ useSetup()
                 relative
                 class="2xl:max-w-1366px 2xl:mx-auto"
                 h-100dvh
-                :class="[
-                    // !isMobile ? 'm-0.5rem' : 'm-0.25rem',
-                ]"
             >
                 <div
                     v-if="!isMobile"
@@ -33,13 +30,13 @@ useSetup()
                     absolute top-1.5rem bottom-1.5rem right-0.5rem
                     bg-white dark:bg-dark-2 rounded-2 shadow-lg border
                     :class="[
-                        !isMobile ? 'left-17.5rem' : 'left-0.5rem',
+                        !isMobile ? 'left-17.5rem' : '!left-0 !top-0 !right-0 !bottom-0 !rounded-0',
                     ]"
                 >
                     <slot h-full />
                     <div
                         v-if="isMobile"
-                        fixed bottom-4.75 left-0
+                        fixed bottom-2.5 left-0
                         right-0 flex items-center
                         justify-center
                     >

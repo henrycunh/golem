@@ -139,10 +139,9 @@ export const useConversations = () => {
         if (!conversation) {
             throw new Error('Conversation not found')
         }
-        const newConversation = {
+        const newConversation: types.Conversation = {
             ...conversation,
             ...update,
-            updatedAt: new Date(),
         }
 
         await db.table('conversations').put(newConversation)

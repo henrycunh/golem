@@ -57,5 +57,6 @@ function onHandlePromptClick() {
                 @click="onHandlePromptClick"
             />
         </div>
+        <AppChatScrollToBottomButton />
     </div>
 </template>
