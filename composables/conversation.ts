@@ -1,5 +1,4 @@
 import type { ChatGPTError, ChatMessage } from 'chatgpt-web'
-import { ChatGPTAPI } from 'chatgpt-web'
 import { nanoid } from 'nanoid'
 import { Configuration, OpenAIApi } from 'openai'
 import pLimit from 'p-limit'
@@ -7,15 +6,18 @@ import type { types } from '~~/utils/types'
 
 export const useConversations = () => {
     const db = useIDB()
+
     const { isDetaEnabled, deta } = useDeta()
     const { apiKey } = useSettings()
-    const client = useClient()
     const { maxTokens, modelUsed } = useSettings()
     const { knowledgeList } = useKnowledge()
     const { complete } = useLanguageModel()
+
     const currentConversationId = useState<string>(() => '')
     const currentConversation = useState<types.Conversation | null>(() => null)
     const conversationList = useState<types.Conversation[] | null>(() => null)
+    const conversationAbortMap = useState<Record<string, AbortController>>(() => ({}))
+
     const knowledgeUsedInConversation = computed(() => {
         if (currentConversation.value === null) {
             return []
@@ -92,7 +94,7 @@ export const useConversations = () => {
         return conversation.messages.find((message: ChatMessage) => message.id === id) as ChatMessage
     }
 
-    async function updateLastSystemMessageInConversation(conversationId: string, message: string) {
+    async function updateLastAssistantMessage(conversationId: string, message: types.Message) {
         const conversation = await db.table('conversations').get(conversationId)
         if (!conversation) {
             throw new Error('Conversation not found')
@@ -112,7 +114,7 @@ export const useConversations = () => {
                 if (currentMessage.id === lastSystemMessage.id) {
                     return {
                         ...currentMessage,
-                        text: message,
+                        ...message,
                         updatedAt: new Date(),
                     }
                 }
@@ -193,14 +195,15 @@ export const useConversations = () => {
         if (!fromConversation) {
             return
         }
-        const systemMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
-        const lastSystemMessage = systemMessageList[systemMessageList.length - 1]
+
+        const assistantMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
+        const lastAssistantMessage = assistantMessageList[assistantMessageList.length - 1]
 
         const userMessage = {
             id: nanoid(),
             role: 'user' as const,
             text: message,
-            parentMessageId: lastSystemMessage?.id,
+            parentMessageId: lastAssistantMessage?.id,
             updatedAt: new Date(),
         }
 
@@ -208,47 +211,59 @@ export const useConversations = () => {
         addMessageToConversation(fromConversation.id, userMessage)
         setConversationTypingStatus(fromConversation.id, true)
 
-        // Checks if the message exceeds the maximum token count
-        try {
-            const tokenCount = await client.model.getTokenCount.mutate(message)
-            if (tokenCount > 3200) {
-                await addErrorMessage('Your message is too long, please try again.')
-                return
-            }
-        }
-        catch (e) {
-            await addErrorMessage('Your message is too long, please try again.')
-            return
-        }
+        // TODO: Check if the message exceeds the maximum token count
+        // try {
+        //     const tokenCount = await client.model.getTokenCount.mutate(message)
+        //     if (tokenCount > 3200) {
+        //         await addErrorMessage('Your message is too long, please try again.')
+        //         return
+        //     }
+        // }
+        // catch (e) {
+        //     await addErrorMessage('Your message is too long, please try again.')
+        //     return
+        // }
 
-        const lastMessages = [...(fromConversation?.messages || [])]
-
-        if (knowledgeUsedInConversation.value.length > 0) {
-            let lastMessageId = lastSystemMessage?.id
-            for (const knowledge of knowledgeUsedInConversation.value) {
-                const messageId = nanoid()
-                lastMessages.push({
-                    id: messageId,
-                    role: 'user',
-                    text: `Use this as knowledge for the rest of our conversation:\n${knowledge?.sections[0]?.content}\n---`,
-                    parentMessageId: lastMessageId,
-                    updatedAt: new Date(),
-                    createdAt: new Date(),
-                })
-                lastMessageId = messageId
-            }
-            userMessage.parentMessageId = lastMessageId
+        let messageList: any[] = getMessageChain(fromConversation.messages, userMessage)
+        if (fromConversation.systemMessage) {
+            messageList = [
+                { role: 'system', text: fromConversation.systemMessage, id: 'system-message' },
+                ...messageList,
+            ]
         }
+        messageList = messageList.map(message => ({
+            role: message.role,
+            content: message.text,
+        }))
+
+        // TODO: Add knowledge to the conversation
+        // if (knowledgeUsedInConversation.value.length > 0) {
+        //     let lastMessageId = lastSystemMessage?.id
+        //     for (const knowledge of knowledgeUsedInConversation.value) {
+        //         const messageId = nanoid()
+        //         lastMessages.push({
+        //             id: messageId,
+        //             role: 'user',
+        //             text: `Use this as knowledge for the rest of our conversation:\n${knowledge?.sections[0]?.content}\n---`,
+        //             parentMessageId: lastMessageId,
+        //             updatedAt: new Date(),
+        //             createdAt: new Date(),
+        //         })
+        //         lastMessageId = messageId
+        //     }
+        //     userMessage.parentMessageId = lastMessageId
+        // }
 
         let thisMessage: ChatMessage | null = null
         let messageCreated = false
-        const upsertSystemMessage = async (messageResponse: ChatMessage, finalUpdate?: boolean) => {
+
+        const upsertAssistantMessage = async (messageResponse: types.Message, finalUpdate?: boolean) => {
             if (!thisMessage) {
                 thisMessage = await getMessageById(fromConversation.id, messageResponse.id)
             }
 
             if (thisMessage) {
-                await updateLastSystemMessageInConversation(fromConversation.id, messageResponse.text)
+                await updateLastAssistantMessage(fromConversation.id, messageResponse)
                 if (finalUpdate) {
                     if (isDetaEnabled.value) {
                         deta.message.update(getUpdatedMessage(messageResponse, fromConversation.id))
@@ -262,60 +277,51 @@ export const useConversations = () => {
             }
         }
 
-        for (const tryNumber of Array(6).keys()) {
-            const chatGPT = new ChatGPTAPI({
-                apiKey: apiKey.value || '',
-                completionParams: {
-                    model: modelUsed.value,
-                    max_tokens: Number(maxTokens.value) || undefined,
-                },
-            })
-            chatGPT._getTokenCount = client.model.getTokenCount.mutate
-            if (lastMessages) {
-                await chatGPT.loadMessages(lastMessages.slice(tryNumber))
-            }
+        const { sendMessage } = useLanguageModel()
 
-            try {
-                // Adds the bot message to the conversation
-                const systemMessage = await chatGPT.sendMessage(message, {
-                    parentMessageId: lastMessages.length > 0 ? lastMessages[lastMessages.length - 1].id : undefined,
-                    messageId: userMessage.id,
-                    onProgress(partial: ChatMessage) {
-                        upsertSystemMessage(partial)
-                    },
-                    systemMessage: fromConversation.systemMessage,
-                })
-                setConversationTypingStatus(fromConversation.id, false)
-                await upsertSystemMessage(systemMessage, true)
-                await updateConversationList()
+        const abortController = new AbortController()
+        conversationAbortMap.value[fromConversation.id] = abortController
+        const { data: assistantMessage, error: messageError } = await handle(sendMessage({
+            messages: messageList,
+            model: modelUsed.value,
+            max_tokens: Number(maxTokens.value),
+            async onProgress(partial: types.Message) {
+                await upsertAssistantMessage(partial)
+            },
+            signal: abortController.signal,
+            stream: true,
+        }))
 
-                if (fromConversation.title.trim() === 'Untitled Conversation') {
-                    await generateConversationTitle(fromConversation.id)
-                }
-                break
-            }
-            catch (e: any) {
-                const error = e as ChatGPTError
-                let errorCode = ''
-                try {
-                    if (error.reason) {
-                        const message = JSON.parse(error.reason)
-                        errorCode = message.error.code
-                    }
-                }
-                catch (e) {
-                    console.error(e)
-                }
-
-                if (errorCode === 'model_not_found') {
+        if (messageError) {
+            const error = messageError as ChatGPTError
+            const errorCode = (error.cause as any)?.error.code as string
+            logger.error('Error sending message', error.cause, error)
+            const errorHandlerMapping = {
+                async model_not_found() {
                     await addErrorMessage('The model you are using is not available. Please select another model in the settings.')
-                    break
-                }
-            }
-            finally {
-                setConversationTypingStatus(fromConversation.id, false)
+                },
+                async context_length_exceeded() {
+                    await addErrorMessage('Your message is too long, please try again.')
+                },
+            } as Record<string, () => Promise<void>>
+
+            if (errorCode in errorHandlerMapping) {
+                await errorHandlerMapping[errorCode]()
             }
         }
+        else {
+            assistantMessage.parentMessageId = userMessage.id
+            setConversationTypingStatus(fromConversation.id, false)
+            await upsertAssistantMessage(assistantMessage, true)
+            await updateConversationList()
+
+            if (fromConversation.title.trim() === 'Untitled Conversation') {
+                await generateConversationTitle(fromConversation.id)
+            }
+        }
+
+        setConversationTypingStatus(fromConversation.id, false)
+
         // TODO: Add follow up questions feature
         // getFollowupQuestions(message)
     }
@@ -394,6 +400,13 @@ export const useConversations = () => {
         }
     }
 
+    async function stopConversationMessageGeneration(conversationId: string) {
+        const abortController = conversationAbortMap.value[conversationId]
+        if (abortController) {
+            abortController.abort()
+        }
+    }
+
     return {
         listConversations,
         getConversationById,
@@ -412,6 +425,7 @@ export const useConversations = () => {
         isTyping,
         followupQuestions,
         knowledgeUsedInConversation,
+        stopConversationMessageGeneration,
     }
 }
 
@@ -422,4 +436,12 @@ function getUpdatedMessage(message: ChatMessage, conversationId: string): types.
         createdAt: (message as types.Message).createdAt || new Date(),
         conversationId,
     }
+}
+
+function getMessageChain(messages: ChatMessage[], message: ChatMessage): ChatMessage[] {
+    const parentMessage = messages.find((m: ChatMessage) => m.id === message.parentMessageId)
+    if (!parentMessage) {
+        return [message]
+    }
+    return [...getMessageChain(messages, parentMessage), message]
 }

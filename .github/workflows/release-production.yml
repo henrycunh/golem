@@ -26,7 +26,7 @@ jobs:
         id: deploy
         uses: BetaHuhn/deploy-to-vercel-action@v1 # pin@ffcc89a6d79de43d964945ce053395c2958610b1
         env:
-          DOMAIN: geppeto.chat
+          DOMAIN: golem-chat.vercel.app
         with:
           GITHUB_TOKEN: ${{ steps.auth.outputs.token }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -34,7 +34,6 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_SCOPE: ${{ secrets.VERCEL_ORG_ID }}
           PR_PREVIEW_DOMAIN: ${{ env.DOMAIN }}
-          FORCE: true
           PRODUCTION: true
           ALIAS_DOMAINS: |
             ${{ env.DOMAIN }}

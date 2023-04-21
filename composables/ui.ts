@@ -3,8 +3,8 @@ export function useUI() {
     const scrollToBottom = inject('scrollToBottom') as () => void
     const getScrollHeight = inject('getScrollHeight') as () => number
     const chatScrolledHeight = inject('chatScrolledHeight') as Ref<number>
-    
-    return { 
+
+    return {
         scrollToBottom,
         getScrollHeight,
         chatScrolledHeight,

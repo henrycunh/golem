@@ -9,7 +9,7 @@ const { isDetaEnabled } = useDeta()
 const conversationTitle = computed(() => currentConversation.value?.title)
 
 function onShare() {
-    navigateTo(`/chat/${currentConversation.value?.id}`)
+    navigateTo(`/chat/share/${currentConversation.value?.id}`)
 }
 </script>
 
@@ -29,7 +29,7 @@ function onShare() {
             <div>
                 <AnimatedText
                     text-14px sm:text-5
-                    font-bold text-color
+                    font-bold text-color font-title
                     :value="conversationTitle"
                 />
                 <div v-if="knowledgeUsedInConversation.length" text-gray-5 dark:text-gray-3 text-14px>

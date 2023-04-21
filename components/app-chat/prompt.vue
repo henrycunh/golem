@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { sendMessage } = useConversations()
+const { sendMessage, isTypingInCurrentConversation, stopConversationMessageGeneration, currentConversation } = useConversations()
 const { isMobile } = useDevice()
 const { apiKey } = useSettings()
 
@@ -12,6 +12,7 @@ const onSendMessage = () => {
 
 const showPromptTooltip = ref(false)
 let tooltipTimeout: any
+
 function onHandlePromptClick() {
     if (!apiKey.value && !showPromptTooltip.value) {
         showPromptTooltip.value = true
@@ -25,6 +26,14 @@ function onHandlePromptClick() {
             clearTimeout(tooltipTimeout)
         }
     }
+}
+
+function onStopGenerationClick() {
+    if (!currentConversation.value) {
+        return
+    }
+
+    stopConversationMessageGeneration(currentConversation.value.id)
 }
 </script>
 
@@ -56,6 +65,18 @@ function onHandlePromptClick() {
                 @send="onSendMessage"
                 @click="onHandlePromptClick"
             />
+            <Transition name="appear-top">
+                <div
+                    v-if="isTypingInCurrentConversation"
+                    absolute top-2
+                    right-18 sm:right-20 lg:right-30
+                >
+                    <UButton @click="onStopGenerationClick">
+                        <div i-tabler-player-stop-filled text-3 sm:text-5 />
+                        <span text-10px sm:text-4>Stop talking!</span>
+                    </UButton>
+                </div>
+            </Transition>
         </div>
         <AppChatScrollToBottomButton />
     </div>

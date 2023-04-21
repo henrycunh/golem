@@ -18,6 +18,8 @@ export default defineNuxtConfig({
         webFonts: {
             fonts: {
                 code: 'DM Mono:400',
+                text: 'Rubik:400,700',
+                title: 'Schibsted Grotesk:400,700',
             },
         },
     },
@@ -44,7 +46,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         detaKey: process.env.DETA_PROJECT_KEY,
         apiKey: process.env.OPENAI_API_KEY,
-        password: process.env.GEPPETO_PASSWORD,
+        password: process.env.GOLEM_PASSWORD,
     },
     build: {
         transpile: ['trpc-nuxt', 'dexie'],

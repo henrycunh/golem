@@ -44,6 +44,7 @@
     "chatgpt-web": "1.0.10",
     "consola": "^2.15.3",
     "crawler": "^1.4.0",
+    "cross-fetch": "^3.1.5",
     "deta": "^1.1.0",
     "dexie": "^3.2.3",
     "floating-vue": "2.0.0-beta.20",

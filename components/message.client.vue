@@ -4,6 +4,7 @@ import type { types } from '~~/utils/types'
 const props = defineProps<{ message: types.Message }>()
 
 const { currentPreset } = usePreset()
+const { isOnSharePage } = useSession()
 const element = ref()
 
 const isHovering = useElementHover(element)
@@ -42,19 +43,19 @@ async function removeMessage() {
             >
                 <!-- Agent name -->
                 <div
-                    font-bold text-color mb-1 mx-3 sm:mx-6
+                    font-bold text-color mb-1 mx-7 sm:mx-10
                     :class="[
                         message.isError && 'text-red-9 dark:text-red-3',
                     ]"
                 >
-                    {{ message.role === 'assistant' ? 'Gepeto' : 'You' }}
+                    {{ message.role === 'assistant' ? 'Golem' : 'You' }}
                 </div>
                 <div
                     w-5 h-5 sm:w-8 sm:h-8
                     rounded sm:rounded-2
                     absolute
-                    left--14px sm:left--6
-                    top-0 flex items-center justify-center
+                    left-0
+                    top-1 flex items-center justify-center
                     class="bg-gray-2/70 dark:bg-white/10"
                     :class="[
                         message.isError && '!bg-red-3 dark:!bg-red-5/20',
@@ -69,7 +70,7 @@ async function removeMessage() {
                         ]"
                     />
                 </div>
-                <div px-3 sm:px-6>
+                <div px-7 sm:px-10>
                     <MarkdownRenderer
                         v-if="message.role === 'assistant' && !message.isError"
                         :value="message.text"
@@ -83,28 +84,12 @@ async function removeMessage() {
                         >
                             {{ line }}
                         </div>
-                        <Transition name="appear-right">
-                            <GpLongPressButton
-                                v-if="isHovering"
-                                :duration="1500"
-                                progress-bar-style="bg-red/50"
-                                success-style="!ring-red !scale-110"
-                                icon="i-tabler-trash !text-4 sm:!text-6"
-                                right-1 sm:right--5
-                                bottom-2
-                                class="!absolute"
-                                w-8 sm:w-10
-                                rounded-3 m-0
-                                @success="removeMessage"
-                            />
-                        </Transition>
                     </div>
                     <div v-else text-red-8 dark:text-red-4>
                         {{ message.text }}
                     </div>
                 </div>
-
-                <div v-if="message.isError" px-3 sm:px-6 flex mt-2>
+                <div v-if="message.isError" px-7 sm:px-10 flex mt-2>
                     <div
                         bg-red-200 text-red-7
                         class="dark:bg-red-5/20 dark:text-red-4"
@@ -118,6 +103,27 @@ async function removeMessage() {
                         Dismiss errors
                     </div>
                 </div>
+                <Transition name="slide-top">
+                    <div
+                        v-if="isHovering && !isOnSharePage"
+                        mt-2
+                        flex items-center justify-end h-10 p-2 border-box rounded-2
+                    >
+                        <GpLongPressButton
+                            :duration="500"
+                            progress-bar-style="bg-red/50"
+                            success-style="!ring-red !scale-90 shadow-none"
+                            icon="i-tabler-trash !text-10px sm:!text-16px"
+                            class="!absolute"
+                            shadow-lg
+                            gap-2px sm:gap-1
+                            rounded-3 m-0 text-2 sm:text-14px
+                            @success="removeMessage"
+                        >
+                            Delete
+                        </GpLongPressButton>
+                    </div>
+                </Transition>
             </div>
         </div>
     </div>

@@ -29,7 +29,7 @@ jobs:
         id: deploy
         uses: BetaHuhn/deploy-to-vercel-action@v1 # pin@ffcc89a6d79de43d964945ce053395c2958610b1
         env:
-          DOMAIN: geppeto-staging.vercel.app
+          DOMAIN: golem-staging.vercel.app
         with:
           GITHUB_TOKEN: ${{ steps.auth.outputs.token }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -41,5 +41,5 @@ jobs:
           PRODUCTION: false
           BUILD_ENV: |
             REDIRECT_URL=${{ env.DOMAIN }}
-            GEPPETO_PASSWORD=${{ secrets.GEPPETO_PASSWORD }}#${{ steps.script.outputs.pr-number }}
+            GOLEM_PASSWORD=${{ secrets.GEPPETO_PASSWORD }}#${{ steps.script.outputs.pr-number }}
             APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}

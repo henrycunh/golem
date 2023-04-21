@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 useHead({
-    title: 'geppeto',
+    title: 'Golem',
     meta: [
-        { name: 'description', content: 'Your brain on GPT' },
+        { name: 'description', content: 'Golem is an open-source, amazingly crafted conversational UI and alternative to ChatGPT.' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1' },
     ],
     link: [
-        { rel: 'icon', type: 'image/svg+xml', href: 'https://api.iconify.design/fluent-emoji:robot.svg?color=%230fbd3b' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/image/logo-dark-square.svg' },
     ],
 })
 </script>

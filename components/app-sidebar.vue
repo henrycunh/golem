@@ -8,6 +8,7 @@ const {
 
 const route = useRoute()
 const { apiKey } = useSettings()
+const colorMode = useColorMode()
 
 const conversationsSortedByUpdatedAt = computed(() => {
     if (conversationList.value === null) {
@@ -107,12 +108,7 @@ const onOpenKnowledgeManager = () => {
                 text-color-lighter my-6 text-5 tracking--1px w-full
                 flex-col flex justify-center items-center
             >
-                <div font-black>
-                    geppeto
-                </div>
-                <div text-3 tracking-wide flex items-center gap-1 op-60>
-                    made with <div i-tabler-heart-filled text-red /> by Caret
-                </div>
+                <img :src="`/image/logo-${colorMode.value}-lettered.svg`" w-24 op-60 alt="">
             </div>
         </div>
     </div>

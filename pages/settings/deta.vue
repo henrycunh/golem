@@ -5,7 +5,8 @@ const apiKeyInput = syncStorageRef(apiKey)
 
 <template>
     <div>
-        <div
+        <GpSplash title="No settings available" />
+        <!-- <div
             font-bold text-gray-6 dark:text-gray-3 mt-7
             text-14px sm:text-5
         >
@@ -19,6 +20,6 @@ const apiKeyInput = syncStorageRef(apiKey)
             placeholder="Enter your API Key"
             text-11px sm:text-4
             w-full text-gray-5 dark:text-gray-1
-        />
+        /> -->
     </div>
 </template>

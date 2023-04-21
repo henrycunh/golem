@@ -2,7 +2,7 @@ import { tailwindcssPaletteGenerator } from '@bobthered/tailwindcss-palette-gene
 import { useStorage } from '@vueuse/core'
 
 export function useAppearance() {
-    const color = useStorage('geppeto-base-color', '#a633cc')
+    const color = useStorage('golem-base-color', '#a633cc')
 
     function setPalette(newColor?: string) {
         if (newColor) {
