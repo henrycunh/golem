@@ -303,6 +303,9 @@ export const useConversations = () => {
                 async context_length_exceeded() {
                     await addErrorMessage('Your message is too long, please try again.')
                 },
+                async invalid_api_key() {
+                    await addErrorMessage('Your API key is invalid. Please check your API key in the settings.')
+                },
             } as Record<string, () => Promise<void>>
 
             if (errorCode in errorHandlerMapping) {

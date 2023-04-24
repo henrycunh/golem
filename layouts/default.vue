@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const { isMobile } = useDevice()
+const { isSidebarCompact } = useUI()
 useSetup()
 </script>
 
@@ -15,6 +16,11 @@ useSetup()
                     v-if="!isMobile"
                     absolute top-.25rem left-.25rem bottom-.25rem
                     w-17.5rem
+                    :class="[
+                        isSidebarCompact
+                            ? 'w-5rem'
+                            : 'w-17.5rem',
+                    ]"
                 >
                     <ClientOnly>
                         <AppSidebar />
@@ -29,8 +35,10 @@ useSetup()
                     overflow-hidden
                     absolute top-0.5rem bottom-0.5rem right-0.5rem
                     bg-white dark:bg-dark-2 rounded-2 shadow-lg border
+                    left-17.5rem
                     :class="[
-                        !isMobile ? 'left-17.5rem' : '!left-0 !top-0 !right-0 !bottom-0 !rounded-0',
+                        isMobile && '!left-0 !top-0 !right-0 !bottom-0 !rounded-0',
+                        isSidebarCompact && 'left-5rem',
                     ]"
                 >
                     <slot h-full />

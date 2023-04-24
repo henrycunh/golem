@@ -16,6 +16,7 @@ export namespace types {
         updatedAt: Date
         createdAt: Date
         isError?: boolean
+        actions?: any[]
     }
 
     export interface KnowledgeItem {

@@ -1,13 +1,15 @@
 <script lang="ts" setup>
+import { encode, estimateCost } from 'gpt-token-utils'
 import type { types } from '~~/utils/types'
 
 const props = defineProps<{ message: types.Message }>()
 
 const { currentPreset } = usePreset()
 const { isOnSharePage } = useSession()
+const { modelUsed } = useSettings()
 const element = ref()
+const isActionBarVisible = ref(false)
 
-const isHovering = useElementHover(element)
 const { clearErrorMessages, removeMessageFromConversation, currentConversation } = useConversations()
 
 const filteredUserMessage = computed(() =>
@@ -20,12 +22,34 @@ async function removeMessage() {
     }
     await removeMessageFromConversation(currentConversation.value?.id, props.message.id)
 }
+
+const tokenCount = computed(() => encode(props.message.text).length)
+const messageEstimatedCost = computed(() => estimateCost(modelUsed.value, props.message.text))
+function onClick() {
+    if (props.message.isError) {
+        return
+    }
+    isActionBarVisible.value = true
+}
+onClickOutside(element, () => {
+    if (props.message.isError) {
+        return
+    }
+    isActionBarVisible.value = false
+})
 </script>
 
 <template>
     <div
         ref="element"
-        w-full
+        w-full rounded-2 overflow-hidden
+        ring-2 ring-transparent
+        :class="[
+            !message.isError && 'hover:ring-primary-200 active:ring-primary-300 cursor-pointer ',
+            isActionBarVisible && '!ring-primary-300',
+        ]"
+        transition-all
+        @click="onClick"
     >
         <div
             py-2 sm:py-3
@@ -70,7 +94,7 @@ async function removeMessage() {
                         ]"
                     />
                 </div>
-                <div px-7 sm:px-10>
+                <div px-7 sm:px-10 cursor-auto>
                     <MarkdownRenderer
                         v-if="message.role === 'assistant' && !message.isError"
                         :value="message.text"
@@ -91,31 +115,43 @@ async function removeMessage() {
                 </div>
                 <div v-if="message.isError" px-7 sm:px-10 flex mt-2>
                     <div
-                        bg-red-200 text-red-7
-                        class="dark:bg-red-5/20 dark:text-red-4"
-                        p-2px px-2 sm:py-1 sm:px-2 rounded-2 font-bold
+                        v-for="action in [...(message.actions || []), { label: 'Dismiss errors', action: clearErrorMessages }]" :key="action.label"
+                        bg-red-200
+                        text-red-7 class="dark:bg-red-5/20 dark:text-red-4" p-2px px-2 sm:py-1 sm:px-2
+                        rounded-2 font-bold
                         text-9px sm:text-14px
                         active:translate-y-2px hover:op-80
-                        cursor-pointer select-none
+                        cursor-pointer
+                        select-none
                         transition
-                        @click="clearErrorMessages"
+                        flex items-center gap-1
+                        :class="action.classOverride"
+                        @click="action.action"
                     >
-                        Dismiss errors
+                        <div v-if="action.icon" :class="action.icon" />
+                        {{ action.label }}
                     </div>
                 </div>
                 <Transition name="slide-top">
                     <div
-                        v-if="isHovering && !isOnSharePage"
+                        v-if="isActionBarVisible && !isOnSharePage"
                         mt-2
-                        flex items-center justify-end h-10 p-2 border-box rounded-2
+                        flex items-center h-10 p-2 border-box rounded-2
                     >
+                        <div
+                            flex items-center gap-1 text-color-lighter
+                            text-14px
+                        >
+                            <div i-tabler-atom-2-filled />
+                            {{ tokenCount }} tokens
+                        </div>
                         <GpLongPressButton
+                            ml-auto
                             :duration="500"
                             progress-bar-style="bg-red/50"
                             success-style="!ring-red !scale-90 shadow-none"
                             icon="i-tabler-trash !text-10px sm:!text-16px"
-                            class="!absolute"
-                            shadow-lg
+                            class="shadow-lg shadow-800/10"
                             gap-2px sm:gap-1
                             rounded-3 m-0 text-2 sm:text-14px
                             @success="removeMessage"

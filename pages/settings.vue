@@ -55,10 +55,10 @@ const route = useRoute()
         </div>
         <div
             mt-2 max-w-1080px mx-auto
-            px-4 md:px-6 sm:px-16
+            px-4 md:px-6
             grid
             grid-cols-12 sm:grid-cols-6
-            gap-3 sm:gap-12 items-start
+            gap-3 md:gap-6 items-start
             pt-2 sm:pt-6
         >
             <div

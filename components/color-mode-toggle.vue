@@ -8,8 +8,9 @@ const onClick = (e: any) => {
 
 <template>
     <div
-        p-1 text-5 rounded cursor-pointer hover:bg-gray-1 transition
+        p-2 text-5 rounded-2 cursor-pointer hover:bg-gray-1 transition
         class="dark:hover:bg-white/5"
+        text-color
         @click.stop="onClick"
     >
         <Transition name="appear-top">
