@@ -1,38 +1,15 @@
-@font-face {
-    font-family: ColfaxAI;
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2) format("woff2"), url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff) format("woff");
-}
-
-@font-face {
-    font-family: ColfaxAI;
-    font-style: italic;
-    font-weight: 400;
-    src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegularItalic.woff2) format("woff2"), url(https://cdn.openai.com/API/fonts/ColfaxAIRegularItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: ColfaxAI;
-    font-style: normal;
-    font-weight: 700;
-    src: url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff2) format("woff2"), url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff) format("woff");
-}
-
-@font-face {
-    font-family: ColfaxAI;
-    font-style: italic;
-    font-weight: 700;
-    src: url(https://cdn.openai.com/API/fonts/ColfaxAIBoldItalic.woff2) format("woff2"), url(https://cdn.openai.com/API/fonts/ColfaxAIBoldItalic.woff) format("woff");
-}
-
-
 * {
     box-sizing: border-box;
     touch-action: manipulation;
 }
 
+html {
+    @apply font-text;
+}
 
+input, textarea {
+    @apply font-text;
+}
 
 html.scroll-lock {
     position: fixed;
@@ -166,6 +143,24 @@ html.scroll-lock {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.slide-top-enter-active,
+.slide-top-leave-active {
+    transition: transform 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        opacity 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        height 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        margin 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        padding 0.25s cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+.slide-top-enter-from,
+.slide-top-leave-to {
+    opacity: 0 !important;
+    transform: translateY(-20px) !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .v-popper__inner {

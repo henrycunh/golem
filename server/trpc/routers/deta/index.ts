@@ -4,7 +4,7 @@ export const detaInfoRouter = router({
 
     isEnabled: publicProcedure
         .query(async () => {
-            return Boolean(process.env.DETA_PROJECT_KEY)
+            return Boolean(process?.env?.DETA_PROJECT_KEY)
         }),
 
 })

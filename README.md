@@ -1,28 +1,53 @@
-![Frame 2 (1)](https://user-images.githubusercontent.com/8951736/227655725-d2fd7fdb-fb6d-43ff-98a3-8922f440c2cc.png)
+<div align="center">
 
-# Geppeto 🎭
+<img src="./public/image/logo-light-lettered.svg#gh-light-mode-only" width="300" />
+<img src="./public/image/logo-dark-lettered.svg#gh-dark-mode-only" width="300" />
 
-An elegant, open-source alternative to the official UI for ChatGPT.
+> Golem is an open-source conversational UI and alternative to ChatGPT
 
-Visit at [geppeto.chat](https://geppeto.chat).
+</div>
 
-## Configuration
+![](./docs/screenshot.png)
+
+
+## 🚀 Key Features:
+
+- ✅ Access to GPT-3.5 / GPT-4 APIs
+- 🎨 Customizable UI
+- 🌑 Dark mode
+- 🗑️ Delete messages
+
+## ☁ Host on the Personal Cloud with Deta
+
+- 🔑 Your data and conversations only belong to you
+- 📦 Integrate easily with other apps, everything on the personal cloud is programmable
+- 💠 Cross device synchronisation
+- 🍻 Share chat history
+
+
+## 🛠 Configuration
 You can use **environment variables** to customize your instance.
 
 | Variable | Description |
 | -------- | ----------- |
-| **`GEPPETO_PASSWORD`** | Protects the instance with this password, which will be prompted at every usage. |
+| **`GOLEM_PASSWORD`** | Protects the instance with this password, which will be prompted at every usage. |
 | **`OPENAI_API_KEY`** | Enforces the usage of this API Key on the instance. |
 
-## Roadmap 🗺️
+## 🐳 Running on Docker
+You can run Golem on Docker with the following command:
 
-- [ ] Support external knowledge 🧠 - Allow making questions about documents
-- [ ] Support for additional AI language models 🤖 - Allow users to choose from a variety of AI language models.
-- [ ] User accounts and synchronization ☁️ - Integrate user accounts for customization and conversation sync across devices.
-- [ ] Multi-language support 🌍 - Translate the user interface for international users.
-- [ ] Plugin system 🔌 - Extend Geppeto's capabilities with community-developed plugins using OpenAI standards.
-- [ ] Share chat history 📦 - Export and share your conversations in various formats.
+```bash
+docker run -p3000:3000 theajax/golem
+```
 
+## 🗺️ Roadmap:
+
+- ⭐️ Favorite messages and conversations
+- 🔎 Search messages
+- 📄 External knowledge (documents, websites, etc.) support
+- 🤖 Additional AI language models support
+- 🌍 Multi-language support
+- 🔌 Plugins support
 
 
 

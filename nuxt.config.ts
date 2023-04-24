@@ -1,4 +1,20 @@
 export default defineNuxtConfig({
+    pwa: {
+        icon: {
+            fileName: 'android-chrome-512x512.png',
+        },
+        manifest: {
+            background_color: '#f5f5f5',
+            name: 'Golem',
+            categories: ['productivity', 'education'],
+            description: 'Golem is an open-source conversational UI and alternative to ChatGPT',
+            display: 'standalone',
+            lang: 'en',
+            id: `golem-${new Date().getTime()}`,
+            theme_color: '#3f3f3f',
+        },
+    },
+
     css: ['~/assets/css/main.css'],
     experimental: {
         reactivityTransform: true,
@@ -7,6 +23,7 @@ export default defineNuxtConfig({
         '@unocss/nuxt',
         '@vueuse/nuxt',
         '@nuxtjs/color-mode',
+        '@kevinmarrec/nuxt-pwa',
     ],
     colorMode: {
         classSuffix: '',
@@ -18,6 +35,8 @@ export default defineNuxtConfig({
         webFonts: {
             fonts: {
                 code: 'DM Mono:400',
+                text: 'Rubik:400,700',
+                title: 'Schibsted Grotesk:400,700',
             },
         },
     },
@@ -44,7 +63,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         detaKey: process.env.DETA_PROJECT_KEY,
         apiKey: process.env.OPENAI_API_KEY,
-        password: process.env.GEPPETO_PASSWORD,
+        password: process.env.GOLEM_PASSWORD,
     },
     build: {
         transpile: ['trpc-nuxt', 'dexie'],

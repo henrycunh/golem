@@ -5,6 +5,7 @@ const conversationId = useRoute().params.conversationId
 const { switchConversation } = useConversations()
 const conversationNotFound = ref(false)
 const loading = ref(false)
+
 if (process.client) {
     const { deta } = useDeta()
     loading.value = true

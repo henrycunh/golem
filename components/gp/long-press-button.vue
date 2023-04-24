@@ -19,7 +19,7 @@ onLongPress(element, () => {
     setTimeout(() => {
         progress.value = 0
     }, 100)
-}, { delay: props.duration })
+}, { delay: props.duration, modifiers: { stop: true } })
 
 function onMouseDown() {
     progress.value = 100

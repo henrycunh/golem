@@ -1,7 +1,18 @@
 # Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
 v: 0
+icon: assets/logo.png
 micros:
-    - name: ungpt
+    - name: golem
       src: .
       engine: nuxt
       primary: true
+      public_routes:
+        - /chat/share/*
+        - /_nuxt/*
+        - /api/trpc/deta*
+        - /shiki/*
+        - /image/*
+        - /*.png
+        - /*.ico
+        - /sw.js
+        - /manifest.json

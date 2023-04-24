@@ -3,7 +3,7 @@ export function useSession() {
     const isLoggedIn = useState('is-logged-in', () => false)
 
     const isOnSharePage = computed(() => {
-        return route.name === 'chat-conversationId'
+        return route.name === 'chat-share-conversationId'
     })
 
     return {

@@ -4,6 +4,7 @@ const {
     createConversation,
     switchConversation,
 } = useConversations()
+const { scrollToBottom } = useUI()
 
 const conversationsSortedByUpdatedAt = computed(() => {
     if (conversationList.value === null) {

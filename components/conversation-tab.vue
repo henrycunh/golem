@@ -182,7 +182,7 @@ const onDeleteConversation = async (id: string) => {
                     <GpLongPressButton
                         v-if="isHovering || isMobile"
                         :duration="800"
-                        icon="i-tabler-x"
+                        icon="i-tabler-x text-4"
                         rounded-2px
                         small
                         success-style="!ring-red-500 !text-red-7"

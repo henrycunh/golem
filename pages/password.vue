@@ -12,7 +12,7 @@ async function onLogin() {
     const result = await client.auth.login.mutate(password.value)
     if (result) {
         error.value = false
-        useCookie('geppeto-password').value = password.value
+        useCookie('golem-password').value = password.value
         isLoggedIn.value = true
         navigateTo('/')
     }

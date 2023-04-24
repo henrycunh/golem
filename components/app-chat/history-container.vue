@@ -20,7 +20,7 @@ const chatScroll = useScroll(container, {
     },
 })
 
-function getScrollHeight () {
+function getScrollHeight() {
     if (!container.value) {
         return false
     }
@@ -29,15 +29,9 @@ function getScrollHeight () {
 }
 
 const autoScrollInterval = ref()
-const isScrollToBottomButtonVisible = computed(() => {
-    if (!container.value) {
-        return false
-    }
-    const el = container.value
-    return chatScroll.y.value + 200 < el.scrollHeight - el.clientHeight
-})
 
 function scrollToBottom() {
+    logger.info('Scrolling to bottom')
     setTimeout(() => {
         chatScroll.y.value = container.value?.scrollHeight
     }, 10)
@@ -55,7 +49,9 @@ watch(() => currentConversation.value?.id, (newId, oldId) => {
     scrollToBottom()
 })
 
-onMounted(() => scrollToBottom())
+onMounted(() => {
+    setTimeout(() => scrollToBottom(), 300)
+})
 
 watch(isTypingInCurrentConversation, (newState, oldState) => {
     if (newState === oldState) {

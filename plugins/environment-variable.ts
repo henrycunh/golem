@@ -8,7 +8,7 @@ export default defineNuxtPlugin(() => {
         }
         if (password) {
             isPasswordRequired.value = true
-            isLoggedIn.value = String(useCookie('geppeto-password').value) === String(password)
+            isLoggedIn.value = String(useCookie('golem-password').value) === String(password)
         }
     }
     else {
