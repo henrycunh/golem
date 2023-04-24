@@ -131,7 +131,6 @@ export function useLanguageModel() {
                     console.log(e, decoded, decodedData)
                 }
             }
-            console.log({ result })
             return result
         }
     }

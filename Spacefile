@@ -11,3 +11,8 @@ micros:
         - /_nuxt/*
         - /api/trpc/deta*
         - /shiki/*
+        - /image/*
+        - /*.png
+        - /*.ico
+        - /sw.js
+        - /manifest.json

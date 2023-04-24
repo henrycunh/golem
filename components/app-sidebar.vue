@@ -118,7 +118,7 @@ const onOpenKnowledgeManager = () => {
             </SidebarItem>
 
             <div v-if="isSidebarCompact" flex justify-center w-full>
-                <ColorModeToggle text-6 />
+                <ColorModeToggle text-6 w-full />
             </div>
             <SidebarApiKeyAlert
                 v-if="!apiKey"

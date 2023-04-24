@@ -2,7 +2,13 @@ import type { ChatGPTError, ChatMessage } from 'chatgpt-web'
 import { nanoid } from 'nanoid'
 import { Configuration, OpenAIApi } from 'openai'
 import pLimit from 'p-limit'
+import { encode } from 'gpt-token-utils'
 import type { types } from '~~/utils/types'
+
+const MaxTokensPerModel = {
+    'gpt-4': 8180,
+    'gpt-3.5-turbo': 4080,
+} as Record<string, number>
 
 export const useConversations = () => {
     const db = useIDB()
@@ -253,6 +259,25 @@ export const useConversations = () => {
         //     }
         //     userMessage.parentMessageId = lastMessageId
         // }
+
+        // Count the tokens to see if message is too long
+        const getTokenCount = () => encode(messageList.map(message => message.content).join('\n\n')).length
+        let lastTokenCount = getTokenCount()
+        if (getTokenCount() > MaxTokensPerModel[modelUsed.value]) {
+            // Remove the first message that is not a system message
+            // until the token count is less than the max or there are no more messages
+            while (messageList.length > 1 && lastTokenCount > MaxTokensPerModel[modelUsed.value]) {
+                messageList = [
+                    messageList[0],
+                    ...messageList.filter(({ role }) => role !== 'system').slice(1),
+                ]
+                lastTokenCount = getTokenCount()
+            }
+            if (messageList.length === 1) {
+                await addErrorMessage('Your message is too long, please try again.')
+                return
+            }
+        }
 
         let thisMessage: ChatMessage | null = null
         let messageCreated = false

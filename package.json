@@ -35,6 +35,7 @@
   "dependencies": {
     "@bobthered/tailwindcss-palette-generator": "^3.1.1",
     "@dqbd/tiktoken": "^1.0.3",
+    "@kevinmarrec/nuxt-pwa": "^0.17.0",
     "@trpc/client": "^10.18.0",
     "@trpc/server": "^10.18.0",
     "@vueuse/nuxt": "^9.13.0",

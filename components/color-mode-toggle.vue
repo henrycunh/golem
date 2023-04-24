@@ -11,7 +11,7 @@ const onClick = (e: any) => {
         p-2 text-5 rounded-2 cursor-pointer hover:bg-gray-1 transition
         class="dark:hover:bg-white/5"
         text-color
-        @click.stop="onClick"
+        children:mx-auto @click.stop="onClick"
     >
         <Transition name="appear-top">
             <div v-if="colorMode.value === 'light'" i-tabler-sun />
