@@ -1,6 +1,13 @@
 * {
     box-sizing: border-box;
     touch-action: manipulation;
+}
+
+html {
+    @apply font-text;
+}
+
+input, textarea {
     @apply font-text;
 }
 

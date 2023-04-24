@@ -115,7 +115,7 @@ function onMaximize() {
             p-2
             v-html="highlightedCode"
         />
-        <Dialog v-model="isMaximized" w-80dvw max-h-90dvh>
+        <Dialog v-model="isMaximized" w-80dvw max-h-90dvh font-code>
             <MarkdownCodeBlock
                 v-if="isMaximized"
                 :content="props.content"

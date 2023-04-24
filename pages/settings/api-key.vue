@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 const { apiKey } = useSettings()
+const { checkIfAPIKeyIsValid } = useLanguageModel()
 const apiKeyInput = syncStorageRef(apiKey)
 const { instanceApiKey } = useSettings()
+
+const apiKeyError = ref<string | false>(false)
 
 const maskedApiKey = computed(() => {
     if (!instanceApiKey.value) {
@@ -10,6 +13,20 @@ const maskedApiKey = computed(() => {
     const apiKeyLength = instanceApiKey.value.length
     return instanceApiKey.value.slice(0, 4) + '•'.repeat(apiKeyLength - 8) + instanceApiKey.value.slice(apiKeyLength - 4)
 })
+
+// Check if the API key is valid
+async function onBlur(event: FocusEvent) {
+    const apiKey = (event.target as HTMLInputElement)?.value
+    if (apiKey) {
+        try {
+            await checkIfAPIKeyIsValid(apiKey)
+            apiKeyError.value = false
+        }
+        catch (e) {
+            apiKeyError.value = 'Invalid API key.'
+        }
+    }
+}
 </script>
 
 <template>
@@ -31,6 +48,10 @@ const maskedApiKey = computed(() => {
                 placeholder="Enter your API Key"
                 text-11px sm:text-4
                 w-full text-gray-5 dark:text-gray-1
+                :when="{
+                    blur: onBlur,
+                }"
+                :error="apiKeyError"
             />
         </div>
         <div v-else>

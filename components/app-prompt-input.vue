@@ -56,13 +56,12 @@ const handleEnter = (e: KeyboardEvent) => {
             w-full
             text-12px sm:text-16px
             outline-none overflow-y-auto bg-transparent overflow-x-hidden
-            placeholder="Type your message here..." leading-6
+            placeholder="Type your message here..." leading-6 font-text
             relative z-2 resize-none b-0 h-28px sm:h-7
             dark:placeholder:text-gray-4
             text-gray-8 dark:text-gray-1
             focus:placeholder:translate-x-6px placeholder:transition-all
             :disabled="!isLogged"
-            class="!font-[ColfaxAI]"
             :class="[
                 !isLogged ? 'cursor-not-allowed' : '',
             ]"

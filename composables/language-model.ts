@@ -136,7 +136,18 @@ export function useLanguageModel() {
         }
     }
 
-    return { complete, sendMessage }
+    const checkIfAPIKeyIsValid = async (newApiKey: string) => {
+        const res = await $fetch<any>('https://api.openai.com/v1/engines', {
+            headers: {
+                Authorization: `Bearer ${newApiKey || apiKey.value}`,
+            },
+        })
+        if (res.status === 401) {
+            throw new Error('Invalid API key')
+        }
+    }
+
+    return { complete, sendMessage, checkIfAPIKeyIsValid }
 }
 
 interface LMCompleteParams {

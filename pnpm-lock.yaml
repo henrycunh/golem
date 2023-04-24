@@ -46,6 +46,9 @@ dependencies:
   floating-vue:
     specifier: 2.0.0-beta.20
     version: 2.0.0-beta.20(vue@3.2.47)
+  gpt-token-utils:
+    specifier: ^1.2.0
+    version: 1.2.0
   hyperid:
     specifier: ^3.1.1
     version: 3.1.1
@@ -4767,6 +4770,10 @@ packages:
     dependencies:
       get-intrinsic: 1.2.0
     dev: true
+
+  /gpt-token-utils@1.2.0:
+    resolution: {integrity: sha512-s8twaU38UE2Vp65JhQEjz8qvWhWY8KZYvmvYHapxlPT03Ok35Clq+gm9eE27wQILdFisseMVRSiC5lJR9GBklA==}
+    dev: false
 
   /graceful-fs@4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
