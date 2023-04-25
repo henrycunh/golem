@@ -29,7 +29,7 @@ async function onBlur(event: FocusEvent) {
     }
 }
 
-if (isDetaEnabled) {
+if (isDetaEnabled.value) {
     const updateAPIKeyOnDeta = useDebounceFn(async () => {
         const { error } = await handle(checkIfAPIKeyIsValid(apiKeyInput.value || ''))
         if (error) {
