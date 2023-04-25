@@ -54,6 +54,7 @@ jobs:
       - name: Install Deta Space CLI
         run: |
           curl -fsSL https://deta.space/assets/space-cli.sh | sh
+          export PATH="/home/runner/.detaspace/bin:$PATH"
 
       - name: Deploy to Deta Space
         run: |
