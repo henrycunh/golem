@@ -17,11 +17,11 @@ const settingsPageList = [
         icon: 'i-tabler-box-model-2',
         path: '/settings/model',
     },
-    isDetaEnabled.value && {
-        name: 'Deta',
-        icon: 'i-tabler-database',
-        path: '/settings/deta',
-    },
+    // isDetaEnabled.value && {
+    //     name: 'Deta',
+    //     icon: 'i-tabler-database',
+    //     path: '/settings/deta',
+    // },
 ].filter(Boolean) as {
     name: string
     icon: string

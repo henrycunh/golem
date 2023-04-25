@@ -8,6 +8,7 @@ export const createContext = () => ({
     deta: {
         conversations: getDetaBase('conversations'),
         messages: getDetaBase('messages'),
+        preferences: getDetaBase('preferences'),
     },
 })
 export type Context = inferAsyncReturnType<typeof createContext>

@@ -40,3 +40,28 @@ jobs:
           BUILD_ENV: |
             REDIRECT_URL=${{ env.DOMAIN }}
             APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}
+
+      - uses: clicampo/action-publish-semver-release@v1
+        id: release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-committer-name: Release bot
+          git-committer-email: release@bot.com
+          # slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # project-url: ${{ github.server_url }}/${{ github.repository }}
+          # production-action-url: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-production.yml
+
+      - name: Install Deta Space CLI
+        run: |
+          curl -fsSL https://deta.space/assets/space-cli.sh | sh
+          export PATH="/home/runner/.detaspace/bin:$PATH"
+
+      - name: Deploy to Deta Space
+        run: |
+          /home/runner/.detaspace/bin/space link --id ${{ secrets.DETA_PROJECT_ID }}
+          /home/runner/.detaspace/bin/space push --experimental
+          /home/runner/.detaspace/bin/space release --version ${{ steps.release.outputs.next-version }}
+        env:
+          SPACE_ACCESS_TOKEN: ${{ secrets.DETA_ACCESS_TOKEN }}
+    
+    

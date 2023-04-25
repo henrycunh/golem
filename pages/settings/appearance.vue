@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import tinycolor from 'tinycolor2'
 const currentColorMode = useColorMode()
+const { isDetaEnabled } = useDeta()
+const client = useClient()
 const { setPalette, color: currentColor } = useAppearance()
 
 const colorModeOptions = [
@@ -25,6 +27,9 @@ function onColorModeClick(colorMode: string) {
 
 function onThemeColorClick(color: string) {
     setPalette(color)
+    if (isDetaEnabled) {
+        client.deta.preferences.set.mutate({ key: 'color', value: color })
+    }
 }
 </script>
 

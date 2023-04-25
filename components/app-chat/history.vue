@@ -24,7 +24,7 @@ const isAssistantTyping = computed(() => isTypingInCurrentConversation.value && 
 </script>
 
 <template>
-    <AppChatHistoryContainer>
+    <AppChatHistoryContainer :key="currentConversation?.updatedAt.getTime()">
         <TransitionGroup name="fade">
             <Message
                 v-for="message in currentConversation?.messages || []"
