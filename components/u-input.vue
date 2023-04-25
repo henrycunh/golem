@@ -23,13 +23,13 @@ export default {
             class="dark:b-white/10 dark:focus:b-primary-400 dark:focus:placeholder:text-coolgray-500"
             bg-transparent text-color
             :class="[
-                error && 'b-red-4',
+                error && '!b-red-4',
             ]"
             :value="modelValue"
             :placeholder="placeholder"
             v-bind="{ ...$attrs }"
             @input="$emit('update:modelValue', ($event.target as any).value)"
-            v-on="when"
+            v-on="when || {}"
         >
         <div v-if="error" text-red-400 text-11px sm:text-14px mt-1>
             {{ error }}

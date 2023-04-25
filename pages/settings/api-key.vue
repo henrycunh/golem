@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-const { apiKey } = useSettings()
+const { apiKey, instanceApiKey } = useSettings()
+const { isDetaEnabled } = useDeta()
 const { checkIfAPIKeyIsValid } = useLanguageModel()
 const apiKeyInput = syncStorageRef(apiKey)
-const { instanceApiKey } = useSettings()
+const client = useClient()
 
 const apiKeyError = ref<string | false>(false)
 
@@ -27,6 +28,24 @@ async function onBlur(event: FocusEvent) {
         }
     }
 }
+
+const updateAPIKeyOnDeta = useDebounceFn(async () => {
+    const { error } = await handle(checkIfAPIKeyIsValid(apiKeyInput.value || ''))
+    if (error) {
+        apiKeyError.value = 'Invalid API key.'
+        return
+    }
+    await client.deta.preferences.set.mutate({ key: 'api-key', value: apiKeyInput.value || '' })
+    instanceApiKey.value = apiKeyInput.value || ''
+    apiKey.value = apiKeyInput.value || ''
+    apiKeyError.value = false
+}, 300)
+
+watch(apiKeyInput, (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+        updateAPIKeyOnDeta()
+    }
+})
 </script>
 
 <template>
@@ -42,7 +61,7 @@ async function onBlur(event: FocusEvent) {
                 OpenAI dashboard
             </GpLink>.
         </div>
-        <div v-if="!instanceApiKey" text-gray-5 dark:text-gray-1 mt-3>
+        <div v-if="!(instanceApiKey && !isDetaEnabled)" text-gray-5 dark:text-gray-1 mt-3>
             <UInput
                 v-model="apiKeyInput"
                 placeholder="Enter your API Key"
@@ -61,8 +80,13 @@ async function onBlur(event: FocusEvent) {
             >
                 Instance API Key
             </div>
-            <div my-3>
-                This instance has a shared API key already set up.
+            <div my-3 />
+            <div v-if="isDetaEnabled" text-color-lighter text-8px sm:text-13px>
+                {{
+                    isDetaEnabled
+                        ? 'The API Key is setup and stored on Deta.'
+                        : 'This instance has a shared API key already set up.'
+                }}
             </div>
             <div
                 text-color mt-3 font-code
