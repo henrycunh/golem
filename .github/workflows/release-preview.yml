@@ -50,3 +50,15 @@ jobs:
             REDIRECT_URL=${{ env.DOMAIN }}
             GOLEM_PASSWORD=${{ secrets.GEPPETO_PASSWORD }}#${{ steps.script.outputs.pr-number }}
             APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}
+
+      - name: Install Deta Space CLI
+        run: |
+          curl -fsSL https://deta.space/assets/space-cli.sh | sh
+
+      - name: Deploy to Deta Space
+        run: |
+          space link --id ${{ secrets.DETA_PROJECT_ID }}
+          space push --experimental
+        env:
+          SPACE_ACCESS_TOKEN: ${{ secrets.DETA_ACCESS_TOKEN }}
+
