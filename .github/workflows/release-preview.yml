@@ -45,7 +45,6 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_SCOPE: ${{ secrets.VERCEL_ORG_ID }}
           PR_PREVIEW_DOMAIN: ${{ env.DOMAIN }}
-          FORCE: true
           BUILD_ENV: |
             REDIRECT_URL=${{ env.DOMAIN }}
             GOLEM_PASSWORD=${{ secrets.GEPPETO_PASSWORD }}#${{ steps.script.outputs.pr-number }}

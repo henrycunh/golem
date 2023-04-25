@@ -42,6 +42,7 @@ jobs:
             APP_VERSION=${{ steps.script.outputs.ref }}#${{ steps.script.outputs.pr-number }}
 
       - uses: clicampo/action-publish-semver-release@v1
+        id: release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-committer-name: Release bot
@@ -59,7 +60,7 @@ jobs:
         run: |
           /home/runner/.detaspace/bin/space link --id ${{ secrets.DETA_PROJECT_ID }}
           /home/runner/.detaspace/bin/space push --experimental
-          /home/runner/.detaspace/bin/space release --version 
+          /home/runner/.detaspace/bin/space release --version ${{ steps.release.outputs.next-version }}
         env:
           SPACE_ACCESS_TOKEN: ${{ secrets.DETA_ACCESS_TOKEN }}
     
