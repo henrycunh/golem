@@ -58,8 +58,8 @@ jobs:
 
       - name: Deploy to Deta Space
         run: |
-          space link --id ${{ secrets.DETA_PROJECT_ID }}
-          space push --experimental
+          /home/runner/.detaspace/bin/space link --id ${{ secrets.DETA_PROJECT_ID }}
+          /home/runner/.detaspace/bin/space push --experimental
         env:
           SPACE_ACCESS_TOKEN: ${{ secrets.DETA_ACCESS_TOKEN }}
 
