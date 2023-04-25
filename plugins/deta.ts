@@ -4,17 +4,19 @@ export default defineNuxtPlugin(async () => {
         const client = useClient()
         isDetaEnabled.value = await client.deta.info.isEnabled.query()
 
-        const { instanceApiKey, apiKey } = useSettings()
-        const detaApiKey = await client.deta.preferences.get.query('api-key') as string
-        if (detaApiKey) {
-            instanceApiKey.value = detaApiKey
-            apiKey.value = detaApiKey
-        }
+        if (!isDetaEnabled.value) {
+            const { instanceApiKey, apiKey } = useSettings()
+            const detaApiKey = await client.deta.preferences.get.query('api-key') as string
+            if (detaApiKey) {
+                instanceApiKey.value = detaApiKey
+                apiKey.value = detaApiKey
+            }
 
-        const { setPalette } = useAppearance()
-        const color = await client.deta.preferences.get.query('color') as string
-        if (color) {
-            setPalette(color)
+            const { setPalette } = useAppearance()
+            const color = await client.deta.preferences.get.query('color') as string
+            if (color) {
+                setPalette(color)
+            }
         }
     }
     else {

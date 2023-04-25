@@ -29,23 +29,25 @@ async function onBlur(event: FocusEvent) {
     }
 }
 
-const updateAPIKeyOnDeta = useDebounceFn(async () => {
-    const { error } = await handle(checkIfAPIKeyIsValid(apiKeyInput.value || ''))
-    if (error) {
-        apiKeyError.value = 'Invalid API key.'
-        return
-    }
-    await client.deta.preferences.set.mutate({ key: 'api-key', value: apiKeyInput.value || '' })
-    instanceApiKey.value = apiKeyInput.value || ''
-    apiKey.value = apiKeyInput.value || ''
-    apiKeyError.value = false
-}, 300)
+if (isDetaEnabled) {
+    const updateAPIKeyOnDeta = useDebounceFn(async () => {
+        const { error } = await handle(checkIfAPIKeyIsValid(apiKeyInput.value || ''))
+        if (error) {
+            apiKeyError.value = 'Invalid API key.'
+            return
+        }
+        await client.deta.preferences.set.mutate({ key: 'api-key', value: apiKeyInput.value || '' })
+        instanceApiKey.value = apiKeyInput.value || ''
+        apiKey.value = apiKeyInput.value || ''
+        apiKeyError.value = false
+    }, 300)
 
-watch(apiKeyInput, (newVal, oldVal) => {
-    if (newVal !== oldVal) {
-        updateAPIKeyOnDeta()
-    }
-})
+    watch(apiKeyInput, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+            updateAPIKeyOnDeta()
+        }
+    })
+}
 </script>
 
 <template>
