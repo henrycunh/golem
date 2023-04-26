@@ -26,7 +26,6 @@
 
 <div align="center">
 <a href="https://deta.space/discovery/@henrycunh/golem" _target="blank">
-<img src="https://raw.githubusercontent.com/deta/community-content/main/Install-Button/light.svg#gh-light-mode-only" width="400" />
 <img src="https://raw.githubusercontent.com/deta/community-content/main/Install-Button/dark.svg#gh-dark-mode-only" width="400" />
 </a>
 </div>
