@@ -72,7 +72,8 @@ export const messageRouter = router({
                 createdAt: z.string().or(z.date()).optional(),
                 conversationId: z.string().optional(),
                 text: z.string().optional(),
-                role: z.string().optional(),
+                metadata: z.any().optional(),
+                role: z.any().optional(),
                 parentMessageId: z.string().optional(),
             }),
         )
@@ -85,7 +86,7 @@ export const messageRouter = router({
             if (createdAt) {
                 patch.set('createdAt', createdAt)
             }
-            for (const field of ['conversationId', 'text', 'role', 'parentMessageId'] as const) {
+            for (const field of ['conversationId', 'text', 'role', 'parentMessageId', 'metadata'] as const) {
                 if (input[field]) {
                     patch.set(field, input[field])
                 }

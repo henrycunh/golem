@@ -47,12 +47,13 @@ export const conversationRouter = router({
             z.object({
                 title: z.string().optional(),
                 id: z.string(),
+                metadata: z.any().optional(),
                 updatedAt: z.string().or(z.date()).optional(),
                 createdAt: z.string().or(z.date()).optional(),
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const { title, id, updatedAt, createdAt } = input
+            const { title, id, updatedAt, createdAt, metadata } = input
             const patch = new Map()
             if (title) {
                 patch.set('title', title)
@@ -62,6 +63,9 @@ export const conversationRouter = router({
             }
             if (createdAt) {
                 patch.set('createdAt', createdAt)
+            }
+            if (metadata !== undefined) {
+                patch.set('metadata', metadata)
             }
             const conversation = await ctx.deta.conversations.put({
                 key: id,

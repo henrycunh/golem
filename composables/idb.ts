@@ -34,7 +34,7 @@ export function useIDB(options?: { disableStorage: boolean }) {
 
         db.version(1).stores({
             knowledge: 'id, title, type, sections, metadata, updatedAt, createdAt',
-            conversations: 'id, title, messages, createdAt, updatedAt',
+            conversations: 'id, title, messages, metadata, createdAt, updatedAt',
         })
 
         return db

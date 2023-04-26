@@ -36,7 +36,7 @@ export default defineNuxtConfig({
             fonts: {
                 code: 'DM Mono:400',
                 text: 'Rubik:400,700',
-                title: 'Schibsted Grotesk:400,700',
+                title: 'Space Grotesk:400,700',
             },
         },
     },

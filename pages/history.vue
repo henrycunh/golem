@@ -3,8 +3,8 @@ const {
     conversationList,
     createConversation,
     switchConversation,
+    clearConversations,
 } = useConversations()
-const { scrollToBottom } = useUI()
 
 const conversationsSortedByUpdatedAt = computed(() => {
     if (conversationList.value === null) {
@@ -31,24 +31,24 @@ const onCreateConversation = async () => {
 <template>
     <div p-4>
         <div
-            uppercase font-bold
-            text-13px
-            text-primary mb-2 flex items-center
+            font-bold font-title
+            text-14px sm:text-22px
+            text-color mb-2 flex items-center
         >
             <div>
-                Chats
+                Conversations
             </div>
             <div
                 v-if="conversationList?.length" ml-auto
                 text-9px sm:text-11px
-                text-gray-5 dark:text-gray-4
+                text-color-lighter uppercase
             >
                 {{ conversationList?.length }} conversations
             </div>
         </div>
         <div
             max-h-100 overflow-y-auto overflow-x-hidden w-full p-2
-            rounded-2
+            rounded-2 mt-6
             class="light:bg-gray-1/50 dark:bg-dark-3 dark:shadow-dark" shadow shadow-inset
         >
             <ConversationTab
@@ -57,13 +57,22 @@ const onCreateConversation = async () => {
                 :conversation="conversation"
             />
         </div>
-        <UButton
-            secondary icon="i-tabler-plus"
-            text-10px sm:text-4
-            w-full mt-2
-            @click="onCreateConversation"
-        >
-            New chat
-        </UButton>
+        <div flex items-center children:grow gap-3 mt-2>
+            <UButton
+                secondary icon="i-tabler-plus"
+                @click="onCreateConversation"
+            >
+                New chat
+            </UButton>
+            <GpLongPressButton
+                :duration="1500"
+                icon="i-tabler-arrow-bar-to-up"
+                progress-bar-style="bg-red/50"
+                success-style="!ring-red"
+                @success="clearConversations"
+            >
+                Clear all
+            </GpLongPressButton>
+        </div>
     </div>
 </template>

@@ -435,6 +435,25 @@ export const useConversations = () => {
         }
     }
 
+    async function updateConversationMessage(conversationId: string, messageId: string, message: Partial<types.Message>) {
+        const conversation = await getConversationById(conversationId)
+        if (!conversation) {
+            return
+        }
+        const messageIndex = conversation.messages.findIndex((m: types.Message) => m.id === messageId)
+        if (messageIndex === -1) {
+            return
+        }
+        conversation.messages[messageIndex] = {
+            ...conversation.messages[messageIndex],
+            ...message,
+        }
+        await updateConversation(conversationId, conversation)
+        if (isDetaEnabled.value) {
+            deta.message.update(conversation.messages[messageIndex])
+        }
+    }
+
     return {
         listConversations,
         getConversationById,
@@ -453,6 +472,7 @@ export const useConversations = () => {
         isTyping,
         followupQuestions,
         knowledgeUsedInConversation,
+        updateConversationMessage,
         stopConversationMessageGeneration,
     }
 }

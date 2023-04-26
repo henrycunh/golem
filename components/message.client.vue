@@ -1,21 +1,36 @@
 <script lang="ts" setup>
-import { encode, estimateCost } from 'gpt-token-utils'
+import { encode } from 'gpt-token-utils'
 import type { types } from '~~/utils/types'
 
 const props = defineProps<{ message: types.Message }>()
 
 const { currentPreset } = usePreset()
 const { isOnSharePage } = useSession()
-const { modelUsed } = useSettings()
 const element = ref()
 const isActionBarVisible = ref(false)
 
-const { clearErrorMessages, removeMessageFromConversation, currentConversation } = useConversations()
+const { clearErrorMessages, removeMessageFromConversation, currentConversation, updateConversationMessage } = useConversations()
+
+// Action bar visibility
+function onClick() {
+    if (props.message.isError) {
+        return
+    }
+    isActionBarVisible.value = true
+}
+
+onClickOutside(element, () => {
+    if (props.message.isError) {
+        return
+    }
+    isActionBarVisible.value = false
+})
 
 const filteredUserMessage = computed(() =>
     currentPreset.value ? props.message.text.replace(currentPreset.value.content, '') : props.message.text,
 )
 
+// Action bar
 async function removeMessage() {
     if (!currentConversation.value) {
         return
@@ -24,19 +39,19 @@ async function removeMessage() {
 }
 
 const tokenCount = computed(() => encode(props.message.text).length)
-const messageEstimatedCost = computed(() => estimateCost(modelUsed.value, props.message.text))
-function onClick() {
-    if (props.message.isError) {
+
+const isMessageFavorited = computed(() => props.message.metadata?.favorite)
+
+function onFavoriteMessage() {
+    if (!currentConversation.value) {
         return
     }
-    isActionBarVisible.value = true
+    updateConversationMessage(currentConversation.value.id, props.message.id, {
+        metadata: {
+            favorite: !isMessageFavorited.value,
+        },
+    })
 }
-onClickOutside(element, () => {
-    if (props.message.isError) {
-        return
-    }
-    isActionBarVisible.value = false
-})
 </script>
 
 <template>
@@ -66,13 +81,23 @@ onClickOutside(element, () => {
                 relative
             >
                 <!-- Agent name -->
-                <div
-                    font-bold text-color mb-1 mx-7 sm:mx-10
-                    :class="[
-                        message.isError && 'text-red-9 dark:text-red-3',
-                    ]"
-                >
-                    {{ message.role === 'assistant' ? 'Golem' : 'You' }}
+                <div flex items-center>
+                    <div
+                        font-bold font-title text-color mb-1 mx-7 sm:mx-10
+                        :class="[
+                            message.isError && 'text-red-9 dark:text-red-3',
+                        ]"
+                    >
+                        {{ message.role === 'assistant' ? 'Golem' : 'You' }}
+                    </div>
+                    <div ml-auto>
+                        <Transition name="appear-right">
+                            <div v-if="isMessageFavorited" dark:text-amber-400 text-amber-600 flex items-center gap-1 uppercase font-bold font-title text-8px sm:text-12px>
+                                <div i-tabler-star-filled />
+                                Favorited
+                            </div>
+                        </Transition>
+                    </div>
                 </div>
                 <div
                     w-5 h-5 sm:w-8 sm:h-8
@@ -145,6 +170,13 @@ onClickOutside(element, () => {
                             <div i-tabler-atom-2-filled />
                             {{ tokenCount }} tokens
                         </div>
+                        <UButton
+                            secondary
+                            class="dark:!bg-red"
+                            :icon="`${isMessageFavorited ? 'i-tabler-star-filled' : 'i-tabler-star'} !text-10px sm:!text-16px`"
+                            ml-3
+                            @click="onFavoriteMessage"
+                        />
                         <GpLongPressButton
                             ml-auto
                             :duration="500"

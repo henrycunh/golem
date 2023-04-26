@@ -4,6 +4,7 @@ const props = defineProps<{
     disabled?: boolean
     secondary?: boolean
     icon?: string
+    color?: string
 }>()
 
 defineEmits(['click'])
@@ -61,12 +62,11 @@ const gradientStyle = computed(() => {
             transition-all
             box-border
             rounded-6px
+            class="!w-full !m-0.12rem bg-600/65"
             :class="[
                 secondary && '!bg-transparent !text-primary-600 dark:!text-primary-300',
                 disabled ? '!bg-gray-5' : '',
             ]"
-            v-bind="{ ...$attrs }"
-            class="!w-full !m-0.12rem bg-600/65"
             flex items-center justify-center gap-1
         >
             <div v-if="icon" :class="icon" />

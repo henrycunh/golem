@@ -123,5 +123,7 @@ jobs:
           use_experimental_build_pipeline: true
           space_push: true
           list_on_discovery: true
+          space_release: true
+
       
   
