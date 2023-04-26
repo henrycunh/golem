@@ -38,7 +38,7 @@ jobs:
         # Create a artifact with the release version, the name is the commit hash
         run: |
           mkdir -p artifacts
-          echo "${{ steps.release.outputs.release-version }}" > artifacts/${{ steps.script.outputs.ref }}.txt
+          echo "${{ steps.release.outputs.next-version }}" > artifacts/${{ github.ref }}.txt
       
       - name: Upload release artifacts
         uses: actions/upload-artifact@v2
@@ -62,8 +62,6 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
         with:
           fetch-depth: 0
-          ref: ${{ steps.script.outputs.ref }}
-          repository: ${{ steps.script.outputs.repo }}
       
       - name: Deploy to Vercel
         id: deploy
@@ -97,8 +95,6 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
         with:
           fetch-depth: 0
-          ref: ${{ steps.script.outputs.ref }}
-          repository: ${{ steps.script.outputs.repo }}
       
       - name: Get release artifacts
         uses: actions/download-artifact@v2
@@ -109,7 +105,7 @@ jobs:
       - name: Read release version # and set as a output
         id: release
         run: |
-          echo "::set-output name=release-version::$(cat artifacts/${{ steps.script.outputs.ref }}.txt)"
+          echo "::set-output name=release-version::$(cat artifacts/${{ github.ref }}.txt)"
 
       - name: Deta Space Deployment
         uses: henrycunh/space-deployment-github-action@05e4e73d6801abed32a3580c8e794ea790fab827
