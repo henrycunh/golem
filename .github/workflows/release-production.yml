@@ -37,7 +37,7 @@ jobs:
         # Create a artifact with the release version, the name is the commit hash
         run: |
           mkdir -p artifacts
-          echo "${{ steps.release.outputs.next-version }}" > artifacts/${{ github.ref }}.txt
+          echo "${{ steps.release.outputs.next-version }}" > artifacts/${{ github.sha }}.txt
       
       - name: Upload release artifacts
         uses: actions/upload-artifact@v2
@@ -108,7 +108,7 @@ jobs:
       - name: Read release version # and set as a output
         id: release
         run: |
-          echo "::set-output name=release-version::$(cat artifacts/${{ github.ref }}.txt)"
+          echo "::set-output name=release-version::$(cat artifacts/${{ github.sha }}.txt)"
 
       - name: Deta Space Deployment
         uses: henrycunh/space-deployment-github-action@05e4e73d6801abed32a3580c8e794ea790fab827
