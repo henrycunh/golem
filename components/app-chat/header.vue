@@ -47,7 +47,7 @@ function onFavoriteConversation() {
 
 <template>
     <div
-        absolute top-0 left-0 right-0 b-0 b-b-1 b-gray-1 dark:b-dark-1 b-solid py-3
+        absolute top-0 left-0 right-0 b="solid 0 b-1 dark:white/10 dark-1/10" py-3
         z-1
         backdrop-blur-4
         mx-auto
