@@ -49,6 +49,7 @@
     "deta": "^1.1.0",
     "dexie": "^3.2.3",
     "floating-vue": "2.0.0-beta.20",
+    "fuse.js": "^6.6.2",
     "gpt-token-utils": "^1.2.0",
     "hyperid": "^3.1.1",
     "lang-detector": "^1.0.6",

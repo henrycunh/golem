@@ -1,15 +1,23 @@
 <script lang="ts" setup>
 import tinycolor from 'tinycolor2'
+import { NavigationBarPosition } from '~~/composables/appearence'
 const currentColorMode = useColorMode()
 const { isDetaEnabled } = useDeta()
 const client = useClient()
-const { setPalette, color: currentColor } = useAppearance()
+const { setPalette, color: currentColor, navigationBarPosition } = useAppearance()
 
 const colorModeOptions = [
     { value: 'light', label: 'Light', icon: 'i-tabler-sun' },
     { value: 'dark', label: 'Dark', icon: 'i-tabler-moon' },
     { value: 'system', label: 'System', icon: 'i-tabler-3d-cube-sphere' },
 ] as const
+
+const navigationBarPositionOptions = [
+    { value: 'top', label: 'Top', icon: 'i-tabler-box-align-top' },
+    { value: 'bottom', label: 'Bottom', icon: 'i-tabler-box-align-bottom' },
+    { value: 'left', label: 'Left', icon: 'i-tabler-box-align-left' },
+    { value: 'right', label: 'Right', icon: 'i-tabler-box-align-right' },
+]
 
 const hueSteppedThemeColorOptions = computed(() => {
     // hue goes from 0 to 360, so we have 24 steps
@@ -23,6 +31,10 @@ const hueSteppedThemeColorOptions = computed(() => {
 
 function onColorModeClick(colorMode: string) {
     currentColorMode.preference = colorMode
+}
+
+function onNavigationBarPositionClick(position: NavigationBarPosition) {
+    navigationBarPosition.value = position
 }
 
 function onThemeColorClick(color: string) {
@@ -61,6 +73,8 @@ function onThemeColorClick(color: string) {
                 <div>{{ option.label }}</div>
             </div>
         </div>
+
+        <!-- Theme color -->
         <div
             font-bold text-gray-6 dark:text-gray-3 mb-3 mt-6
             text-14px sm:text-5
@@ -83,6 +97,35 @@ function onThemeColorClick(color: string) {
                 ]"
                 @click="onThemeColorClick(color)"
             />
+        </div>
+
+        <!-- Navigation bar position -->
+        <div
+            font-bold text-gray-6 dark:text-gray-3 mb-3 mt-6
+            text-14px sm:text-5
+        >
+            Navigation bar position
+        </div>
+
+        <div grid grid-cols-4 gap-2 sm:gap-3>
+            <div
+                v-for="option in navigationBarPositionOptions"
+                :key="option.value"
+                grow flex flex-col items-center p-2
+                rounded-2 ring-1
+                cursor-pointer
+                class="dark:ring-white/10 ring-gray-2"
+                text-gray-5
+                dark:text-gray-3 gap-2
+                text-11px sm:text-4
+                :class="[
+                    navigationBarPosition === option.value ? '!ring-primary-400 !dark:ring-primary-400 ring-2 !text-primary-600 dark:!text-primary-400' : '',
+                ]"
+                @click="onNavigationBarPositionClick(option.value as NavigationBarPosition)"
+            >
+                <div :class="option.icon" text-5 sm:text-6 />
+                <div>{{ option.label }}</div>
+            </div>
         </div>
     </div>
 </template>

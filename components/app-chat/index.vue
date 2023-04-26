@@ -6,9 +6,7 @@ const { isOnSharePage } = useSession()
 
 <template>
     <div>
-        <AppChatHeader
-            :embedded="embedded"
-        />
+        <AppChatHeader />
         <AppChatHistory
             :embedded="embedded"
         />

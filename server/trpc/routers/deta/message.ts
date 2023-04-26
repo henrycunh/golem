@@ -17,9 +17,9 @@ export const messageRouter = router({
                 query.conversationId = input.conversationId
             }
             const { items } = await ctx.deta.messages.fetch(query)
-            return items.map(item => ({
-                ...item,
-                id: item.key,
+            return items.map<types.Message>(item => ({
+                ...item as any,
+                id: item.key as string,
             }))
         }),
 

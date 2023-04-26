@@ -24,6 +24,10 @@
 - 💠 Cross device synchronisation
 - 🍻 Share chat history
 
+[
+![](https://raw.githubusercontent.com/deta/community-content/main/Install-Button/light.svg#gh-light-mode-only)
+![](https://raw.githubusercontent.com/deta/community-content/main/Install-Button/dark.svg#gh-dark-mode-only)
+](https://deta.space/discovery/@henrycunh/golem)
 
 ## 🛠 Configuration
 You can use **environment variables** to customize your instance.

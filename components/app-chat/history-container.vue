@@ -98,8 +98,7 @@ function onFileDrop(event: any) {
         h-full overflow-y-auto pb-50
         z-0
         :class="[
-            embedded && '!pt-2',
-            isOnSharePage && '!pt-6',
+            isOnSharePage && '!pt-16',
         ]"
         @dragover.prevent @drop="onFileDrop"
     >

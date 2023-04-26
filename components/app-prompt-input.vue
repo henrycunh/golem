@@ -3,7 +3,7 @@ const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
 const { apiKey } = useSettings()
-const { isTypingInCurrentConversation } = useConversations()
+const { isTypingInCurrentConversation, currentConversation, stopConversationMessageGeneration } = useConversations()
 const textarea = ref()
 const isLogged = computed(() => Boolean(apiKey.value))
 
@@ -32,6 +32,14 @@ const handleEnter = (e: KeyboardEvent) => {
     e.preventDefault()
     onSend()
     textarea.value.style.height = '1.75rem'
+}
+
+function onStopGenerationClick() {
+    if (!currentConversation.value) {
+        return
+    }
+
+    stopConversationMessageGeneration(currentConversation.value.id)
 }
 </script>
 
@@ -85,6 +93,21 @@ const handleEnter = (e: KeyboardEvent) => {
                     ]"
                 />
             </UButton>
+
+            <Transition name="appear-top">
+                <div
+                    v-if="isTypingInCurrentConversation"
+                    absolute top-0
+                    right-18 sm:right-12
+                >
+                    <UButton @click="onStopGenerationClick">
+                        <div i-tabler-player-stop-filled text-3 sm:text-5 />
+                        <div whitespace-nowrap text-10px sm:text-14px>
+                            Stop talking!
+                        </div>
+                    </UButton>
+                </div>
+            </Transition>
         </div>
     </div>
 </template>

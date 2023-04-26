@@ -28,7 +28,7 @@ const isCurrentConversation = computed(() => {
         return false
     }
     return currentConversation.value.id === props.conversation.id
-        && (['/', '/chat', '/history'].includes(route.path))
+        && (['/', '/chat'].includes(route.path))
 })
 
 // Is typing in the current conversation
@@ -37,14 +37,6 @@ const isTypingInCurrentConversation = computed(() => {
         return false
     }
     return isTyping.value[props.conversation.id]
-})
-
-// Conversation message count
-const messageCount = computed(() => {
-    if (props.conversation.messages.length === 0) {
-        return 0
-    }
-    return props.conversation.messages.length
 })
 
 // Last message
@@ -123,14 +115,13 @@ const onDeleteConversation = async (id: string) => {
     <div
         ref="element"
         relative
-        mb-1 last:mb-0
     >
         <div
             transition text-gray-600 dark:text-gray-3 cursor-pointer
-            p-1 px-3 sm:p-2 sm:px-10px
-            rounded-2
+            p-1 px-3 sm:p-2 sm:px-3
             class="shadow-gray-900/5"
             text-12px sm:text-15px
+            w-full box-border
             active:translate-y-2px
             :class="[
                 isCurrentConversation
@@ -139,8 +130,8 @@ const onDeleteConversation = async (id: string) => {
             ]"
             @click="onClick"
         >
-            <div flex items-center>
-                <div grow>
+            <div class="grid" grid items-center w-full box-border>
+                <div col-start-1 col-end-1>
                     <div flex items-center>
                         <transition name="appear-left">
                             <div v-if="isEditingTitle" i-tabler-edit text-18px mr-1 />
@@ -149,15 +140,23 @@ const onDeleteConversation = async (id: string) => {
                             <div v-if="!isEditingTitle && isTypingInCurrentConversation" i-eos-icons-bubble-loading text-18px mr-1 />
                         </transition>
                         <transition name="appear-left">
-                            <div v-if="!isEditingTitle && !isTypingInCurrentConversation" i-tabler-message-chatbot text-18px mr-1 />
+                            <div
+                                v-if="!isEditingTitle && !isTypingInCurrentConversation" text-18px mr-1
+                                :class="[
+                                    conversation?.metadata?.favorite
+                                        ? 'i-tabler-star-filled text-amber'
+                                        : 'i-tabler-message-chatbot',
+                                ]"
+                            />
                         </transition>
                         <input
                             ref="inputElement"
                             v-model="conversationTitle"
                             :readonly="!isEditingTitle"
                             bg-transparent border-none outline-none p-0
-                            transition font-bold grow mr-3 truncate
+                            transition font-bold mr-3 truncate
                             text-10px sm:text-14px h-1.75em
+                            w-full
                             :class="[
                                 isEditingTitle
                                     ? 'text-gray-900 dark:text-gray-1 select-all'
@@ -178,19 +177,31 @@ const onDeleteConversation = async (id: string) => {
                         {{ lastMessage.text }}
                     </div>
                 </div>
-                <transition name="appear-right">
-                    <GpLongPressButton
-                        v-if="isHovering || isMobile"
-                        :duration="800"
-                        icon="i-tabler-x text-13px"
-                        rounded-2px
-                        small
-                        success-style="!ring-red-500 !text-red-7"
-                        progress-bar-style="bg-red/50"
-                        @success="onDeleteConversation(props.conversation.id)"
-                    />
-                </transition>
+
+                <div
+                    col-start-2 col-end-2
+                >
+                    <transition name="appear-right">
+                        <GpLongPressButton
+                            v-if="isHovering || isMobile"
+                            :duration="800"
+                            icon="i-tabler-x text-13px"
+                            rounded-2px
+                            small block
+                            class="!relative"
+                            success-style="!ring-red-500 !text-red-7"
+                            progress-bar-style="bg-red/50"
+                            @success="onDeleteConversation(props.conversation.id)"
+                        />
+                    </transition>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+.grid {
+    grid-template-columns: 1fr 20px;
+}
+</style>

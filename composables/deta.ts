@@ -23,7 +23,7 @@ export function useDeta() {
             async delete(id: string) {
                 const res = await client.deta.conversations.delete.mutate({ id })
                 const conversationMessageList = await client.deta.messages.list.query({ conversationId: id })
-                const messageIds = conversationMessageList.map(item => item.key)
+                const messageIds = conversationMessageList.map(item => item.id)
                 const limit = pLimit(10)
                 await Promise.all(messageIds.map(id => limit(() => client.deta.messages.delete.mutate({ id }))))
                 logger.info('Deleted conversation', id, 'and', messageIds.length, 'messages')
@@ -46,6 +46,7 @@ export function useDeta() {
                     title: conversation.title,
                     updatedAt: conversation.updatedAt,
                     createdAt: conversation.createdAt,
+                    metadata: conversation.metadata,
                     messages: messages.map(message => parseDateFields(message, ['updatedAt', 'createdAt'] as const)),
                 }
                 if (!localConversation) {
