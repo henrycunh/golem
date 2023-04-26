@@ -53,6 +53,7 @@ export namespace types {
             title: string
             updatedAt: string
             createdAt: string
+            metadata?: ConversationMetadata
         }
 
         export interface Message {

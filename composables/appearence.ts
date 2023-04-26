@@ -3,6 +3,7 @@ import { useStorage } from '@vueuse/core'
 
 export function useAppearance() {
     const color = useStorage('golem-base-color', '#a633cc')
+    const navigationBarPosition = useStorage<NavigationBarPosition>('golem-navbar-position', 'left')
 
     function setPalette(newColor?: string) {
         if (newColor) {
@@ -24,5 +25,8 @@ export function useAppearance() {
     return {
         color,
         setPalette,
+        navigationBarPosition,
     }
 }
+
+export type NavigationBarPosition = 'top' | 'bottom' | 'left' | 'right'

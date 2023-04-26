@@ -39,14 +39,13 @@ const route = useRoute()
             class="bg-white/90 dark:bg-dark-1/90"
         >
             <div
-                max-w-1080px mx-auto
-                px-4 sm:px-14
+                px-4
                 flex items-center
             >
                 <div>
                     <div
-                        text-14px sm:text-5
-                        font-bold text-gray-6 dark:text-gray-2
+                        text-14px sm:text-6
+                        font-bold font-title text-gray-6 dark:text-gray-2
                     >
                         Settings
                     </div>

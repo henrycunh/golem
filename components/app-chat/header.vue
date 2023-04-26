@@ -5,6 +5,7 @@ defineProps<{
 
 const { currentConversation, updateConversation } = useConversations()
 const { isDetaEnabled } = useDeta()
+const { isOnSharePage } = useSession()
 
 const conversationTitle = ref<string>(currentConversation.value?.title || '')
 const isEditingTitle = ref(false)
@@ -46,8 +47,7 @@ function onFavoriteConversation() {
 
 <template>
     <div
-        v-if="!embedded"
-        absolute top-0 left-0 right-0 b-0 b-b-1 b-gray-1 dark:b-dark-1 b-solid py-3
+        absolute top-0 left-0 right-0 b="solid 0 b-1 dark:white/10 dark-1/10" py-3
         z-1
         backdrop-blur-4
         mx-auto
@@ -60,11 +60,11 @@ function onFavoriteConversation() {
             <div>
                 <div flex items-center gap-1>
                     <Transition name="appear-left">
-                        <div v-if="isEditingTitle" i-tabler-edit text-18px text-color mr-1 />
+                        <div v-if="isEditingTitle && !isOnSharePage" i-tabler-edit text-18px text-color mr-1 />
                     </Transition>
                     <Transition name="appear-left">
                         <div
-                            v-if="!isEditingTitle"
+                            v-if="!isEditingTitle && !isOnSharePage"
                             text-5 mr-1
                             cursor-pointer
                             hover:scale-120
@@ -85,10 +85,13 @@ function onFavoriteConversation() {
                         bg-transparent border-none outline-none p-0
                         transition font-bold grow mr-3 truncate
                         text-14px sm:text-18px h-1.75em
+                        min-w-50dvw
                         :class="[
                             isEditingTitle
                                 ? 'text-gray-900 dark:text-gray-1 select-all'
-                                : 'text-gray-700 dark:text-gray-3 select-none cursor-pointer',
+                                : 'text-gray-700 dark:text-gray-3 select-none',
+                            isEditingTitle && !isOnSharePage && 'cursor-pointer',
+                            isOnSharePage && 'w-94dvw',
                         ]"
                         @blur="isEditingTitle = false"
                         @input="onInput"
@@ -98,7 +101,7 @@ function onFavoriteConversation() {
             </div>
             <!-- TODO: implement sharing -->
             <UButton
-                v-if="!embedded && isDetaEnabled" ml-auto icon="i-tabler-share"
+                v-if="!isOnSharePage && isDetaEnabled" ml-auto icon="i-tabler-share"
                 @click="onShare"
             >
                 Share

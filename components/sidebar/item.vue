@@ -6,11 +6,12 @@ defineEmits(['click', 'doubleClick'])
 <template>
     <div
         ref="element"
-        transition text-gray-600 dark:text-gray-1
+        text-color font-bold font-title
+        transition
         cursor-pointer
-        p-3 px-4 rounded-2
+        p-2 px-4
         class="shadow-gray-900/5"
-        text-14px mb-1 last:mb-0
+        mb-1 last:mb-0
         flex items-center
         active:translate-y-2px
         :class="[

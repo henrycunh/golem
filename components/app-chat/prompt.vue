@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { sendMessage, isTypingInCurrentConversation, stopConversationMessageGeneration, currentConversation } = useConversations()
+const { sendMessage } = useConversations()
 const { isMobile } = useDevice()
 const { apiKey } = useSettings()
 
@@ -26,14 +26,6 @@ function onHandlePromptClick() {
             clearTimeout(tooltipTimeout)
         }
     }
-}
-
-function onStopGenerationClick() {
-    if (!currentConversation.value) {
-        return
-    }
-
-    stopConversationMessageGeneration(currentConversation.value.id)
 }
 </script>
 
@@ -65,18 +57,6 @@ function onStopGenerationClick() {
                 @send="onSendMessage"
                 @click="onHandlePromptClick"
             />
-            <Transition name="appear-top">
-                <div
-                    v-if="isTypingInCurrentConversation"
-                    absolute top-2
-                    right-18 sm:right-20 lg:right-30
-                >
-                    <UButton @click="onStopGenerationClick">
-                        <div i-tabler-player-stop-filled text-3 sm:text-5 />
-                        <span text-10px sm:text-4>Stop talking!</span>
-                    </UButton>
-                </div>
-            </Transition>
         </div>
         <AppChatScrollToBottomButton />
     </div>

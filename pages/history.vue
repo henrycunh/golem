@@ -36,11 +36,11 @@ const onCreateConversation = async () => {
             text-color mb-2 flex items-center
         >
             <div>
-                Conversations
+                History
             </div>
             <div
                 v-if="conversationList?.length" ml-auto
-                text-9px sm:text-11px
+                text-10px sm:text-13px
                 text-color-lighter uppercase
             >
                 {{ conversationList?.length }} conversations
