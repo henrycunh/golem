@@ -115,11 +115,12 @@ jobs:
           echo "::set-output name=release-version::$(cat artifacts/${{ steps.script.outputs.ref }}.txt)"
 
       - name: Deta Space Deployment
-        uses: neobrains/space-deployment-github-action@v0.5
+        uses: henrycunh/space-deployment-github-action@05e4e73d6801abed32a3580c8e794ea790fab827
         with:
           access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
           project_id: ${{ secrets.DETA_PROJECT_ID }}
           release_version: ${{ steps.release.outputs.release-version }}
+          use_experimental_build_pipeline: true
           space_push: true
           list_on_discovery: true
       
