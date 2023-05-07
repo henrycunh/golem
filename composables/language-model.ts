@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai'
 import type { NitroFetchOptions } from 'nitropack'
 import { nanoid } from 'nanoid'
+import { streamOpenAIResponse } from '~~/utils/fetch-sse'
 
 export function useLanguageModel() {
     const { apiKey } = useSettings()
@@ -93,42 +94,23 @@ export function useLanguageModel() {
             return result
         }
         else {
-            const stream = (response as ReadableStream)
-            const reader = stream.getReader()
-            const decoder = new TextDecoder()
-            while (true) {
-                const { done, value } = await reader.read()
-                if (done) {
-                    break
+            for await (const data of streamOpenAIResponse(response)) {
+                if (data.id) {
+                    result.id = data.id
                 }
-                const decoded = decoder.decode(value)
-                const decodedData = decoded.split('data: ').map(s => s.trim()).filter(content => content.length > 0 && content !== '[DONE]')
-                try {
-                    const chunks = decodedData.map(data => JSON.parse(data)).filter(data => data.choices?.[0]?.delta?.content)
-                    const [parsed] = chunks
-                    if (!parsed) {
-                        continue
+                if (data?.choices?.length) {
+                    const delta = data.choices[0].delta
+                    result.delta = delta.content
+                    if (delta?.content) {
+                        result.text += delta.content
                     }
-                    if (parsed.id) {
-                        result.id = parsed.id
-                    }
-                    if (parsed?.choices?.length) {
-                        const delta = parsed.choices[0].delta
-                        result.delta = delta.content
-                        if (delta?.content) {
-                            result.text += delta.content
-                        }
-                        result.detail = parsed
-                        if (delta.role) {
-                            result.role = delta.role
-                        }
-                    }
-                    if (onProgress) {
-                        await onProgress(result)
+                    result.detail = data
+                    if (delta.role) {
+                        result.role = delta.role
                     }
                 }
-                catch (e) {
-                    console.log(e, decoded, decodedData)
+                if (onProgress) {
+                    await onProgress(result)
                 }
             }
             return result

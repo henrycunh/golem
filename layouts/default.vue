@@ -55,7 +55,7 @@ useSetup()
             <div
                 relative
                 class="2xl:max-w-1366px 2xl:mx-auto"
-                h-100dvh
+                h-screen
             >
                 <AppNavbar
                     v-if="!isMobile"

@@ -21,6 +21,14 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
             switchConversation,
         } = useConversations()
 
+        const { initPersonaList, personaList } = usePersona()
+
+        watchEffect(async () => {
+            if (personaList.value.length === 0) {
+                await initPersonaList()
+            }
+        })
+
         const { updateKnowledgeList } = useKnowledge()
 
         await updateKnowledgeList()

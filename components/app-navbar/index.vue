@@ -5,14 +5,22 @@ const sidebarItems = [
     {
         path: '/chat',
         icon: 'i-tabler-messages',
+        title: 'Chat',
     },
     {
         path: '/history',
         icon: 'i-tabler-history',
+        title: 'History',
     },
+    // {
+    //     path: '/personas',
+    //     icon: 'i-tabler-users',
+    //     title: 'Personas',
+    // },
     {
         path: '/settings',
         icon: 'i-tabler-settings',
+        title: 'Settings',
     },
 ]
 const navigationBarPositionClasses = computed(() => {
@@ -48,6 +56,16 @@ const activeOverlayClasses = computed(() => {
 const isCurrentRoute = (item: typeof sidebarItems[0]) => {
     return useRoute().path.startsWith(item.path)
 }
+
+const tooltipPlacement = computed(() => {
+    const positionMapping = {
+        top: 'bottom',
+        bottom: 'top',
+        right: 'left',
+        left: 'right',
+    } as const
+    return positionMapping[navigationBarPosition.value]
+})
 </script>
 
 <template>
@@ -59,10 +77,15 @@ const isCurrentRoute = (item: typeof sidebarItems[0]) => {
         <div
             v-for="item in sidebarItems"
             :key="item.path"
-            p-4 text-color
+            v-tooltip="{
+                content: item.title,
+                placement: tooltipPlacement,
+            }"
+            p-4
+            text-color
             cursor-pointer
-            relative
-            flex items-center justify-center
+            relative flex items-center
+            justify-center
             transition-all
             group
             :class="itemClasses"

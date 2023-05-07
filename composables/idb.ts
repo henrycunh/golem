@@ -32,9 +32,10 @@ export function useIDB(options?: { disableStorage: boolean }) {
     if (isStorageAvailable() && process.client) {
         const db = new Dexie('gepeto')
 
-        db.version(1).stores({
+        db.version(2).stores({
             knowledge: 'id, title, type, sections, metadata, updatedAt, createdAt',
             conversations: 'id, title, messages, metadata, createdAt, updatedAt',
+            personas: 'id, title, instructions',
         })
 
         return db

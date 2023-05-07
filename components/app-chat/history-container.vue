@@ -10,7 +10,7 @@ const chatScroll = useScroll(container, {
         if (event) {
             // Detect if the user is at the bottom of the chat
             const el = (event.target as HTMLElement)
-            if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
+            if (el.scrollTop + el.clientHeight >= el.scrollHeight - 200) {
                 lockToBottom.value = true
             }
             else {
@@ -18,6 +18,7 @@ const chatScroll = useScroll(container, {
             }
         }
     },
+    behavior: 'smooth',
 })
 
 function getScrollHeight() {

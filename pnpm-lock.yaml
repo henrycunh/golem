@@ -46,6 +46,9 @@ dependencies:
   dexie:
     specifier: ^3.2.3
     version: 3.2.3
+  eventsource-parser:
+    specifier: ^1.0.0
+    version: 1.0.0
   floating-vue:
     specifier: 2.0.0-beta.20
     version: 2.0.0-beta.20(vue@3.2.47)
@@ -4393,6 +4396,11 @@ packages:
   /eventsource-parser@0.0.5:
     resolution: {integrity: sha512-BAq82bC3ZW9fPYYZlofXBOAfbpmDzXIOsj+GOehQwgTUYsQZ6HtHs6zuRtge7Ph8OhS6lNH1kJF8q9dj17RcmA==}
     engines: {node: '>=12'}
+    dev: false
+
+  /eventsource-parser@1.0.0:
+    resolution: {integrity: sha512-9jgfSCa3dmEme2ES3mPByGXfgZ87VbP97tng1G2nWwWx6bV2nYxm2AWCrbQjXToSe+yYlqaZNtxffR9IeQr95g==}
+    engines: {node: '>=14.18'}
     dev: false
 
   /execa@5.1.1:

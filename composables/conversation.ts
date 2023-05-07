@@ -4,6 +4,7 @@ import { Configuration, OpenAIApi } from 'openai'
 import pLimit from 'p-limit'
 import { encode } from 'gpt-token-utils'
 import type { types } from '~~/utils/types'
+import trimIndent from '~~/utils/string'
 
 const MaxTokensPerModel = {
     'gpt-4': 8180,
@@ -204,7 +205,7 @@ export const useConversations = () => {
 
         const assistantMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastAssistantMessage = assistantMessageList[assistantMessageList.length - 1]
-
+        console.log('lastAssistantMessage', lastAssistantMessage)
         const userMessage = {
             id: nanoid(),
             role: 'user' as const,
@@ -231,12 +232,14 @@ export const useConversations = () => {
         // }
 
         let messageList: any[] = getMessageChain(fromConversation.messages, userMessage)
-        if (fromConversation.systemMessage) {
-            messageList = [
-                { role: 'system', text: fromConversation.systemMessage, id: 'system-message' },
-                ...messageList,
-            ]
-        }
+        messageList = [
+            {
+                role: 'system',
+                text: fromConversation.systemMessage || getDefaultSystemMessage(),
+                id: 'system-message',
+            },
+            ...messageList,
+        ]
         messageList = messageList.map(message => ({
             role: message.role,
             content: message.text,
@@ -264,12 +267,13 @@ export const useConversations = () => {
         const getTokenCount = () => encode(messageList.map(message => message.content).join('\n\n')).length
         let lastTokenCount = getTokenCount()
         if (getTokenCount() > MaxTokensPerModel[modelUsed.value]) {
+            logger.info('Message is too long, removing messages...', { lastTokenCount, MaxTokensPerModel, modelUsed })
             // Remove the first message that is not a system message
             // until the token count is less than the max or there are no more messages
             while (messageList.length > 1 && lastTokenCount > MaxTokensPerModel[modelUsed.value]) {
                 messageList = [
                     messageList[0],
-                    ...messageList.filter(({ role }) => role !== 'system').slice(1),
+                    ...(messageList.filter(({ role }) => role !== 'system').slice(1)),
                 ]
                 lastTokenCount = getTokenCount()
             }
@@ -492,4 +496,13 @@ function getMessageChain(messages: ChatMessage[], message: ChatMessage): ChatMes
         return [message]
     }
     return [...getMessageChain(messages, parentMessage), message]
+}
+
+function getDefaultSystemMessage() {
+    const currentDate = new Date().toISOString().split('T')[0]
+    return trimIndent(`
+        You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.
+        Knowledge cutoff: 2021-09-01
+        Current date: ${currentDate}
+    `)
 }

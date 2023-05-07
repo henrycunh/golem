@@ -6,6 +6,7 @@ defineProps<{
 const { currentConversation, updateConversation } = useConversations()
 const { isDetaEnabled } = useDeta()
 const { isOnSharePage } = useSession()
+const { personaList } = usePersona()
 
 const conversationTitle = ref<string>(currentConversation.value?.title || '')
 const isEditingTitle = ref(false)
@@ -43,6 +44,15 @@ function onFavoriteConversation() {
         },
     })
 }
+
+const currentPersona = computed(() => {
+    if (!currentConversation.value) {
+        return null
+    }
+    return personaList.value.find(
+        persona => persona.id === currentConversation.value?.metadata?.personaId,
+    ) || personaList.value[0]
+})
 </script>
 
 <template>
@@ -106,8 +116,8 @@ function onFavoriteConversation() {
             >
                 Share
             </UButton>
+            <!-- TODO: Implement conversation settings -->
+            <!-- <UButton ml-auto icon="i-tabler-settings text-5" /> -->
         </div>
-
-        <div />
     </div>
 </template>

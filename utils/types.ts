@@ -14,7 +14,7 @@ export namespace types {
     }
 
     export interface ConversationMetadata {
-        systemMessage?: string
+        personaId?: string
         favorite?: boolean
     }
 
@@ -28,6 +28,12 @@ export namespace types {
 
     export interface MessageMetadata {
         favorite?: boolean
+    }
+
+    export interface Persona {
+        title: string
+        instructions: string
+        id: string
     }
 
     export interface KnowledgeItem {

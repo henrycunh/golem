@@ -103,6 +103,56 @@ export async function* streamAsyncIterable<T>(stream: ReadableStream<T>) {
     }
 }
 
+export async function* streamOpenAIResponse(stream: ReadableStream) {
+    const iterator = streamAsyncIterable(stream)
+
+    const queue: any[] = []
+    const addData = (item: any) => {
+        queue.push(item)
+    }
+
+    const onData = async (chunkDecoded: string) => {
+        createParser(async (event) => {
+            if (event.type === 'event') {
+                if (event.data === '[DONE]') {
+                    addData(undefined)
+                    return
+                }
+                try {
+                    const data = JSON.parse(event.data)
+                    addData(data)
+                }
+                catch {
+                    logger.error('Failed to parse chunk', event.data)
+                }
+            }
+        }).feed(chunkDecoded)
+    };
+
+    (async () => {
+        for await (const chunk of iterator) {
+            const chunkDecoded = new TextDecoder().decode(chunk)
+            await onData(chunkDecoded)
+        }
+    })()
+
+    while (true) {
+        if (queue.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 50))
+            continue
+        }
+
+        const nextValue = queue.shift()
+        if (nextValue === undefined) {
+            break
+        }
+
+        yield nextValue
+    }
+
+    return null
+}
+
 export class OpenAIError extends Error {
     public cause
     public statusCode
