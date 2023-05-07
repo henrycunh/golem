@@ -19,6 +19,15 @@ export default defineNuxtConfig({
             ogHost: 'https://golem.chat/',
             ogImage: '/og-image.png',
             ogUrl: 'https://golem.chat/',
+            title: 'Golem',
+            author: 'Henrique Cunha',
+            description: 'Golem is an open-source conversational UI and alternative to ChatGPT',
+            lang: 'en',
+            ogSiteName: 'app.golem.chat',
+            twitterCard: 'summary_large_image',
+            twitterSite: 'golem.chat',
+            twitterCreator: '@henrycunh',
+
         },
     },
 
