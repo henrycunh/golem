@@ -3,11 +3,13 @@
 <img src="./public/image/logo-light-lettered.svg#gh-light-mode-only" width="300" />
 <img src="./public/image/logo-dark-lettered.svg#gh-dark-mode-only" width="300" />
 
-> Golem is an open-source conversational UI and alternative to ChatGPT
+<h3><sup>Golem is an open-source conversational UI and alternative to ChatGPT</sup><h3>
+
+
+<img src="https://user-images.githubusercontent.com/8951736/236704737-3591e45f-11cc-410a-8cf7-e10288233c8d.png" width=840>
 
 </div>
 
-![](./docs/screenshot.png)
 
 
 ## 🚀 Key Features:
