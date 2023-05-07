@@ -1,12 +1,16 @@
-<script lang="ts" setup>
-</script>
-
 <template>
     <div fixed inset-0 class="dark:bg-dark-4 light:bg-gray-1/40" flex items-center justify-center text-color text-7>
-        <picture w-40>
-            <source srcset="/image/logo-dark-square-transparent.svg" media="(prefers-color-scheme: dark)">
-            <img src="/image/logo-light-square-transparent.svg">
-        </picture>
+        <img
+            src="/image/logo-splash.svg"
+            w-40
+            z-2
+        >
+        <img
+            absolute
+            src="/image/logo-splash.svg"
+            w-40 blur-30
+            z-1
+        >
     </div>
 </template>
 
