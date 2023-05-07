@@ -4,6 +4,9 @@ useHead({
     meta: [
         { name: 'description', content: 'Golem is an open-source, amazingly crafted conversational UI and alternative to ChatGPT.' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1' },
+        { property: 'og:image', content: '/og-image.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
     ],
     link: [
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },

@@ -13,6 +13,13 @@ export default defineNuxtConfig({
             id: `golem-${new Date().getTime()}`,
             theme_color: '#3f3f3f',
         },
+        meta: {
+            ogDescription: 'Golem is an open-source conversational UI and alternative to ChatGPT',
+            ogTitle: 'Golem',
+            ogHost: 'https://golem.chat/',
+            ogImage: '/og-image.png',
+            ogUrl: 'https://golem.chat/',
+        },
     },
 
     css: ['~/assets/css/main.css'],
