@@ -19,10 +19,18 @@ useHead({
         { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#5bbad5' },
     ],
 })
+const { isMobileSafari } = useDevice()
 </script>
 
 <template>
-    <div relative h-100vh overflow-hidden>
+    <div
+        relative
+        overflow-hidden
+        h-100vh
+        :class="[
+            isMobileSafari && '!h-100dvh',
+        ]"
+    >
         <NuxtLayout>
             <NuxtPage h-full />
         </NuxtLayout>
