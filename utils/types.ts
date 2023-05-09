@@ -11,11 +11,18 @@ export namespace types {
         type?: 'chat' | 'embbeded'
         systemMessage?: string
         metadata?: ConversationMetadata
+        settings?: ConversationSettings
     }
 
     export interface ConversationMetadata {
-        personaId?: string
         favorite?: boolean
+    }
+
+    export interface ConversationSettings {
+        personaId?: string
+        model?: string | null
+        maxTokens?: number
+        creativity?: Creativity | null
     }
 
     export interface Message extends ChatMessage {
@@ -51,6 +58,8 @@ export namespace types {
         favicon: string
         title: string
     }
+
+    export type Creativity = 'none' | 'normal' | 'high'
 
     // Deta namespace
     export namespace deta {

@@ -59,12 +59,12 @@ if (isDetaEnabled.value) {
             To use the application you need to provide an OpenAI API key.
         </div>
         <div mt-3>
-            You can get your API key from the <GpLink to="https://platform.openai.com/account/api-keys" target="_blank">
+            You can get your API key from the <GoLink to="https://platform.openai.com/account/api-keys" target="_blank">
                 OpenAI dashboard
-            </GpLink>.
+            </GoLink>.
         </div>
         <div v-if="!(instanceApiKey && !isDetaEnabled)" text-gray-5 dark:text-gray-1 mt-3>
-            <UInput
+            <GoInput
                 v-model="apiKeyInput"
                 placeholder="Enter your API Key"
                 text-11px sm:text-4

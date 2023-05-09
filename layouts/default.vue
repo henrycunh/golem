@@ -57,7 +57,7 @@ useSetup()
                 class="2xl:max-w-1366px 2xl:mx-auto"
                 h-full
             >
-                <AppNavbar
+                <LazyAppNavbar
                     v-if="!isMobile"
                     :class="navigationBarPositionClasses"
                     absolute z-99
@@ -73,7 +73,7 @@ useSetup()
                     ]"
                 >
                     <ClientOnly>
-                        <AppMessagesSidebar />
+                        <LazyAppMessagesSidebar />
                         <template #placeholder>
                             <div flex flex-col h-full>
                                 <Skeleton h-full m-0.25rem rounded-4 />

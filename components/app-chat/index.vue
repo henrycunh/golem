@@ -2,6 +2,13 @@
 defineProps<{ embedded?: boolean }>()
 
 const { isOnSharePage } = useSession()
+const isSettingsOpen = ref(false)
+
+provide('is-chat-settings-open', isSettingsOpen)
+
+function onSettingsClose() {
+    isSettingsOpen.value = false
+}
 </script>
 
 <template>
@@ -11,5 +18,6 @@ const { isOnSharePage } = useSession()
             :embedded="embedded"
         />
         <AppChatPrompt v-if="!isOnSharePage" />
+        <AppChatSettings :open="isSettingsOpen" @close="onSettingsClose" />
     </div>
 </template>

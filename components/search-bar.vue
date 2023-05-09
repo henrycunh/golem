@@ -3,7 +3,7 @@ const { searchTerm } = useSearch()
 </script>
 
 <template>
-    <UInput
+    <GoInput
         v-model.trim="searchTerm"
         placeholder="Search..."
         w-full box-border

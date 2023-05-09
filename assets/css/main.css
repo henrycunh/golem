@@ -163,6 +163,19 @@ html.scroll-lock {
     padding: 0 !important;
 }
 
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        opacity 0.25s cubic-bezier(0.5, 1, 0.89, 1),
+        padding 0.25s cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+.slide-right-enter-from,
+.slide-right-leave-to {
+    opacity: 0 !important;
+    transform: translateX(200px) !important;
+}
+
 .v-popper__inner {
     font-size: 14px;
 }

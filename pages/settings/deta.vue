@@ -26,7 +26,7 @@ watch(apiKeyInput, (newVal, oldVal) => {
 
 <template>
     <div>
-        <!-- <GpSplash title="No settings available" /> -->
+        <!-- <GoSplash title="No settings available" /> -->
         <div
             font-bold text-gray-6 dark:text-gray-3 mt-7
             text-14px sm:text-5
@@ -36,7 +36,7 @@ watch(apiKeyInput, (newVal, oldVal) => {
         <div my-3 text-color>
             You can set up a shared API key for this instance.
         </div>
-        <UInput
+        <GoInput
             v-model="apiKeyInput"
             placeholder="Enter your API Key"
             text-11px sm:text-4

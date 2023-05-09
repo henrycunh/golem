@@ -31,7 +31,7 @@ function onToggleSearchBar() {
                 Messages
             </div>
 
-            <UButton
+            <GoButton
                 secondary
                 :icon="`${isSearchBarVisible ? 'i-tabler-search-off' : 'i-tabler-message-search'} text-18px`"
                 ml-auto @click="onToggleSearchBar"
@@ -51,13 +51,13 @@ function onToggleSearchBar() {
         <AppMessagesSidebarRecentConversations />
         <div mt-auto>
             <div flex="~ col" children:grow gap-3 mt-2 px-3>
-                <UButton
+                <GoButton
                     secondary icon="i-tabler-plus"
                     @click="onCreateConversation"
                 >
                     New chat
-                </UButton>
-                <GpLongPressButton
+                </GoButton>
+                <GoLongPressButton
                     :duration="1500"
                     icon="i-tabler-arrow-bar-to-up"
                     progress-bar-style="bg-red/50"
@@ -65,7 +65,7 @@ function onToggleSearchBar() {
                     @success="clearConversations"
                 >
                     Clear all
-                </GpLongPressButton>
+                </GoLongPressButton>
             </div>
             <SidebarApiKeyAlert
                 v-if="!apiKey"

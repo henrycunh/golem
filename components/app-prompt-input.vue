@@ -81,7 +81,7 @@ function onStopGenerationClick() {
             bottom-8px sm:bottom-10px
             z-3
         >
-            <UButton
+            <GoButton
                 :disabled="!isLogged || !modelValue"
                 text-12px
                 @click="onSend"
@@ -92,7 +92,7 @@ function onStopGenerationClick() {
                         !isTypingInCurrentConversation ? 'i-tabler-send' : 'i-eos-icons-bubble-loading',
                     ]"
                 />
-            </UButton>
+            </GoButton>
 
             <Transition name="appear-top">
                 <div
@@ -100,12 +100,12 @@ function onStopGenerationClick() {
                     absolute top-0
                     right-18 sm:right-12
                 >
-                    <UButton @click="onStopGenerationClick">
+                    <GoButton @click="onStopGenerationClick">
                         <div i-tabler-player-stop-filled text-3 sm:text-5 />
                         <div whitespace-nowrap text-10px sm:text-14px>
                             Stop talking!
                         </div>
-                    </UButton>
+                    </GoButton>
                 </div>
             </Transition>
         </div>

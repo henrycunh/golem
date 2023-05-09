@@ -182,7 +182,7 @@ const onDeleteConversation = async (id: string) => {
                     col-start-2 col-end-2
                 >
                     <transition name="appear-right">
-                        <GpLongPressButton
+                        <GoLongPressButton
                             v-if="isHovering || isMobile"
                             :duration="800"
                             icon="i-tabler-x text-13px"

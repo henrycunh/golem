@@ -42,7 +42,7 @@ definePageMeta({
                 v-if="conversationNotFound"
                 h-full w-full flex items-center justify-center
             >
-                <GpSplash
+                <GoSplash
                     title="Conversation not found"
                     subtitle="The conversation you are looking for does not exist."
                     icon="i-tabler-alert-circle"
