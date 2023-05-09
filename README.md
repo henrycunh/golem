@@ -18,6 +18,9 @@
 - 🎨 Customizable UI
 - 🌑 Dark mode
 - 🗑️ Delete messages
+- ⭐️ Favorite messages and conversations
+- 🔎 Search messages
+- ⚙️ Custom settings for conversations
 
 ## ☁ Host on the Personal Cloud with Deta
 
@@ -49,8 +52,6 @@ docker run -p3000:3000 theajax/golem
 
 ## 🗺️ Roadmap:
 
-- ⭐️ Favorite messages and conversations
-- 🔎 Search messages
 - 📄 External knowledge (documents, websites, etc.) support
 - 🤖 Additional AI language models support
 - 🌍 Multi-language support
