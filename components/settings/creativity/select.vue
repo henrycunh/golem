@@ -3,9 +3,9 @@ const props = defineProps<{ modelValue: string | null }>()
 const emit = defineEmits(['update:modelValue'])
 
 const options = [
-    { value: 'none', label: 'None', icon: 'i-tabler-antenna-bars-1' },
-    { value: 'normal', label: 'Normal', icon: 'i-tabler-antenna-bars-3' },
-    { value: 'high', label: 'High', icon: 'i-tabler-antenna-bars-5' },
+    { value: 'none', label: 'None', icon: 'i-tabler-antenna-bars-1', info: 'Totally deterministic results.' },
+    { value: 'normal', label: 'Normal', icon: 'i-tabler-antenna-bars-3', info: 'Results are not too wild.' },
+    { value: 'high', label: 'High', icon: 'i-tabler-antenna-bars-5', info: 'Results are really creative!' },
 ]
 
 watchEffect(() => {
@@ -17,7 +17,7 @@ watchEffect(() => {
 
 <template>
     <div>
-        <GoTypography title size="small" color="lighter">
+        <GoTypography title size="small" color="lighter" info="Determines ow random or deterministic the responses are.">
             Creativity
         </GoTypography>
         <div flex gap-3>

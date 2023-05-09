@@ -10,7 +10,7 @@ const options = [
 
 <template>
     <div>
-        <GoTypography title size="small" color="lighter">
+        <GoTypography title size="small" color="lighter" info="The model used for the text completions.">
             Model
         </GoTypography>
         <div flex gap-3>

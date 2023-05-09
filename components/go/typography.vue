@@ -3,6 +3,7 @@ defineProps<{
     title?: boolean
     size?: 'small' | 'medium' | 'large'
     color?: 'lighter'
+    info?: string
 }>()
 </script>
 
@@ -18,5 +19,9 @@ defineProps<{
         ]"
     >
         <slot />
+        <div
+            v-if="info" v-tooltip="info" i-tabler-info-circle ml-1 text-.85em relative top--0.35em
+            op-50
+        />
     </div>
 </template>
