@@ -125,14 +125,14 @@ const currentConversationSettings = computed(() => {
                 </div>
             </div>
             <!-- TODO: implement sharing -->
+            <GoButton ml-auto icon="i-tabler-settings text-14px sm:text-5" @click="onSettingsClick" />
             <GoButton
-                v-if="!isOnSharePage && isDetaEnabled" ml-auto icon="i-tabler-share"
+                v-if="!isOnSharePage && isDetaEnabled" ml-2 icon="i-tabler-share"
                 @click="onShare"
             >
                 Share
             </GoButton>
             <!-- TODO: Implement conversation settings -->
-            <GoButton ml-auto icon="i-tabler-settings text-14px sm:text-5" @click="onSettingsClick" />
         </div>
         <div px-4 flex gap-2 mt-1>
             <AppChatSettingsValue

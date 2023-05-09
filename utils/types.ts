@@ -21,7 +21,7 @@ export namespace types {
     export interface ConversationSettings {
         personaId?: string
         model?: string | null
-        maxTokens?: number
+        maxTokens?: number | null
         creativity?: Creativity | null
     }
 

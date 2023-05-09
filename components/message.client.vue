@@ -52,6 +52,15 @@ function onFavoriteMessage() {
         },
     })
 }
+
+const showCopyMessageConfirmation = ref(false)
+function onCopyMessageContent() {
+    useClipboard().copy(props.message.text)
+    showCopyMessageConfirmation.value = true
+    setTimeout(() => {
+        showCopyMessageConfirmation.value = false
+    }, 1250)
+}
 </script>
 
 <template>
@@ -177,13 +186,20 @@ function onFavoriteMessage() {
                             ml-3
                             @click="onFavoriteMessage"
                         />
-                        <GoLongPressButton
+
+                        <GoButton
                             ml-auto
+                            secondary
+                            :icon="`${showCopyMessageConfirmation ? 'i-tabler-check' : 'i-tabler-copy'} !text-10px sm:!text-16px` "
+                            :success="showCopyMessageConfirmation"
+                            mr-3
+                            @click="onCopyMessageContent"
+                        />
+                        <GoLongPressButton
                             :duration="500"
                             progress-bar-style="bg-red/50"
                             success-style="!ring-red !scale-90 shadow-none"
                             icon="i-tabler-trash !text-10px sm:!text-16px"
-                            class="shadow-lg shadow-800/10"
                             gap-2px sm:gap-1
                             rounded-3 m-0 text-2 sm:text-14px
                             @success="removeMessage"

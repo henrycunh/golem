@@ -9,7 +9,8 @@ const settingsIconMapping = {
 
 const settingTitle = computed(() => {
     const [title] = props.setting
-    return title.slice(0, 1).toUpperCase() + title.slice(1)
+    // Separate words by capital letters
+    return title.slice(0, 1).toUpperCase() + title.slice(1).replace(/([A-Z])/g, ' $1').trim()
 })
 
 const settingValueFormatter = computed(() =>
@@ -19,8 +20,7 @@ const settingValueFormatter = computed(() =>
             'gpt-4': 'GPT 4',
         }, value),
         Creativity: (value: any) => value.slice(0, 1).toUpperCase() + value.slice(1),
-    }, settingTitle.value),
-)
+    }, settingTitle.value, (value: any) => value))
 
 const settingValue = computed(() => {
     const [, value] = props.setting

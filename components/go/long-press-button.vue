@@ -21,12 +21,14 @@ onLongPress(element, () => {
     }, 100)
 }, { delay: props.duration, modifiers: { stop: true } })
 
-function onMouseDown() {
+function onMouseDown(e: Event) {
     progress.value = 100
+    e.preventDefault()
 }
 
-function onMouseUp() {
+function onMouseUp(e: Event) {
     progress.value = 0
+    e.preventDefault()
 }
 
 watchEffect(() => {

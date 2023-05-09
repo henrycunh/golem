@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps<{
-    modelValue: string
+    modelValue: string | null
     placeholder?: string
     when?: Record<string, (e: any) => void>
     error?: string | false
