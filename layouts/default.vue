@@ -94,7 +94,7 @@ useSetup()
                         right-0 flex items-center
                         justify-center
                     >
-                        <AppNavbarMobile />
+                        <LazyAppNavbarMobile />
                     </div>
                 </div>
             </div>

@@ -65,7 +65,7 @@ function onSettingClick() {
         <div
             px-6px py-7px
             bg="dark/4 dark:white/10 hover:dark/10 hover:dark:white/20"
-            transition rounded-r-1 mr-1px h-6 sm:h-7
+            transition rounded-r-1 mr-3px h-6 sm:h-7
             @click.stop="onRemoveClick"
         >
             <div i-tabler-x />
