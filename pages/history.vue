@@ -58,13 +58,13 @@ const onCreateConversation = async () => {
             />
         </div>
         <div flex items-center children:grow gap-3 mt-2>
-            <UButton
+            <GoButton
                 secondary icon="i-tabler-plus"
                 @click="onCreateConversation"
             >
                 New chat
-            </UButton>
-            <GpLongPressButton
+            </GoButton>
+            <GoLongPressButton
                 :duration="1500"
                 icon="i-tabler-arrow-bar-to-up"
                 progress-bar-style="bg-red/50"
@@ -72,7 +72,7 @@ const onCreateConversation = async () => {
                 @success="clearConversations"
             >
                 Clear all
-            </GpLongPressButton>
+            </GoLongPressButton>
         </div>
     </div>
 </template>

@@ -45,13 +45,13 @@ const onAddKnowledgeToConversation = async (knowledge: types.KnowledgeItem) => {
                     <div font-bold text-gray-6 text-5>
                         URLs
                     </div>
-                    <UInput
+                    <GoInput
                         v-model="url"
                         placeholder="Enter URL"
                     />
-                    <UButton @click="onAdd">
+                    <GoButton @click="onAdd">
                         Add
-                    </UButton>
+                    </GoButton>
                 </div>
                 <div col-span-3>
                     <div font-bold text-gray-6 text-5>
@@ -69,9 +69,9 @@ const onAddKnowledgeToConversation = async (knowledge: types.KnowledgeItem) => {
                             <div text-14px text-gray-6 font-bold>
                                 {{ knowledge.title }}
                             </div>
-                            <UButton @click="onAddKnowledgeToConversation(knowledge)">
+                            <GoButton @click="onAddKnowledgeToConversation(knowledge)">
                                 <div i-tabler-plus />
-                            </UButton>
+                            </GoButton>
                         </div>
                     </div>
                 </div>

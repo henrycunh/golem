@@ -12,7 +12,7 @@ const isScrollToBottomButtonVisible = computed(() => {
             <div
                 v-if="isScrollToBottomButtonVisible"
             >
-                <GpLongPressButton
+                <GoLongPressButton
                     icon="i-tabler-arrow-bar-down !text-4 sm:!text-6"
                     :duration="0"
                     success-style="!ring-primary !text-primary"

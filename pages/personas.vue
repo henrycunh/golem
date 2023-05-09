@@ -23,12 +23,12 @@ function onCreatePersona() {}
             {{ personaList }}
         </div>
         <div flex items-center children:grow gap-3 mt-2>
-            <UButton
+            <GoButton
                 secondary icon="i-tabler-plus"
                 @click="onCreatePersona"
             >
                 New persona
-            </UButton>
+            </GoButton>
         </div>
     </div>
 </template>

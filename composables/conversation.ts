@@ -135,14 +135,6 @@ export const useConversations = () => {
         }
     }
 
-    const deleteConversation = async (id: string) => {
-        await db.table('conversations').delete(id)
-        if (isDetaEnabled.value) {
-            deta.conversation.delete(id)
-        }
-        await updateConversationList()
-    }
-
     const updateConversation = async (id: string, update: Partial<types.Conversation>) => {
         const conversation = await db.table('conversations').get(id)
         if (!conversation) {
@@ -161,6 +153,30 @@ export const useConversations = () => {
         if (currentConversationId.value === id) {
             currentConversation.value = newConversation
         }
+    }
+
+    const updateConversationSettings = async (id: string, update: Partial<types.ConversationSettings>) => {
+        const conversation: types.Conversation = await db.table('conversations').get(id)
+        if (!conversation) {
+            throw new Error('Conversation not found')
+        }
+        const newConversation: types.Conversation = {
+            ...conversation,
+            settings: {
+                ...conversation.settings,
+                ...update,
+            },
+        }
+        logger.info('Updating conversation settings')
+        await updateConversation(id, newConversation)
+    }
+
+    const deleteConversation = async (id: string) => {
+        await db.table('conversations').delete(id)
+        if (isDetaEnabled.value) {
+            deta.conversation.delete(id)
+        }
+        await updateConversationList()
     }
 
     async function addErrorMessage(message: string) {
@@ -217,19 +233,6 @@ export const useConversations = () => {
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
         setConversationTypingStatus(fromConversation.id, true)
-
-        // TODO: Check if the message exceeds the maximum token count
-        // try {
-        //     const tokenCount = await client.model.getTokenCount.mutate(message)
-        //     if (tokenCount > 3200) {
-        //         await addErrorMessage('Your message is too long, please try again.')
-        //         return
-        //     }
-        // }
-        // catch (e) {
-        //     await addErrorMessage('Your message is too long, please try again.')
-        //     return
-        // }
 
         let messageList: any[] = getMessageChain(fromConversation.messages, userMessage)
         messageList = [
@@ -307,13 +310,13 @@ export const useConversations = () => {
         }
 
         const { sendMessage } = useLanguageModel()
-
         const abortController = new AbortController()
         conversationAbortMap.value[fromConversation.id] = abortController
         const { data: assistantMessage, error: messageError } = await handle(sendMessage({
             messages: messageList,
-            model: modelUsed.value,
+            model: fromConversation.settings?.model || modelUsed.value,
             max_tokens: Number(maxTokens.value),
+            temperature: resolveCreativity(fromConversation.settings?.creativity),
             async onProgress(partial: types.Message) {
                 await upsertAssistantMessage(partial)
             },
@@ -459,25 +462,26 @@ export const useConversations = () => {
     }
 
     return {
-        listConversations,
-        getConversationById,
-        createConversation,
-        deleteConversation,
-        updateConversation,
-        switchConversation,
-        sendMessage,
-        updateConversationList,
-        clearErrorMessages,
-        removeMessageFromConversation,
         clearConversations,
-        isTypingInCurrentConversation,
-        currentConversation,
+        clearErrorMessages,
         conversationList,
-        isTyping,
+        createConversation,
+        currentConversation,
+        deleteConversation,
         followupQuestions,
+        getConversationById,
+        isTyping,
+        isTypingInCurrentConversation,
         knowledgeUsedInConversation,
-        updateConversationMessage,
+        listConversations,
+        removeMessageFromConversation,
+        sendMessage,
         stopConversationMessageGeneration,
+        switchConversation,
+        updateConversation,
+        updateConversationSettings,
+        updateConversationList,
+        updateConversationMessage,
     }
 }
 
@@ -505,4 +509,15 @@ function getDefaultSystemMessage() {
         Knowledge cutoff: 2021-09-01
         Current date: ${currentDate}
     `)
+}
+
+function resolveCreativity(creativity?: types.Creativity | null) {
+    if (!creativity) {
+        return 0.7
+    }
+    return mapValue({
+        none: 0.0,
+        normal: 0.7,
+        high: 1.2,
+    }, creativity, 0.7)
 }

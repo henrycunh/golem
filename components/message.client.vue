@@ -170,14 +170,14 @@ function onFavoriteMessage() {
                             <div i-tabler-atom-2-filled />
                             {{ tokenCount }} tokens
                         </div>
-                        <UButton
+                        <GoButton
                             secondary
                             class="dark:!bg-red"
                             :icon="`${isMessageFavorited ? 'i-tabler-star-filled' : 'i-tabler-star'} !text-10px sm:!text-16px`"
                             ml-3
                             @click="onFavoriteMessage"
                         />
-                        <GpLongPressButton
+                        <GoLongPressButton
                             ml-auto
                             :duration="500"
                             progress-bar-style="bg-red/50"
@@ -189,7 +189,7 @@ function onFavoriteMessage() {
                             @success="removeMessage"
                         >
                             Delete
-                        </GpLongPressButton>
+                        </GoLongPressButton>
                     </div>
                 </Transition>
             </div>

@@ -95,7 +95,7 @@ function onFileDrop(event: any) {
         :key="currentConversation?.id"
         pl-4 pr-4 lg:px-16
         max-w-1080px mx-auto relative
-        pt-16 sm:pt-20
+        pt-26 sm:pt-28
         h-full overflow-y-auto pb-50
         z-0
         :class="[

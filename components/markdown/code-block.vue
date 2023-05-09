@@ -68,7 +68,7 @@ function onMaximize() {
                     {{ syntax }}
                 </span>
             </div>
-            <UButton
+            <GoButton
                 v-if="!isOnMaximizeScreen"
                 secondary
                 icon="i-tabler-maximize text-1.25em"
@@ -80,7 +80,7 @@ function onMaximize() {
                 transition text-10px sm:text-14px
                 @click="onMaximize"
             />
-            <UButton
+            <GoButton
                 secondary
                 icon="i-tabler-copy"
                 class="!p-1px !px-2 text-11px sm:text-14px"
@@ -93,7 +93,7 @@ function onMaximize() {
                 @click="copyToClipboard"
             >
                 {{ copied ? 'copied!' : 'copy' }}
-            </UButton>
+            </GoButton>
         </div>
         <Transition name="appear-right">
             <div

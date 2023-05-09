@@ -27,7 +27,7 @@ async function onLogin() {
         <div mb-4>
             This instance is protected by a password.
         </div>
-        <UInput
+        <GoInput
             v-model="password"
             type="password"
             placeholder="Password"
@@ -35,12 +35,12 @@ async function onLogin() {
             text-color
             @keydown.enter="onLogin"
         />
-        <UButton
+        <GoButton
             class="min-w-48 max-w-64"
             @click="onLogin"
         >
             Login
-        </UButton>
+        </GoButton>
         <div v-if="error">
             Invalid password
         </div>

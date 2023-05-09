@@ -34,6 +34,12 @@ function onShare() {
     navigateTo(`/chat/share/${currentConversation.value?.id}`)
 }
 
+const isSettingsOpen = inject('is-chat-settings-open', ref(false))
+
+const onSettingsClick = () => {
+    isSettingsOpen.value = true
+}
+
 function onFavoriteConversation() {
     if (!currentConversation.value) {
         return
@@ -52,6 +58,15 @@ const currentPersona = computed(() => {
     return personaList.value.find(
         persona => persona.id === currentConversation.value?.metadata?.personaId,
     ) || personaList.value[0]
+})
+
+const currentConversationSettings = computed(() => {
+    if (!currentConversation.value) {
+        return null
+    }
+    return Object.entries(currentConversation.value?.settings || {}).filter(
+        ([, value]) => value,
+    )
 })
 </script>
 
@@ -110,14 +125,22 @@ const currentPersona = computed(() => {
                 </div>
             </div>
             <!-- TODO: implement sharing -->
-            <UButton
+            <GoButton
                 v-if="!isOnSharePage && isDetaEnabled" ml-auto icon="i-tabler-share"
                 @click="onShare"
             >
                 Share
-            </UButton>
+            </GoButton>
             <!-- TODO: Implement conversation settings -->
-            <!-- <UButton ml-auto icon="i-tabler-settings text-5" /> -->
+            <GoButton ml-auto icon="i-tabler-settings text-14px sm:text-5" @click="onSettingsClick" />
+        </div>
+        <div px-4 flex gap-2 mt-1>
+            <AppChatSettingsValue
+                v-for="setting in currentConversationSettings"
+                :key="setting[0]"
+                :setting="setting"
+                @click="onSettingsClick"
+            />
         </div>
     </div>
 </template>
