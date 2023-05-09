@@ -315,7 +315,7 @@ export const useConversations = () => {
         const { data: assistantMessage, error: messageError } = await handle(sendMessage({
             messages: messageList,
             model: fromConversation.settings?.model || modelUsed.value,
-            max_tokens: Number(maxTokens.value),
+            max_tokens: Number(fromConversation.settings?.maxTokens || maxTokens.value) > 0 ? Number(fromConversation.settings?.maxTokens || maxTokens.value) : undefined,
             temperature: resolveCreativity(fromConversation.settings?.creativity),
             async onProgress(partial: types.Message) {
                 await upsertAssistantMessage(partial)

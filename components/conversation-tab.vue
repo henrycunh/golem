@@ -184,10 +184,14 @@ const onDeleteConversation = async (id: string) => {
                     <transition name="appear-right">
                         <GoLongPressButton
                             v-if="isHovering || isMobile"
+                            v-tooltip="{
+                                content: 'Press and hold to delete conversation',
+                                delay: 450,
+                            }"
                             :duration="800"
                             icon="i-tabler-x text-13px"
-                            rounded-2px
-                            small block
+                            rounded-2px small
+                            block
                             class="!relative"
                             success-style="!ring-red-500 !text-red-7"
                             progress-bar-style="bg-red/50"

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
     outline?: boolean
     disabled?: boolean
     secondary?: boolean
+    success?: boolean
     icon?: string
     color?: string
 }>()
@@ -51,7 +52,7 @@ const gradientStyle = computed(() => {
         active:scale-98 active:shadow-none cursor-pointer p-0
         :style="!disabled ? gradientStyle : {}"
         :class="[
-            secondary && '!bg-none !bg-200/30 !shadow-none dark:!bg-500/20',
+            (secondary || success) && '!bg-none !bg-200/30 !shadow-none dark:!bg-500/20',
             disabled ? 'cursor-not-allowed !from-gray-5 !to-gray-2' : '',
         ]"
         @click="$emit('click')"
@@ -64,7 +65,8 @@ const gradientStyle = computed(() => {
             rounded-6px
             class="!w-full !m-0.12rem bg-600/65"
             :class="[
-                secondary && '!bg-transparent !text-primary-600 dark:!text-primary-300',
+                secondary && !success && '!bg-transparent !text-primary-600 dark:!text-primary-300',
+                success && '!bg-green-500 !text-white',
                 disabled ? '!bg-gray-5' : '',
             ]"
             flex items-center justify-center gap-1
