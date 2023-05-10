@@ -18,9 +18,9 @@ defineProps<{
         <div
             text-color flex items-center
             :class="[
-                size === 'small' && `text-0.75em sm:text-1em`,
-                size === 'medium' && `text-1em sm:text-1.5em`,
-                size === 'large' && `text-1.5em sm:text-2em`,
+                size === 'small' && `text-0.75em sm:text-.75em`,
+                size === 'medium' && `text-1em sm:text-1em`,
+                size === 'large' && `text-1.5em sm:text-1.5em`,
                 color === 'lighter' && `text-color-lighter`,
             ]"
         >

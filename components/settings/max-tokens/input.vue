@@ -6,7 +6,7 @@ defineEmits(['update:modelValue'])
 <template>
     <div>
         <GoTypography title size="small" color="lighter" info="The max amount of tokens per response.">
-            Model
+            Maximum Tokens
         </GoTypography>
         <GoTypography subtitle size="small" color="lighter">
             Leave blank to not limit.
