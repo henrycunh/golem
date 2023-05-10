@@ -19,8 +19,8 @@ export default {
         <input
             b-1 b-solid b-gray-300 focus:b-primary-500 transition p-2 ease-in-out
             focus:placeholder:translate-x-1 placeholder:transition placeholder:ease-in-out
-            outline-none placeholder:text-coolgray-400 rounded-2
-            class="dark:b-white/10 dark:focus:b-primary-400 dark:focus:placeholder:text-coolgray-500"
+            outline-none placeholder:text-color placeholder:op-40 rounded-2
+            class="dark:b-white/10 dark:focus:b-primary-400"
             bg-transparent text-color
             :class="[
                 error && '!b-red-4',

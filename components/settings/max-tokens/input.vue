@@ -17,7 +17,8 @@ defineEmits(['update:modelValue'])
             text-11px
             sm:text-4 placeholder="Maximum tokens"
             w-full
-            text-gray-5 dark:text-gray-1 @update:model-value="$emit('update:modelValue', $event)"
+            text-gray-5 dark:text-gray-1 type="number" min="0"
+            @update:model-value="$emit('update:modelValue', $event)"
         />
     </div>
 </template>
