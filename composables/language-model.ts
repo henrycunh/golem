@@ -75,6 +75,7 @@ export function useLanguageModel() {
             text: '',
             delta: undefined,
             detail: undefined,
+            parentMessageId: '',
         }
 
         if (!requestBody.stream) {
