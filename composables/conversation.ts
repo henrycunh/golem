@@ -72,27 +72,29 @@ export const useConversations = () => {
         return newConversation
     }
 
-    async function cloneConversation(id: string, lastMessageId?: string, titlePrefix?: string) {
-        let titlePrefixWithDefault = titlePrefix || 'Copy: '
-        const originConversation = await getConversationById(id)
-        let lastIndex = -1
+    async function cloneConversation(conversationId: string, lastMessageId?: string, titlePrefix?: string) {
+        const titlePrefixWithDefault = titlePrefix || 'Copy: '
+        const originConversation = await getConversationById(conversationId)
+        let messageList = []
+
         if (lastMessageId) {
-            lastIndex = originConversation.messages.findIndex((m: types.Message) => m.id === lastMessageId)
+            const lastMessage = await getMessageById(conversationId, lastMessageId)
+            messageList = getMessageChain(originConversation.messages, lastMessage)
         }
-        let messages = originConversation.messages
-        if (lastIndex !== 1) {
-            messages = originConversation.messages.slice(0, lastIndex + 1)
+        else {
+            messageList = originConversation.messages
         }
-        const newKey = await createConversation(
+
+        await createConversation(
             '',
             {
                 ...originConversation,
                 id: nanoid(),
                 title: [titlePrefixWithDefault, originConversation.title].join(''),
-                messages,
+                messages: messageList,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-            }
+            },
         )
     }
 
@@ -237,7 +239,6 @@ export const useConversations = () => {
     }
 
     const sendMessage = async (message: string) => {
-        // Creates the ChatGPT client
         if (!process.client) {
             return
         }
@@ -249,7 +250,6 @@ export const useConversations = () => {
 
         const assistantMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastAssistantMessage = assistantMessageList[assistantMessageList.length - 1]
-        console.log('lastAssistantMessage', lastAssistantMessage)
         const userMessage = {
             id: nanoid(),
             role: 'user' as const,

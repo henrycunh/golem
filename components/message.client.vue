@@ -203,7 +203,7 @@ function onCopyMessageContent() {
                         <GoButton
                             ml-auto
                             secondary
-                            :icon="`${showForkConversationConfirmation ? 'i-tabler-check' : 'i-tabler-arrow-fork' } !text-10px sm:!text-16px` "
+                            :icon="`${showForkConversationConfirmation ? 'i-tabler-check' : 'i-tabler-arrow-fork'} !text-10px sm:!text-16px` "
                             :success="showForkConversationConfirmation"
                             mr-3
                             @click="onForkConversationContent"
