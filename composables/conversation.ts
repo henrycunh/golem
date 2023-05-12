@@ -72,6 +72,34 @@ export const useConversations = () => {
         return newConversation
     }
 
+    async function cloneConversation(id: string, lastMessageId?: string, titlePrefix?: string) {
+        let titlePrefixWithDefault = titlePrefix || 'Copy: '
+        const originConversation = await getConversationById(id)
+        let lastIndex = -1
+        if (lastMessageId) {
+            lastIndex = originConversation.messages.findIndex((m: types.Message) => m.id === lastMessageId)
+        }
+        let messages = originConversation.messages
+        if (lastIndex !== 1) {
+            messages = originConversation.messages.slice(0, lastIndex + 1)
+        }
+        const newKey = await createConversation(
+            '',
+            {
+                ...originConversation,
+                id: nanoid(),
+                title: [titlePrefixWithDefault, originConversation.title].join(''),
+                messages,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+        )
+    }
+
+    async function forkConversation(id: string, lastMessageId: string) {
+        await cloneConversation(id, lastMessageId, 'Fork: ')
+    }
+
     async function addMessageToConversation(id: string, message: ChatMessage) {
         const conversation = await db.table('conversations').get(id)
         if (!conversation) {
@@ -467,11 +495,13 @@ export const useConversations = () => {
     return {
         clearConversations,
         clearErrorMessages,
+        cloneConversation,
         conversationList,
         createConversation,
         currentConversation,
         deleteConversation,
         followupQuestions,
+        forkConversation,
         getConversationById,
         isTyping,
         isTypingInCurrentConversation,
