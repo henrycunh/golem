@@ -72,6 +72,36 @@ export const useConversations = () => {
         return newConversation
     }
 
+    async function cloneConversation(conversationId: string, lastMessageId?: string, titlePrefix?: string) {
+        const titlePrefixWithDefault = titlePrefix || 'Copy: '
+        const originConversation = await getConversationById(conversationId)
+        let messageList = []
+
+        if (lastMessageId) {
+            const lastMessage = await getMessageById(conversationId, lastMessageId)
+            messageList = getMessageChain(originConversation.messages, lastMessage)
+        }
+        else {
+            messageList = originConversation.messages
+        }
+
+        await createConversation(
+            '',
+            {
+                ...originConversation,
+                id: nanoid(),
+                title: [titlePrefixWithDefault, originConversation.title].join(''),
+                messages: messageList,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        )
+    }
+
+    async function forkConversation(id: string, lastMessageId: string) {
+        await cloneConversation(id, lastMessageId, 'Fork: ')
+    }
+
     async function addMessageToConversation(id: string, message: ChatMessage) {
         const conversation = await db.table('conversations').get(id)
         if (!conversation) {
@@ -209,7 +239,6 @@ export const useConversations = () => {
     }
 
     const sendMessage = async (message: string) => {
-        // Creates the ChatGPT client
         if (!process.client) {
             return
         }
@@ -221,7 +250,6 @@ export const useConversations = () => {
 
         const assistantMessageList = (fromConversation.messages || []).filter((message: ChatMessage) => message.role === 'assistant')
         const lastAssistantMessage = assistantMessageList[assistantMessageList.length - 1]
-        console.log('lastAssistantMessage', lastAssistantMessage)
         const userMessage = {
             id: nanoid(),
             role: 'user' as const,
@@ -467,11 +495,13 @@ export const useConversations = () => {
     return {
         clearConversations,
         clearErrorMessages,
+        cloneConversation,
         conversationList,
         createConversation,
         currentConversation,
         deleteConversation,
         followupQuestions,
+        forkConversation,
         getConversationById,
         isTyping,
         isTypingInCurrentConversation,

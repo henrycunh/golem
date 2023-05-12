@@ -9,7 +9,7 @@ const { isOnSharePage } = useSession()
 const element = ref()
 const isActionBarVisible = ref(false)
 
-const { clearErrorMessages, removeMessageFromConversation, currentConversation, updateConversationMessage } = useConversations()
+const { clearErrorMessages, removeMessageFromConversation, currentConversation, updateConversationMessage, forkConversation } = useConversations()
 
 // Action bar visibility
 function onClick() {
@@ -51,6 +51,19 @@ function onFavoriteMessage() {
             favorite: !isMessageFavorited.value,
         },
     })
+}
+
+const showForkConversationConfirmation = ref(false)
+async function onForkConversationContent() {
+    if (!currentConversation.value) {
+        return
+    }
+    await forkConversation(currentConversation.value?.id, props.message.id)
+
+    showForkConversationConfirmation.value = true
+    setTimeout(() => {
+        showForkConversationConfirmation.value = false
+    }, 1250)
 }
 
 const showCopyMessageConfirmation = ref(false)
@@ -189,6 +202,13 @@ function onCopyMessageContent() {
 
                         <GoButton
                             ml-auto
+                            secondary
+                            :icon="`${showForkConversationConfirmation ? 'i-tabler-check' : 'i-tabler-arrow-fork'} !text-10px sm:!text-16px` "
+                            :success="showForkConversationConfirmation"
+                            mr-3
+                            @click="onForkConversationContent"
+                        />
+                        <GoButton
                             secondary
                             :icon="`${showCopyMessageConfirmation ? 'i-tabler-check' : 'i-tabler-copy'} !text-10px sm:!text-16px` "
                             :success="showCopyMessageConfirmation"
