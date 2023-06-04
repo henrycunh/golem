@@ -25,6 +25,21 @@ const onType = (event?: any) => {
         emit('update:modelValue', (event.target as any).value)
     }
 }
+const handleArrowUp = (e: KeyboardEvent) => {
+    // do nothing if textarea is not empty
+    if (textarea.value.value) {
+        return
+    }
+
+    e.preventDefault()
+    const userMessages = currentConversation.value?.messages.filter(message => message.role === 'user')
+    const lastUserMessage = userMessages?.[userMessages.length - 1]
+
+    if (lastUserMessage) {
+        emit('update:modelValue', lastUserMessage.text)
+    }
+}
+
 const handleEnter = (e: KeyboardEvent) => {
     if (e.shiftKey) {
         return
@@ -74,6 +89,7 @@ function onStopGenerationClick() {
                 !isLogged ? 'cursor-not-allowed' : '',
             ]"
             @input="onType"
+            @keydown.up="handleArrowUp"
             @keydown.enter="handleEnter"
         />
         <div
