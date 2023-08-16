@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { encode } from 'gpt-token-utils'
-import type { types } from '~~/utils/types'
 
+import type { types } from '~~/utils/types'
 const props = defineProps<{ message: types.Message }>()
 
 const { currentPreset } = usePreset()
@@ -110,13 +110,13 @@ function onCopyMessageContent() {
                             message.isError && 'text-red-9 dark:text-red-3',
                         ]"
                     >
-                        {{ message.role === 'assistant' ? 'Golem' : 'You' }}
+                        {{ message.role === 'assistant' ? 'chatQuery' : 'You' }}
                     </div>
                     <div ml-auto>
                         <Transition name="appear-right">
                             <div v-if="isMessageFavorited" dark:text-amber-400 text-amber-600 flex items-center gap-1 uppercase font-bold font-title text-8px sm:text-12px>
                                 <div i-tabler-star-filled />
-                                Favorited
+                                Favoris
                             </div>
                         </Transition>
                     </div>
@@ -224,11 +224,21 @@ function onCopyMessageContent() {
                             rounded-3 m-0 text-2 sm:text-14px
                             @success="removeMessage"
                         >
-                            Delete
+                            Supprimer
                         </GoLongPressButton>
                     </div>
                 </Transition>
+                <!-- <br>
+                <div>
+                    <table>
+                        <div>Graph des donnees</div>
+                    </table>
+                </div> -->
             </div>
         </div>
     </div>
 </template>
+
+  function data() {
+    throw new Error('Function not implemented.')
+  }

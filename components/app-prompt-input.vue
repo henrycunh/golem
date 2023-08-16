@@ -1,19 +1,48 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
 const { apiKey } = useSettings()
+const choices = ['Interroger mes donnees'] // Remplacez ces choix par les vôtres
+const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
+
 const { isTypingInCurrentConversation, currentConversation, stopConversationMessageGeneration } = useConversations()
 const textarea = ref()
 const isLogged = computed(() => Boolean(apiKey.value))
 
 const onSend = () => {
+    const choiceClicked = selectedChoices.value.length > 0 // Vérifier si un choix a été cliqué
+    console.log(choiceClicked)
     if (!isTypingInCurrentConversation.value && props.modelValue) {
-        emit('send', props.modelValue)
+        emit('send', props.modelValue, choiceClicked)
         emit('update:modelValue', '')
     }
 }
 
+const showChoices = ref(false)
+
+const toggleChoice = (choice) => {
+    const index = selectedChoices.value.indexOf(choice)
+    if (index !== -1) {
+        // Le choix est déjà sélectionné, le supprimer de selectedChoices
+        selectedChoices.value.splice(index, 1)
+    }
+    else {
+        // Le choix n'est pas encore sélectionné, l'ajouter à selectedChoices
+        selectedChoices.value.push(choice)
+    }
+    // Masquer la liste après la sélection ou la désélection d'un choix
+    showChoices.value = false
+}
+
+const displayChoices = () => {
+    showChoices.value = !showChoices.value
+    if (!showChoices.value) {
+        selectedChoices.value = [] // Réinitialiser les choix sélectionnés
+    }
+}
 const onType = (event?: any) => {
     if (!textarea.value) {
         return
@@ -64,7 +93,7 @@ function onStopGenerationClick() {
         pr-11 sm:pr-20
         text-gray-600 placeholder:text-gray-400
         placeholder:transition
-        class="focus-within:placeholder:translate-x-2 bg-gray-1/80 dark:bg-white/5 dark:ring-white/5" ring-2
+        class="flex items-center focus-within:placeholder:translate-x-2 bg-gray-1/80 dark:bg-white/5 dark:ring-white/5" ring-2
         ring-inset rounded-3 shadow-inset
         shadow ring-gray-100 focus-within:ring-primary focus-within:shadow-md
         transition
@@ -73,13 +102,39 @@ function onStopGenerationClick() {
             !isLogged ? 'cursor-not-allowed' : '',
         ]"
     >
+        <GoButton
+            text-12px
+            @click="displayChoices"
+        >
+            <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+        </GoButton>
+
+        <!-- Afficher la liste de choix si showChoices est vrai -->
+        <div v-if="showChoices" style="top: -80px;" class="absolute top-[-8px] left-0 p-2 bg-white rounded shadow transition-transform transform scale-100 translate-y-0">
+            <!-- Utilisez une boucle v-for pour afficher les choix avec des cases à cocher -->
+            <div v-for="(choice, index) in choices" :key="index" class="flex items-center space-x-2 cursor-pointer" @click="toggleChoice(choice)">
+                <input v-model="selectedChoices" :value="choice" type="checkbox" class="text-primary focus:ring-primary">
+                <label class="text-gray-800">{{ choice }}</label>
+            </div>
+        </div>
+        <!-- <div class="dropdown">
+            <button class="dropdown-button" @click="toggleDropdown">
+                <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+            </button>
+            <ul v-if="isDropdownOpen" class="dropdown-list">
+            </ul>
+        </div> -->
         <textarea
             ref="textarea"
             :value="modelValue"
             w-full
             text-12px sm:text-16px
             outline-none overflow-y-auto bg-transparent overflow-x-hidden
-            placeholder="Type your message here..." leading-6 font-text
+            placeholder="Ecrivez votre requete ici..." leading-6 font-text
             relative z-2 resize-none b-0 h-28px sm:h-7
             dark:placeholder:text-gray-4
             text-gray-8 dark:text-gray-1
@@ -119,7 +174,7 @@ function onStopGenerationClick() {
                     <GoButton @click="onStopGenerationClick">
                         <div i-tabler-player-stop-filled text-3 sm:text-5 />
                         <div whitespace-nowrap text-10px sm:text-14px>
-                            Stop talking!
+                            Arrêter de parler!
                         </div>
                     </GoButton>
                 </div>
@@ -136,5 +191,22 @@ function onStopGenerationClick() {
 .slide-in-bottom-enter, .slide-in-bottom-leave-to {
     transform: translateY(100%) scaleY(0);
     opacity: 0;
+}
+/* Animation de l'apparition par le haut */
+.transition-transform {
+  transition-property: transform;
+  transition-duration: 0.2s;
+}
+
+/* État initial de la transformation */
+.scale-0 {
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+/* État final de la transformation */
+.scale-100 {
+  transform: scaleY(1);
+  transform-origin: top;
 }
 </style>

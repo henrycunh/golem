@@ -24,7 +24,7 @@ async function onBlur(event: FocusEvent) {
             apiKeyError.value = false
         }
         catch (e) {
-            apiKeyError.value = 'Invalid API key.'
+            apiKeyError.value = 'La cle de votre API est invalide.'
         }
     }
 }
@@ -33,7 +33,7 @@ if (isDetaEnabled.value) {
     const updateAPIKeyOnDeta = useDebounceFn(async () => {
         const { error } = await handle(checkIfAPIKeyIsValid(apiKeyInput.value || ''))
         if (error) {
-            apiKeyError.value = 'Invalid API key.'
+            apiKeyError.value = 'La cle de votre API est invalide.'
             return
         }
         await client.deta.preferences.set.mutate({ key: 'api-key', value: apiKeyInput.value || '' })
@@ -56,17 +56,17 @@ if (isDetaEnabled.value) {
         text-11px sm:text-4
     >
         <div>
-            To use the application you need to provide an OpenAI API key.
+            Pour utiliser cette application vous devez fournir un API key de OpenAI .
         </div>
         <div mt-3>
-            You can get your API key from the <GoLink to="https://platform.openai.com/account/api-keys" target="_blank">
-                OpenAI dashboard
+            Vous pouvez obtenir une cle d'API via cette source<GoLink to="https://platform.openai.com/account/api-keys" target="_blank">
+                Tableau de bord OpenAI
             </GoLink>.
         </div>
         <div v-if="!(instanceApiKey && !isDetaEnabled)" text-gray-5 dark:text-gray-1 mt-3>
             <GoInput
                 v-model="apiKeyInput"
-                placeholder="Enter your API Key"
+                placeholder="Entrer votre cle d'API"
                 text-11px sm:text-4
                 w-full text-gray-5 dark:text-gray-1
                 :when="{
@@ -80,14 +80,14 @@ if (isDetaEnabled.value) {
                 font-bold text-gray-6 dark:text-gray-3 mt-7
                 text-14px sm:text-5
             >
-                Instance API Key
+                Instance de Cle d'API
             </div>
             <div my-3 />
             <div v-if="isDetaEnabled" text-color-lighter text-8px sm:text-13px>
                 {{
                     isDetaEnabled
-                        ? 'The API Key is setup and stored on Deta.'
-                        : 'This instance has a shared API key already set up.'
+                        ? 'La cle API est configuré est stocker sur Deta.'
+                        : 'Cette instance API ets déjà en cours de session.'
                 }}
             </div>
             <div

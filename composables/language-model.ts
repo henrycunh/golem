@@ -35,6 +35,15 @@ export function useLanguageModel() {
     async function sendMessage(options: any) {
         const { onProgress, signal, ...requestBody } = options
         const CHAT_COMPLETION_ENDPOINT = 'https://api.openai.com/v1/chat/completions'
+        const responseApi = 'http://54.39.185.58:5012/question'
+        logger.info(requestBody.messages)
+
+        logger.info(requestBody.messages[requestBody.messages.length - 1].content)
+
+        const lastMessageContent = requestBody.messages[requestBody.messages.length - 1].content
+        //requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
+        const request = requestBody.messages[requestBody.messages.length - 1].content
+        logger.info('LOGGGERRRER ', requestBody.messages[requestBody.messages.length - 1].content)
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
             method: 'POST',
@@ -91,7 +100,6 @@ export function useLanguageModel() {
                 result.role = message.role
             }
             result.detail = response as any
-            console.log(result)
             return result
         }
         else {
@@ -110,10 +118,46 @@ export function useLanguageModel() {
                         result.role = delta.role
                     }
                 }
-                if (onProgress) {
+                /* if (onProgress) {
                     await onProgress(result)
-                }
+                } */
             }
+            /* let deuxiemeApiResponse
+            try {
+                const response = await fetch('http://54.39.185.58:5012/question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question_reformule: result.text,
+                    }),
+                })
+
+                deuxiemeApiResponse = await response.json()
+
+                logger.info(deuxiemeApiResponse)
+                logger.info(result.text)
+
+                deuxiemeApiResponse.array.forEach(element => {
+                    logger.info(element)
+                })
+                let val = ' '
+
+                deuxiemeApiResponse.forEach((element) => {
+                    val += element.join(' ')
+                })
+
+                result.text = `${val} `
+                console.log('-----------------------', result.text)
+                logger.info(requestBody.messages)
+                logger.info('Réponse de la deuxième API :', deuxiemeApiResponse)
+            }
+            catch (error) {
+                logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
+            } */
+
+            // logger.info('RESULTAT TEXT', result.text)
             return result
         }
     }

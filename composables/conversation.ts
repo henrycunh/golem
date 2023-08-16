@@ -75,7 +75,7 @@ export const useConversations = () => {
     async function cloneConversation(conversationId: string, lastMessageId?: string, titlePrefix?: string) {
         const titlePrefixWithDefault = titlePrefix || 'Copy: '
         const originConversation = await getConversationById(conversationId)
-        let messageList = []
+        let messageList: ChatMessage[] = []
 
         if (lastMessageId) {
             const lastMessage = await getMessageById(conversationId, lastMessageId)
@@ -313,7 +313,6 @@ export const useConversations = () => {
                 return
             }
         }
-
         let thisMessage: ChatMessage | null = null
         let messageCreated = false
 
@@ -330,7 +329,6 @@ export const useConversations = () => {
                     }
                 }
             }
-
             else if (!messageCreated) {
                 messageCreated = true
                 await addMessageToConversation(fromConversation.id, messageResponse)
@@ -390,12 +388,13 @@ export const useConversations = () => {
 
         // TODO: Add follow up questions feature
         // getFollowupQuestions(message)
+        logger.info('Switched to conversation with id ', message)
     }
 
     const switchConversation = async (id: string) => {
         currentConversationId.value = id
         currentConversation.value = await getConversationById(id)
-        logger.info('Switched to conversation', currentConversation.value?.id)
+        logger.info('Switched to conversation with id ', currentConversation.value?.id)
     }
 
     async function generateConversationTitle(conversationId: string) {

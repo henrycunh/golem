@@ -36,7 +36,7 @@ const onCreateConversation = async () => {
             text-color mb-2 flex items-center
         >
             <div>
-                History
+                Historiques
             </div>
             <div
                 v-if="conversationList?.length" ml-auto
@@ -62,7 +62,7 @@ const onCreateConversation = async () => {
                 secondary icon="i-tabler-plus"
                 @click="onCreateConversation"
             >
-                New chat
+                Nouvelle requête
             </GoButton>
             <GoLongPressButton
                 :duration="1500"
@@ -71,7 +71,7 @@ const onCreateConversation = async () => {
                 success-style="!ring-red"
                 @success="clearConversations"
             >
-                Clear all
+                Effacer tout
             </GoLongPressButton>
         </div>
     </div>

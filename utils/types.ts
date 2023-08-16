@@ -26,6 +26,7 @@ export namespace types {
     }
 
     export interface Message extends ChatMessage {
+[x: string]: any
         updatedAt: Date
         createdAt: Date
         isError?: boolean

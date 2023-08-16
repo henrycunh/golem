@@ -10,7 +10,7 @@ defineProps<{ isTyping: boolean }>()
         >
             <div i-eos-icons-bubble-loading text-primary />
             <div text-gray-5 dark:text-gray-2>
-                Thinking...
+                Je cherche...
             </div>
         </div>
     </Transition>

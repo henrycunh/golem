@@ -55,7 +55,7 @@ function onToggleSearchBar() {
                     secondary icon="i-tabler-plus"
                     @click="onCreateConversation"
                 >
-                    New chat
+                    Nouvelle requete
                 </GoButton>
                 <GoLongPressButton
                     :duration="1500"
@@ -64,7 +64,7 @@ function onToggleSearchBar() {
                     success-style="!ring-red"
                     @success="clearConversations"
                 >
-                    Clear all
+                    Effacer tout
                 </GoLongPressButton>
             </div>
             <SidebarApiKeyAlert

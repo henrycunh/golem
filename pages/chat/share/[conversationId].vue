@@ -43,8 +43,8 @@ definePageMeta({
                 h-full w-full flex items-center justify-center
             >
                 <GoSplash
-                    title="Conversation not found"
-                    subtitle="The conversation you are looking for does not exist."
+                    title="Aucune coversation trouvée"
+                    subtitle="La conversation que vous cherchez n'existe pas."
                     icon="i-tabler-alert-circle"
                 />
             </div>
