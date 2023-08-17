@@ -238,10 +238,12 @@ export const useConversations = () => {
         })
     }
 
-    const sendMessage = async (message: string) => {
+    const sendMessage = async (message: string, selectedChoices: boolean) => {
         if (!process.client) {
             return
         }
+
+        logger.info('CHOIX EXECUTION SEND MESSAGE', selectedChoices)
 
         const fromConversation = currentConversation.value
         if (!fromConversation) {
@@ -346,6 +348,7 @@ export const useConversations = () => {
             async onProgress(partial: types.Message) {
                 await upsertAssistantMessage(partial)
             },
+            choix: selectedChoices,
             signal: abortController.signal,
             stream: true,
         }))
@@ -374,13 +377,15 @@ export const useConversations = () => {
             }
         }
         else {
-            assistantMessage.parentMessageId = userMessage.id
-            setConversationTypingStatus(fromConversation.id, false)
-            await upsertAssistantMessage(assistantMessage as any, true)
-            await updateConversationList()
+            if (assistantMessage) {
+                assistantMessage.parentMessageId = userMessage.id
+                setConversationTypingStatus(fromConversation.id, false)
+                await upsertAssistantMessage(assistantMessage as any, true)
+                await updateConversationList()
 
-            if (fromConversation.title.trim() === 'Untitled Conversation') {
-                await generateConversationTitle(fromConversation.id)
+                if (fromConversation.title.trim() === 'Untitled Conversation') {
+                    await generateConversationTitle(fromConversation.id)
+                }
             }
         }
 

@@ -33,15 +33,14 @@ export function useLanguageModel() {
     }
 
     async function sendMessage(options: any) {
-        const { onProgress, signal, ...requestBody } = options
+        const { onProgress, signal, choix, ...requestBody } = options
         const CHAT_COMPLETION_ENDPOINT = 'https://api.openai.com/v1/chat/completions'
         const responseApi = 'http://54.39.185.58:5012/question'
         logger.info(requestBody.messages)
-
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
 
         const lastMessageContent = requestBody.messages[requestBody.messages.length - 1].content
-        //requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
+        // requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
         const request = requestBody.messages[requestBody.messages.length - 1].content
         logger.info('LOGGGERRRER ', requestBody.messages[requestBody.messages.length - 1].content)
 
@@ -77,7 +76,6 @@ export function useLanguageModel() {
                 )
             throw new OpenAIError({ cause, message: 'Failed to send message' })
         }
-
         const result = {
             role: 'assistant',
             id: nanoid(),
@@ -86,7 +84,6 @@ export function useLanguageModel() {
             detail: undefined,
             parentMessageId: '',
         }
-
         if (!requestBody.stream) {
             if (response.id) {
                 result.id = response.id
@@ -122,42 +119,48 @@ export function useLanguageModel() {
                     await onProgress(result)
                 } */
             }
-            /* let deuxiemeApiResponse
-            try {
-                const response = await fetch('http://54.39.185.58:5012/question', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        question_reformule: result.text,
-                    }),
-                })
+            if (options.choix === true) {
+                logger.info('INTEROGER CES PROPRES DONNEES', options.choix)
+                let deuxiemeApiResponse
+                try {
+                    const response = await fetch('http://54.39.185.58:5012/test', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            question_reformule: result.text,
+                        }),
+                    })
 
-                deuxiemeApiResponse = await response.json()
+                    deuxiemeApiResponse = await response.json()
 
-                logger.info(deuxiemeApiResponse)
-                logger.info(result.text)
+                    logger.info(deuxiemeApiResponse)
+                    logger.info(result.text)
 
-                deuxiemeApiResponse.array.forEach(element => {
-                    logger.info(element)
-                })
-                let val = ' '
+                    if (Array.isArray(deuxiemeApiResponse) && deuxiemeApiResponse.test) {
+                        deuxiemeApiResponse.test.forEach((element) => {
+                            logger.info(element)
+                        })
+                        let val = ' '
 
-                deuxiemeApiResponse.forEach((element) => {
-                    val += element.join(' ')
-                })
+                        deuxiemeApiResponse.forEach((element) => {
+                            val += element.join(' ')
+                        })
+                    }
+                    else {
+                        result.text = deuxiemeApiResponse.test
+                    }
+                    console.log('-----------------------', result.text)
+                    logger.info(requestBody.messages)
+                    logger.info('Réponse de la deuxième API :', deuxiemeApiResponse)
+                }
+                catch (error) {
+                    logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
+                }
 
-                result.text = `${val} `
-                console.log('-----------------------', result.text)
-                logger.info(requestBody.messages)
-                logger.info('Réponse de la deuxième API :', deuxiemeApiResponse)
+                logger.info('RESULTAT TEXT', result.text)
             }
-            catch (error) {
-                logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
-            } */
-
-            // logger.info('RESULTAT TEXT', result.text)
             return result
         }
     }

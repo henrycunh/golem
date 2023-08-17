@@ -5,24 +5,23 @@ const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits(['update:modelValue', 'send'])
 
 const { apiKey } = useSettings()
-const choices = ['Interroger mes donnees'] // Remplacez ces choix par les vôtres
-const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
+/* const choices = ['Interroger mes donnees'] // Remplacez ces choix par les vôtres
+const selectedChoices = ref([]) // Pour stocker les choix sélectionnés */
 
 const { isTypingInCurrentConversation, currentConversation, stopConversationMessageGeneration } = useConversations()
 const textarea = ref()
 const isLogged = computed(() => Boolean(apiKey.value))
 
 const onSend = () => {
-    const choiceClicked = selectedChoices.value.length > 0 // Vérifier si un choix a été cliqué
-    console.log(choiceClicked)
-    emit('send', props.modelValue)
+    // const choiceClicked = selectedChoices.value.length > 0  Vérifier si un choix a été cliqué
+    // console.log(choiceClicked)
     if (!isTypingInCurrentConversation.value && props.modelValue) {
         emit('send', props.modelValue)
         emit('update:modelValue', '')
     }
 }
 
-const showChoices = ref(false)
+/* const showChoices = ref(false)
 
 const toggleChoice = (choice) => {
     const index = selectedChoices.value.indexOf(choice)
@@ -43,7 +42,7 @@ const displayChoices = () => {
     if (!showChoices.value) {
         selectedChoices.value = [] // Réinitialiser les choix sélectionnés
     }
-}
+} */
 const onType = (event?: any) => {
     if (!textarea.value) {
         return
@@ -89,38 +88,24 @@ function onStopGenerationClick() {
 </script>
 
 <template>
-    <div
-        relative p-2 pb-2px sm:p-3 sm:pb-2
-        pr-11 sm:pr-20
-        text-gray-600 placeholder:text-gray-400
-        placeholder:transition
-        class="flex items-center focus-within:placeholder:translate-x-2 bg-gray-1/80 dark:bg-white/5 dark:ring-white/5" ring-2
-        ring-inset rounded-3 shadow-inset
-        shadow ring-gray-100 focus-within:ring-primary focus-within:shadow-md
-        transition
-        backdrop-filter backdrop-blur-2px
-        :class="[
-            !isLogged ? 'cursor-not-allowed' : '',
-        ]"
-    >
-        <GoButton
+    <!-- <GoButton
             text-12px
             @click="displayChoices"
         >
             <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-        </GoButton>
+        </GoButton> -->
 
-        <!-- Afficher la liste de choix si showChoices est vrai -->
-        <div v-if="showChoices" style="top: -80px;" class="absolute top-[-8px] left-0 p-2 bg-white rounded shadow transition-transform transform scale-100 translate-y-0">
-            <!-- Utilisez une boucle v-for pour afficher les choix avec des cases à cocher -->
+    <!-- Afficher la liste de choix si showChoices est vrai -->
+    <!-- <div v-if="showChoices" style="top: -80px;" class="absolute top-[-8px] left-0 p-2 bg-white rounded shadow transition-transform transform scale-100 translate-y-0">
+            Utilisez une boucle v-for pour afficher les choix avec des cases à cocher
             <div v-for="(choice, index) in choices" :key="index" class="flex items-center space-x-2 cursor-pointer" @click="toggleChoice(choice)">
                 <input v-model="selectedChoices" :value="choice" type="checkbox" class="text-primary focus:ring-primary">
                 <label class="text-gray-800">{{ choice }}</label>
             </div>
-        </div>
-        <!-- <div class="dropdown">
+        </div> -->
+    <!-- <div class="dropdown">
             <button class="dropdown-button" @click="toggleDropdown">
                 <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -129,58 +114,57 @@ function onStopGenerationClick() {
             <ul v-if="isDropdownOpen" class="dropdown-list">
             </ul>
         </div> -->
-        <textarea
-            ref="textarea"
-            :value="modelValue"
-            w-full
-            text-12px sm:text-16px
-            outline-none overflow-y-auto bg-transparent overflow-x-hidden
-            placeholder="Ecrivez votre requete ici..." leading-6 font-text
-            relative z-2 resize-none b-0 h-28px sm:h-7
-            dark:placeholder:text-gray-4
-            text-gray-8 dark:text-gray-1
-            focus:placeholder:translate-x-6px placeholder:transition-all
-            :disabled="!isLogged"
-            :class="[
-                !isLogged ? 'cursor-not-allowed' : '',
-            ]"
-            @input="onType"
-            @keydown.up="handleArrowUp"
-            @keydown.enter="handleEnter"
-        />
-        <div
-            absolute right-2
-            bottom-8px sm:bottom-10px
-            z-3
+    <textarea
+        ref="textarea"
+        :value="modelValue"
+        w-full
+        text-12px sm:text-16px
+        outline-none overflow-y-auto bg-transparent overflow-x-hidden
+        placeholder="Ecrivez votre requete ici..." leading-6 font-text
+        relative z-2 resize-none b-0 h-28px sm:h-7
+        dark:placeholder:text-gray-4
+        text-gray-8 dark:text-gray-1
+        focus:placeholder:translate-x-6px placeholder:transition-all
+        :disabled="!isLogged"
+        :class="[
+            !isLogged ? 'cursor-not-allowed' : '',
+        ]"
+        @input="onType"
+        @keydown.up="handleArrowUp"
+        @keydown.enter="handleEnter"
+    />
+    <div
+        absolute right-2
+        bottom-8px sm:bottom-10px
+        z-3
+    >
+        <GoButton
+            :disabled="!isLogged || !modelValue"
+            text-12px
+            @click="onSend"
         >
-            <GoButton
-                :disabled="!isLogged || !modelValue"
-                text-12px
-                @click="onSend"
-            >
-                <div
-                    text-3 sm:text-5
-                    :class="[
-                        !isTypingInCurrentConversation ? 'i-tabler-send' : 'i-eos-icons-bubble-loading',
-                    ]"
-                />
-            </GoButton>
+            <div
+                text-3 sm:text-5
+                :class="[
+                    !isTypingInCurrentConversation ? 'i-tabler-send' : 'i-eos-icons-bubble-loading',
+                ]"
+            />
+        </GoButton>
 
-            <Transition name="appear-top">
-                <div
-                    v-if="isTypingInCurrentConversation"
-                    absolute top-0
-                    right-18 sm:right-12
-                >
-                    <GoButton @click="onStopGenerationClick">
-                        <div i-tabler-player-stop-filled text-3 sm:text-5 />
-                        <div whitespace-nowrap text-10px sm:text-14px>
-                            Arrêter de parler!
-                        </div>
-                    </GoButton>
-                </div>
-            </Transition>
-        </div>
+        <Transition name="appear-top">
+            <div
+                v-if="isTypingInCurrentConversation"
+                absolute top-0
+                right-18 sm:right-12
+            >
+                <GoButton @click="onStopGenerationClick">
+                    <div i-tabler-player-stop-filled text-3 sm:text-5 />
+                    <div whitespace-nowrap text-10px sm:text-14px>
+                        Arrêter de parler!
+                    </div>
+                </GoButton>
+            </div>
+        </Transition>
     </div>
 </template>
 
