@@ -40,9 +40,15 @@ export function useLanguageModel() {
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
 
         const lastMessageContent = requestBody.messages[requestBody.messages.length - 1].content
-        // requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
+        //requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
         const request = requestBody.messages[requestBody.messages.length - 1].content
-        logger.info('LOGGGERRRER ', requestBody.messages[requestBody.messages.length - 1].content)
+        logger.info('LOGGGERRRER ', options.choix)
+
+        logger.info(requestBody.messages[requestBody.messages.length - 1].content)
+        logger.info('CHOIX', options.choix)
+        if (options.choix === true) {
+            requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
+        }
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
             method: 'POST',
@@ -123,7 +129,7 @@ export function useLanguageModel() {
                 logger.info('INTEROGER CES PROPRES DONNEES', options.choix)
                 let deuxiemeApiResponse
                 try {
-                    const response = await fetch('http://54.39.185.58:5012/test', {
+                    const response = await fetch('http://54.39.185.58:5012/question', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -138,8 +144,8 @@ export function useLanguageModel() {
                     logger.info(deuxiemeApiResponse)
                     logger.info(result.text)
 
-                    if (Array.isArray(deuxiemeApiResponse) && deuxiemeApiResponse.test) {
-                        deuxiemeApiResponse.test.forEach((element) => {
+                    if (Array.isArray(deuxiemeApiResponse) && deuxiemeApiResponse) {
+                        deuxiemeApiResponse.forEach((element) => {
                             logger.info(element)
                         })
                         let val = ' '
@@ -147,9 +153,18 @@ export function useLanguageModel() {
                         deuxiemeApiResponse.forEach((element) => {
                             val += element.join(' ')
                         })
+                        result.text = val
+                    }
+                    else if (deuxiemeApiResponse.response) {
+                        console.log('-----------------------', result.text)
+                        let val2 = ' '
+                        val2 += deuxiemeApiResponse.response
+                        result.text = val2
                     }
                     else {
-                        result.text = deuxiemeApiResponse.test
+                        let val1 = ' '
+                        val1 += deuxiemeApiResponse.join(' ')
+                        result.text = val1
                     }
                     console.log('-----------------------', result.text)
                     logger.info(requestBody.messages)
