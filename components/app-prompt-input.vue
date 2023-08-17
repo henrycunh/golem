@@ -15,8 +15,9 @@ const isLogged = computed(() => Boolean(apiKey.value))
 const onSend = () => {
     const choiceClicked = selectedChoices.value.length > 0 // Vérifier si un choix a été cliqué
     console.log(choiceClicked)
+    emit('send', props.modelValue)
     if (!isTypingInCurrentConversation.value && props.modelValue) {
-        emit('send', props.modelValue, choiceClicked)
+        emit('send', props.modelValue)
         emit('update:modelValue', '')
     }
 }
