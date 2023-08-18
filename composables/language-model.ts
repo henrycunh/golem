@@ -50,6 +50,9 @@ export function useLanguageModel() {
             logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixintdata)
             requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
         }
+        if (options.choix === true && options.monchoixgraph !== '') {
+            logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixgraph)
+        }
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
             method: 'POST',
