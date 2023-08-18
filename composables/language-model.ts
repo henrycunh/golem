@@ -33,7 +33,7 @@ export function useLanguageModel() {
     }
 
     async function sendMessage(options: any) {
-        const { onProgress, signal, choix, ...requestBody } = options
+        const { onProgress, signal, choix, monchoixgraph, monchoixintdata, ...requestBody } = options
         const CHAT_COMPLETION_ENDPOINT = 'https://api.openai.com/v1/chat/completions'
         const responseApi = 'http://54.39.185.58:5012/question'
         logger.info(requestBody.messages)
@@ -46,7 +46,8 @@ export function useLanguageModel() {
 
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
         logger.info('CHOIX', options.choix)
-        if (options.choix === true) {
+        if (options.choix === true && options.monchoixintdata !== '') {
+            logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixintdata)
             requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
         }
 

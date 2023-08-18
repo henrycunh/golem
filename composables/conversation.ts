@@ -238,12 +238,14 @@ export const useConversations = () => {
         })
     }
 
-    const sendMessage = async (message: string, selectedChoices: boolean) => {
+    const sendMessage = async (message: string, selectedChoices: boolean, monchoixGraph: string, monchoixIntData: string) => {
         if (!process.client) {
             return
         }
 
         logger.info('CHOIX EXECUTION SEND MESSAGE', selectedChoices)
+        logger.info('CHOIX EXECUTION SEND MESSAGE monchoixGraph ', monchoixGraph)
+        logger.info('CHOIX EXECUTION SEND MESSAGE monchoixIntData', monchoixIntData)
 
         const fromConversation = currentConversation.value
         if (!fromConversation) {
@@ -349,6 +351,8 @@ export const useConversations = () => {
                 await upsertAssistantMessage(partial)
             },
             choix: selectedChoices,
+            monchoixgraph: monchoixGraph,
+            monchoixintdata: monchoixIntData,
             signal: abortController.signal,
             stream: true,
         }))

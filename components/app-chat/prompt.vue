@@ -4,13 +4,15 @@ const { isMobile } = useDevice()
 const { apiKey } = useSettings()
 
 let monchoix = false
+let monchoixGraph = ''
+let monchoixIntData = ''
 
 const userMessageInput = ref('')
-const choices = ['Interroger mes donnees'] // Remplacez ces choix par les vôtres
+const choices = ['interroger mes donnees', 'generer un graphe'] // Remplacez ces choix par les vôtres
 const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
 
 const onSendMessage = () => {
-    sendMessage(userMessageInput.value, monchoix)
+    sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
     console.log(`MON CHOIX ${monchoix}`)
     userMessageInput.value = ''
 }
@@ -24,10 +26,24 @@ const toggleChoice = (choice) => {
     if (index !== -1) {
         // Le choix est déjà sélectionné, le supprimer de selectedChoices
         selectedChoices.value.splice(index, 1)
+
+        // Mettre à jour les variables monchoixGraph et monchoixIntData en conséquence
+        if (choice === 'interroger mes donnees') {
+            monchoixIntData = monchoixIntData.replace('interroger mes donnees', '')
+        }
+        if (choice === 'generer un graphe') {
+            monchoixGraph = monchoixGraph.replace('generer un graphe', '')
+        }
     }
     else {
         // Le choix n'est pas encore sélectionné, l'ajouter à selectedChoices
         selectedChoices.value.push(choice)
+        if (choice === 'interroger mes donnees') {
+            monchoixIntData += choice
+        }
+        if (choice === 'generer un graphe') {
+            monchoixGraph += choice
+        }
     }
     // Masquer la liste après la sélection ou la désélection d'un choix
     showChoices.value = false
@@ -37,7 +53,7 @@ const toggleChoice = (choice) => {
 const displayChoices = () => {
     showChoices.value = !showChoices.value
     if (!showChoices.value) {
-        selectedChoices.value = [] // Réinitialiser les choix sélectionnés
+        // Réinitialiser les choix sélectionnés
     }
 }
 
