@@ -50,9 +50,6 @@ export function useLanguageModel() {
             logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixintdata)
             requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
         }
-        if (options.choix === true && options.monchoixgraph !== '') {
-            logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixgraph)
-        }
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
             method: 'POST',
@@ -129,7 +126,7 @@ export function useLanguageModel() {
                     await onProgress(result)
                 } */
             }
-            if (options.choix === true) {
+            if (options.choix === true && options.monchoixintdata !== '') {
                 logger.info('INTEROGER CES PROPRES DONNEES', options.choix)
                 let deuxiemeApiResponse
                 try {
@@ -173,6 +170,57 @@ export function useLanguageModel() {
                     console.log('-----------------------', result.text)
                     logger.info(requestBody.messages)
                     logger.info('Réponse de la deuxième API :', deuxiemeApiResponse)
+                }
+                catch (error) {
+                    logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
+                }
+
+                logger.info('RESULTAT TEXT', result.text)
+            }
+            if (options.choix === true && options.monchoixgraph !== '') {
+                logger.info('DEMANDE UN GRAPH SUR SES DONNEES', options.choix)
+                let troisiemeApiResponse
+                try {
+                    const response = await fetch('http://54.39.185.58:5050/graphe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            question_reformule: request,
+                        }),
+                    })
+
+                    troisiemeApiResponse = await response.json()
+
+                    logger.info(troisiemeApiResponse)
+                    logger.info(result.text)
+
+                    if (Array.isArray(troisiemeApiResponse) && troisiemeApiResponse) {
+                        troisiemeApiResponse.forEach((element) => {
+                            logger.info(element)
+                        })
+                        let val = ' '
+
+                        troisiemeApiResponse.forEach((element) => {
+                            val += element.join(' ')
+                        })
+                        result.text = val
+                    }
+                    else if (troisiemeApiResponse.response) {
+                        console.log('-----------------------', result.text)
+                        let val2 = ' '
+                        val2 += troisiemeApiResponse.response
+                        result.text = val2
+                    }
+                    else {
+                        let val1 = ' '
+                        val1 += troisiemeApiResponse.join(' ')
+                        result.text = val1
+                    }
+                    console.log('-----------------------', result.text)
+                    logger.info(requestBody.messages)
+                    logger.info('Réponse de la deuxième API :', troisiemeApiResponse)
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
