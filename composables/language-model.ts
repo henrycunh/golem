@@ -220,7 +220,7 @@ export function useLanguageModel() {
                     }
                     console.log('-----------------------', result.text)
                     logger.info(requestBody.messages)
-                    logger.info('Réponse de la deuxième API :', troisiemeApiResponse)
+                    logger.info('Réponse de la troisième API :', troisiemeApiResponse)
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la deuxième API :', error)

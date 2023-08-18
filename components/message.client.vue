@@ -74,6 +74,18 @@ function onCopyMessageContent() {
         showCopyMessageConfirmation.value = false
     }, 1250)
 }
+function isBase64(str: string) {
+    try {
+        return btoa(atob(str)) === str
+    }
+    catch (e) {
+        return false
+    }
+}
+let base64 = ''
+if (props.message.text && props.message.role === 'assistant') {
+    base64 = `data:image/png;base64,${props.message.text}`
+}
 </script>
 
 <template>
@@ -142,11 +154,12 @@ function onCopyMessageContent() {
                     />
                 </div>
                 <div px-7 sm:px-10 cursor-auto>
-                    <MarkdownRenderer
-                        v-if="message.role === 'assistant' && !message.isError"
-                        :value="message.text"
-                        text-10px sm:text-14px
-                    />
+                    <div
+                        v-if="message.role === 'assistant' && !message.isError && !isBase64(message.text)"
+                        class="text-10px sm:text-14px"
+                    >
+                        <MarkdownRenderer :value="message.text" />
+                    </div>
                     <div v-else-if="message.role === 'user'">
                         <div
                             v-for="line in filteredUserMessage.split('\n')"
@@ -178,6 +191,9 @@ function onCopyMessageContent() {
                         <div v-if="action.icon" :class="action.icon" />
                         {{ action.label }}
                     </div>
+                </div>
+                <div>
+                    <img v-if="base64" :src="base64" alt="">
                 </div>
                 <Transition name="slide-top">
                     <div
@@ -228,12 +244,6 @@ function onCopyMessageContent() {
                         </GoLongPressButton>
                     </div>
                 </Transition>
-                <!-- <br>
-                <div>
-                    <table>
-                        <div>Graph des donnees</div>
-                    </table>
-                </div> -->
             </div>
         </div>
     </div>
