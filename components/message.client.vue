@@ -155,7 +155,7 @@ if (props.message.text && props.message.role === 'assistant') {
                 </div>
                 <div px-7 sm:px-10 cursor-auto>
                     <div
-                        v-if="message.role === 'assistant' && !message.isError && !isBase64(message.text)"
+                        v-if="message.role === 'assistant' && !message.isError"
                         class="text-10px sm:text-14px"
                     >
                         <MarkdownRenderer :value="message.text" />
@@ -192,6 +192,8 @@ if (props.message.text && props.message.role === 'assistant') {
                         {{ action.label }}
                     </div>
                 </div>
+                <br>
+                <br>
                 <div>
                     <img v-if="base64" :src="base64" alt="">
                 </div>

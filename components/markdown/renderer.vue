@@ -24,8 +24,20 @@ export default defineComponent({
             .use(remarkGfm)
             .parse(value)
 
+        const isBase64 = (input: string) => {
+            try {
+                return btoa(atob(input)) === input
+            }
+            catch (e) {
+                return false
+            }
+        }
         // Render AST to components
         const render = (node: Content | Root): any => {
+            if (node.type === 'text' && isBase64(node.value)) {
+                return '' // Ignore this node
+            }
+
             if (node.type === 'root') {
                 return h('div', node.children.map(render))
             }
