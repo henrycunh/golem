@@ -11,12 +11,6 @@ const userMessageInput = ref('')
 const choices = ['interroger mes donnees', 'generer un graphe'] // Remplacez ces choix par les vôtres
 const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
 
-const onSendMessage = () => {
-    sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
-    console.log(`MON CHOIX ${monchoix}`)
-    userMessageInput.value = ''
-}
-
 const showChoices = ref(false)
 
 const toggleChoice = (choice) => {
@@ -56,7 +50,20 @@ const displayChoices = () => {
         // Réinitialiser les choix sélectionnés
     }
 }
-
+const resetChoices = () => {
+    console.log('ON NE FAIT PLUS DE CHOIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+    selectedChoices.value = []
+    monchoixGraph = ''
+    monchoixIntData = ''
+    showChoices.value = false
+    monchoix = false
+}
+const onSendMessage = () => {
+    sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
+    resetChoices()
+    console.log(`MON CHOIX ${monchoix}`)
+    userMessageInput.value = ''
+}
 const showPromptTooltip = ref(false)
 let tooltipTimeout: any
 

@@ -41,7 +41,6 @@ export function useLanguageModel() {
 
         const lastMessageContent = requestBody.messages[requestBody.messages.length - 1].content
         //requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
-        const request = requestBody.messages[requestBody.messages.length - 1].content
         logger.info('LOGGGERRRER ', options.choix)
 
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
@@ -50,6 +49,7 @@ export function useLanguageModel() {
             logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixintdata)
             requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
         }
+        const request = requestBody.messages[requestBody.messages.length - 1].content
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
             method: 'POST',
@@ -110,6 +110,7 @@ export function useLanguageModel() {
             for await (const data of streamOpenAIResponse(response)) {
                 if (data.id) {
                     result.id = data.id
+                    console.log('ID DE CONVERSATION' + result.id)
                 }
                 if (data?.choices?.length) {
                     const delta = data.choices[0].delta
@@ -137,6 +138,7 @@ export function useLanguageModel() {
                         },
                         body: JSON.stringify({
                             question_reformule: result.text,
+                            discussion_id: result.id,
                         }),
                     })
 
@@ -179,6 +181,7 @@ export function useLanguageModel() {
             }
             if (options.choix === true && options.monchoixgraph !== '') {
                 logger.info('DEMANDE UN GRAPH SUR SES DONNEES', options.choix)
+                logger.info('DEMANDE UN GRAPH SUR SES DONNEES AVEC REQUESTTTTTTTTTTTTTTTT', request)
                 let troisiemeApiResponse
                 try {
                     const response = await fetch('http://54.39.185.58:5050/graphe', {
@@ -188,6 +191,7 @@ export function useLanguageModel() {
                         },
                         body: JSON.stringify({
                             question_reformule: request,
+                            discussion_id: result.id,
                         }),
                     })
 
@@ -223,7 +227,7 @@ export function useLanguageModel() {
                     logger.info('Réponse de la troisième API :', troisiemeApiResponse)
                 }
                 catch (error) {
-                    logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
+                    logger.error('Erreur lors de l\'envoi à la troisième API :', error)
                 }
 
                 logger.info('RESULTAT TEXT', result.text)
