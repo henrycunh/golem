@@ -33,15 +33,16 @@ export function useLanguageModel() {
     }
 
     async function sendMessage(options: any) {
-        const { onProgress, signal, choix, monchoixgraph, monchoixintdata, ...requestBody } = options
+        const { idconversation, onProgress, signal, choix, monchoixgraph, monchoixintdata, ...requestBody } = options
         const CHAT_COMPLETION_ENDPOINT = 'https://api.openai.com/v1/chat/completions'
         const responseApi = 'http://54.39.185.58:5012/question'
         logger.info(requestBody.messages)
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
 
         const lastMessageContent = requestBody.messages[requestBody.messages.length - 1].content
-        //requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
+        // requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante : ${lastMessageContent}?`
         logger.info('LOGGGERRRER ', options.choix)
+        logger.info('LOGGGERRRER ID CONVERSATION=>>>>>>>>>> ', idconversation)
 
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
         logger.info('CHOIX', options.choix)
@@ -110,7 +111,7 @@ export function useLanguageModel() {
             for await (const data of streamOpenAIResponse(response)) {
                 if (data.id) {
                     result.id = data.id
-                    console.log('ID DE CONVERSATION' + result.id)
+                    console.log(`ID DE MESSAGE =>>>> ${result.id}`)
                 }
                 if (data?.choices?.length) {
                     const delta = data.choices[0].delta
@@ -138,7 +139,7 @@ export function useLanguageModel() {
                         },
                         body: JSON.stringify({
                             question_reformule: result.text,
-                            discussion_id: result.id,
+                            discussion_id: idconversation,
                         }),
                     })
 
@@ -191,7 +192,7 @@ export function useLanguageModel() {
                         },
                         body: JSON.stringify({
                             question_reformule: request,
-                            discussion_id: result.id,
+                            discussion_id: idconversation,
                         }),
                     })
 

@@ -264,6 +264,7 @@ export const useConversations = () => {
 
         // Adds the user message to the conversation
         addMessageToConversation(fromConversation.id, userMessage)
+        console.log(`ID DE CONVERSATION ID DE CONVERSATION IDDDDD COVERSATION=>>>>>>>>>> ${fromConversation.id}`)
         setConversationTypingStatus(fromConversation.id, true)
 
         let messageList: any[] = getMessageChain(fromConversation.messages, userMessage)
@@ -354,6 +355,7 @@ export const useConversations = () => {
             monchoixgraph: monchoixGraph,
             monchoixintdata: monchoixIntData,
             signal: abortController.signal,
+            idconversation: fromConversation.id,
             stream: true,
         }))
 
