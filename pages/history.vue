@@ -62,7 +62,7 @@ const onCreateConversation = async () => {
                 secondary icon="i-tabler-plus"
                 @click="onCreateConversation"
             >
-                Nouvelle requête
+                Nouvelle discussion
             </GoButton>
             <GoLongPressButton
                 :duration="1500"

@@ -143,7 +143,10 @@ export function useLanguageModel() {
                         }),
                     })
 
-                    deuxiemeApiResponse = await response.json()
+                    const apiResponseText = await response.text()
+                    const cleanedApiResponse = apiResponseText.replace(/NaN/g, 'null')
+
+                    deuxiemeApiResponse = JSON.parse(cleanedApiResponse)
 
                     logger.info(deuxiemeApiResponse)
                     logger.info(result.text)
@@ -181,7 +184,7 @@ export function useLanguageModel() {
                 logger.info('RESULTAT TEXT', result.text)
             }
             if (options.choix === true && options.monchoixgraph !== '') {
-                //logger.info('DEMANDE UN GRAPH SUR SES DONNEES', options.choix)
+                // logger.info('DEMANDE UN GRAPH SUR SES DONNEES', options.choix)
                 logger.info('DEMANDE UN GRAPH SUR SES DONNEES AVEC REQUESTTTTTTTTTTTTTTTT', request)
                 let troisiemeApiResponse
                 try {
