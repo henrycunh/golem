@@ -175,7 +175,7 @@ if (props.message.text && props.message.role === 'assistant') {
                 </div>
                 <div v-if="message.isError" px-7 sm:px-10 flex mt-2>
                     <div
-                        v-for="action in [...(message.actions || []), { label: 'Dismiss errors', action: clearErrorMessages }]" :key="action.label"
+                        v-for="action in [...(message.actions || []), { label: 'Ignorer les erreurs', action: clearErrorMessages }]" :key="action.label"
                         bg-red-200
                         text-red-7 class="dark:bg-red-5/20 dark:text-red-4" p-2px px-2 sm:py-1 sm:px-2
                         rounded-2 font-bold

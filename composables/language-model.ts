@@ -33,6 +33,72 @@ export function useLanguageModel() {
     }
 
     async function sendMessage(options: any) {
+        function containsCodeBlock(text: string) {
+            const codeBlockRegex = /^```[a-zA-Z]*([\s\S]*?)```$/gm
+            return codeBlockRegex.test(text)
+        }
+        function removeKeywords(inputText: any) {
+            const keywordsToRemove = ['python', 'javascript']
+            let outputText = inputText
+
+            for (const keyword of keywordsToRemove) {
+                const regex = new RegExp(keyword, 'gi')
+                outputText = outputText.replace(regex, '')
+            }
+
+            return outputText
+        }
+        function jsonToStringArray(jsonObject: any) {
+            const jsonString = JSON.stringify(jsonObject)
+            const stringArray = []
+
+            for (const key in jsonObject) {
+                if (jsonObject.hasOwnProperty(key)) {
+                    const value = jsonObject[key]
+                    stringArray.push(`${JSON.stringify(key)}: ${JSON.stringify(value)}`)
+                }
+            }
+
+            return `[${stringArray.join(', ')}]`
+        }
+        function formatDataEntry(entry: any) {
+            const [id, code, type, description, date, lieu, ville, latitude, longitude] = entry
+
+            return `| ${id} | ${code} | ${type} | ${description} | ${date} | ${lieu} | ${ville} | ${latitude} | ${longitude} |`
+        }
+        /* function formatDataEntry(entry: any) {
+            const [id, code, type, description, date, lieu, ville, latitude, longitude] = entry
+
+            return `
+    <tr>
+      <td>${id}</td>
+      <td>${code}</td>
+      <td>${type}</td>
+      <td>${description}</td>
+      <td>${date}</td>
+      <td>${lieu}</td>
+      <td>${ville}</td>
+      <td>${latitude}</td>
+      <td>${longitude}</td>
+    </tr>
+  `
+        }
+
+        const tableHeader = `
+  <thead class="thead-dark">
+    <tr>
+      <th>ID</th>
+      <th>Code</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Date</th>
+      <th>Lieu</th>
+      <th>Ville</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+    </tr>
+  </thead>
+` */
         const { idconversation, onProgress, signal, choix, monchoixgraph, monchoixintdata, ...requestBody } = options
         const CHAT_COMPLETION_ENDPOINT = 'https://api.openai.com/v1/chat/completions'
         const responseApi = 'http://54.39.185.58:5012/question'
@@ -155,12 +221,30 @@ export function useLanguageModel() {
                         deuxiemeApiResponse.forEach((element) => {
                             logger.info(element)
                         })
-                        let val = ' '
+                        // const resultStringArray = jsonToStringArray(deuxiemeApiResponse)
+                        const formattedDataArray = deuxiemeApiResponse.map(formatDataEntry)
+                        // Joindre les chaînes formatées en une seule chaîne (peut-être séparée par une ligne vide)
+                        const resultStringArray = formattedDataArray.join('\n\n')
+                        /*
+                        const tableBody = `
+  <tbody>
+    ${deuxiemeApiResponse.map(formatDataEntry).join('')}
+  </tbody>
+`
 
-                        deuxiemeApiResponse.forEach((element) => {
+                        const resultStringArray = `
+  <table>
+    ${tableHeader}
+    ${tableBody}
+  </table>
+` */
+                        logger.info('TABLEAU CHAINEEEEEEEEEEEE  ', resultStringArray)
+                        // let val = ' '
+
+                        /* deuxiemeApiResponse.forEach((element) => {
                             val += element.join(' ')
-                        })
-                        result.text = val
+                        }) */
+                        result.text = resultStringArray
                     }
                     else if (deuxiemeApiResponse.response) {
                         console.log('-----------------------', result.text)
@@ -179,6 +263,7 @@ export function useLanguageModel() {
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la deuxième API :', error)
+                    result.text = 'je suis incapable de recupérer vos données pour l\'instant, contactez l\'administrateur svp'
                 }
 
                 logger.info('RESULTAT TEXT', result.text)
@@ -232,10 +317,51 @@ export function useLanguageModel() {
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la troisième API :', error)
+                    result.text = 'je suis incapable de recupérer vos données pour l\'instant, contactez l\'administrateur svp'
                 }
 
                 logger.info('RESULTAT TEXT', result.text)
             }
+            if (containsCodeBlock(result.text) === true) {
+                logger.info('DEMANDE UN GRAPH AVEC CODE SUR SES DONNEES AVEC REQUESTTTTTTTTTTTTTTTT YOUSSSSSSSSSSSSSSS', request)
+                const inputString = result.text
+                logger.info('DEMANDE UN GRAPH AVEC CODE SUR SES DONNEES AVEC REQUESTTTTTTTTTTTTTTTT YOUSSSSSSSSSSSSSSS', result.text)
+                let codeContent
+                let code
+                const codeBlocks = inputString.match(/```([\s\S]*?)```/g)
+                console.log(`LE CONTENU DU BLOC DE CODE${codeBlocks}`)
+                if (codeBlocks) {
+                    codeBlocks.forEach((block) => {
+                        codeContent = block.replace(/^```([\s\S]*)```$/, '$1')
+                        console.log(`LE CONTENU DU BLOC DE CODE${codeContent}`)
+                    })
+
+                    code = removeKeywords(codeContent)
+                }
+                let quatrièmeApiResponse
+                try {
+                    const response = await fetch('http://192.168.1.31:5343/programme_externe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            response: code,
+                        }),
+                    })
+
+                    quatrièmeApiResponse = await response.json()
+                    result.text = quatrièmeApiResponse.response
+                    logger.info('QUATRIEME API RESPONSE ', quatrièmeApiResponse)
+                    logger.info('CODE____________', code)
+                }
+                catch (error) {
+                    logger.error('Erreur lors de l\'envoi à la quatrième API :', error)
+                    result.text = 'je suis incapable de recupérer vos données pour l\'instant, contactez l\'administrateur svp'
+                }
+            }
+
+            logger.info('RESULTAT TEXT', result.text)
             return result
         }
     }

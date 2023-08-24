@@ -8,7 +8,7 @@ import trimIndent from '~~/utils/string'
 
 const MaxTokensPerModel = {
     'gpt-4': 8180,
-    'gpt-3.5-turbo': 4080,
+    'gpt-3.5-turbo': 10000,
 } as Record<string, number>
 
 export const useConversations = () => {
@@ -63,7 +63,7 @@ export const useConversations = () => {
         }
         const newKey = await db.table('conversations').add(newConversation)
         if (!newKey) {
-            throw new Error('Failed to create conversation')
+            throw new Error('Échec de la création de la conversation')
         }
         if (isDetaEnabled.value) {
             deta.conversation.create(newConversation)
@@ -105,7 +105,7 @@ export const useConversations = () => {
     async function addMessageToConversation(id: string, message: ChatMessage) {
         const conversation = await db.table('conversations').get(id)
         if (!conversation) {
-            throw new Error('Conversation not found')
+            throw new Error('Conversation introuvable')
         }
         const updatedMessage = getUpdatedMessage(message, conversation.id)
 
@@ -126,7 +126,7 @@ export const useConversations = () => {
     async function getMessageById(conversationId: string, id: string) {
         const conversation = await db.table('conversations').get(conversationId)
         if (!conversation) {
-            throw new Error('Conversation not found')
+            throw new Error('Conversation introuvable')
         }
         return conversation.messages.find((message: ChatMessage) => message.id === id) as ChatMessage
     }
@@ -134,7 +134,7 @@ export const useConversations = () => {
     async function updateLastAssistantMessage(conversationId: string, message: types.Message) {
         const conversation = await db.table('conversations').get(conversationId)
         if (!conversation) {
-            throw new Error('Conversation not found')
+            throw new Error('Conversation introuvable')
         }
         const systemMessages = conversation.messages.filter((message: ChatMessage) => message.role === 'assistant')
         if (systemMessages.length === 0) {
@@ -168,7 +168,7 @@ export const useConversations = () => {
     const updateConversation = async (id: string, update: Partial<types.Conversation>) => {
         const conversation = await db.table('conversations').get(id)
         if (!conversation) {
-            throw new Error('Conversation not found')
+            throw new Error('Conversation introuvable')
         }
         const newConversation: types.Conversation = {
             ...conversation,
@@ -188,7 +188,7 @@ export const useConversations = () => {
     const updateConversationSettings = async (id: string, update: Partial<types.ConversationSettings>) => {
         const conversation: types.Conversation = await db.table('conversations').get(id)
         if (!conversation) {
-            throw new Error('Conversation not found')
+            throw new Error('Conversation introuvable')
         }
         const newConversation: types.Conversation = {
             ...conversation,
@@ -303,7 +303,7 @@ export const useConversations = () => {
         const getTokenCount = () => encode(messageList.map(message => message.content).join('\n\n')).length
         let lastTokenCount = getTokenCount()
         if (getTokenCount() > MaxTokensPerModel[modelUsed.value]) {
-            logger.info('Message is too long, removing messages...', { lastTokenCount, MaxTokensPerModel, modelUsed })
+            logger.info('Le message est trop long, suppression des messages...', { lastTokenCount, MaxTokensPerModel, modelUsed })
             // Remove the first message that is not a system message
             // until the token count is less than the max or there are no more messages
             while (messageList.length > 1 && lastTokenCount > MaxTokensPerModel[modelUsed.value]) {
@@ -314,7 +314,7 @@ export const useConversations = () => {
                 lastTokenCount = getTokenCount()
             }
             if (messageList.length === 1) {
-                await addErrorMessage('Your message is too long, please try again.')
+                await addErrorMessage('Votre message est trop long, veuillez réessayer.')
                 return
             }
         }
@@ -362,19 +362,19 @@ export const useConversations = () => {
         if (messageError) {
             const { cause } = (messageError as any)
             const errorCode: string = cause.error.code || cause.error.type
-            logger.error('Error sending message', cause, cause.error)
+            logger.error('Enreur d\envoie du message', cause, cause.error)
             const errorHandlerMapping = {
                 async model_not_found() {
-                    await addErrorMessage('The model you are using is not available. Please select another model in the settings.')
+                    await addErrorMessage('Le modèle que vous utilisez n\'est pas disponible. Veuillez sélectionner un autre modèle dans les paramètres.')
                 },
                 async context_length_exceeded() {
-                    await addErrorMessage('Your message is too long or the amount of maximum tokens is too high, please try again with a shorter message or with less tokens as max.')
+                    await addErrorMessage('Votre message est trop long ou le nombre maximum de jetons est trop élevé, veuillez réessayer avec un message plus court ou avec moins de jetons au maximum.')
                 },
                 async invalid_api_key() {
-                    await addErrorMessage('Your API key is invalid. Please check your API key in the settings.')
+                    await addErrorMessage('Votre clé API n\'est pas valide.Veuillez vérifier votre clé API dans les paramètres.')
                 },
                 async insufficient_quota() {
-                    await addErrorMessage('Insufficient quota. If you\'re using a free plan, consider upgrading to a pay-as-you-use plan.')
+                    await addErrorMessage('Quota insuffisant.Si vous utilisez un forfait gratuit, envisagez de passer à un forfait payant à l\'utilisation.')
                 },
             } as Record<string, () => Promise<void>>
 
@@ -389,7 +389,7 @@ export const useConversations = () => {
                 await upsertAssistantMessage(assistantMessage as any, true)
                 await updateConversationList()
 
-                if (fromConversation.title.trim() === 'Untitled Conversation') {
+                if (fromConversation.title.trim() === 'Conversation sans titre') {
                     await generateConversationTitle(fromConversation.id)
                 }
             }
@@ -445,7 +445,7 @@ export const useConversations = () => {
         await Promise.all(conversationList.value.map(
             (conversation: types.Conversation) => limit(() => deleteConversation(conversation.id)),
         ))
-        const newConversation = await createConversation('Untitled Conversation')
+        const newConversation = await createConversation('Conversation sans titre')
         await switchConversation(newConversation.id)
     }
 

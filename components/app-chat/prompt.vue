@@ -13,57 +13,29 @@ const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
 
 const showChoices = ref(false)
 
-const toggleChoice = (choice) => {
-    console.log(`TTTTTTTTTTCCCCC${choice}`)
-    const index = selectedChoices.value.indexOf(choice)
-
-    if (index !== -1) {
-        // Le choix est déjà sélectionné, le supprimer de selectedChoices
-        selectedChoices.value.splice(index, 1)
-
-        // Mettre à jour les variables monchoixGraph et monchoixIntData en conséquence
-        if (choice === 'interroger mes donnees') {
-            monchoixIntData = monchoixIntData.replace('interroger mes donnees', '')
-        }
-        if (choice === 'generer un graphe') {
-            monchoixGraph = monchoixGraph.replace('generer un graphe', '')
-        }
-    }
-    else {
-        // Le choix n'est pas encore sélectionné, l'ajouter à selectedChoices
-        selectedChoices.value.push(choice)
-        if (choice === 'interroger mes donnees') {
-            monchoixIntData += choice
-        }
-        if (choice === 'generer un graphe') {
-            monchoixGraph += choice
-        }
-    }
-    // Masquer la liste après la sélection ou la désélection d'un choix
-    showChoices.value = false
-    monchoix = selectedChoices.value.length > 0
-}
-
-const displayChoices = () => {
-    showChoices.value = !showChoices.value
-    if (!showChoices.value) {
-        // Réinitialiser les choix sélectionnés
-    }
-}
-const resetChoices = () => {
-    console.log('ON NE FAIT PLUS DE CHOIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-    selectedChoices.value = []
+const toggleChoice = () => {
+    monchoix = true
+    monchoixIntData = 'interroger mes donnees'
     monchoixGraph = ''
-    monchoixIntData = ''
-    showChoices.value = false
-    monchoix = false
+    logger.info('monchoix', monchoix)
+    logger.info('monchoixGraph', monchoixGraph)
+    logger.info('monchoix data', monchoixIntData)
 }
+logger.info('monchoix', monchoix)
+logger.info('monchoixGraph', monchoixGraph)
+logger.info('monchoix data', monchoixIntData)
 const onSendMessage = () => {
     sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
-    resetChoices()
     console.log(`MON CHOIX ${monchoix}`)
     userMessageInput.value = ''
+    monchoix = false
+    monchoixGraph = ''
+    monchoixIntData = ''
+    logger.info('monchoix', monchoix)
+    logger.info('monchoixGraph', monchoixGraph)
+    logger.info('monchoix data', monchoixIntData)
 }
+
 const showPromptTooltip = ref(false)
 let tooltipTimeout: any
 
@@ -115,21 +87,21 @@ function onHandlePromptClick() {
             >
                 <GoButton
                     text-12px
-                    @click="displayChoices"
+                    @click="toggleChoice"
                 >
                     <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                 </GoButton>
 
-                <!-- Afficher la liste de choix si showChoices est vrai -->
-                <div v-if="showChoices" style="top: -80px;" class="absolute top-[-8px] left-0 p-2 bg-white rounded shadow transition-transform transform scale-100 translate-y-0">
-                    <!-- Utilisez une boucle v-for pour afficher les choix avec des cases à cocher -->
+                <!-- Afficher la liste de choix si showChoices est vrai
+                <div @click="toggleChoice(choice)" style="top: -80px;" class="absolute top-[-8px] left-0 p-2 bg-white rounded shadow transition-transform transform scale-100 translate-y-0">
+                    Utilisez une boucle v-for pour afficher les choix avec des cases à cocher
                     <div v-for="(choice, index) in choices" :key="index" class="flex items-center space-x-2 cursor-pointer" @click="toggleChoice(choice)">
                         <input v-model="selectedChoices" :value="choice" type="checkbox" class="text-primary focus:ring-primary">
                         <label class="text-gray-800">{{ choice }}</label>
                     </div>
-                </div>
+                </div> -->
                 <AppPromptInput
                     v-model="userMessageInput"
                     v-tooltip="{
