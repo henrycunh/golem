@@ -22,7 +22,8 @@ export function useLanguageModel() {
             messages: [{
                 role: 'system',
                 content: params?.systemMessage || 'This is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.',
-            }, {
+            },
+            {
                 role: 'user',
                 content: prompt,
             }],
@@ -66,6 +67,27 @@ export function useLanguageModel() {
 
             return `| ${id} | ${code} | ${type} | ${description} | ${date} | ${lieu} | ${ville} | ${latitude} | ${longitude} |`
         }
+        function jsonToTable(jsonData: any) {
+            if (!Array.isArray(jsonData) || jsonData.length === 0) {
+                return '' // Retourne une chaîne vide si les données JSON sont invalides
+            }
+
+            const keys = Object.keys(jsonData[0])
+            const headerRow = keys.join('|')
+
+            const rows = jsonData.map((item) => {
+                return keys.map((key) => {
+                    let value = item[key]
+                    if (value === null || value === undefined) {
+                        value = ''
+                    }
+                    return value.toString()
+                }).join('|')
+            })
+
+            return `${headerRow}\n${rows.join('\n')}`
+        }
+
         /* function formatDataEntry(entry: any) {
             const [id, code, type, description, date, lieu, ville, latitude, longitude] = entry
 
@@ -112,10 +134,10 @@ export function useLanguageModel() {
 
         logger.info(requestBody.messages[requestBody.messages.length - 1].content)
         logger.info('CHOIX', options.choix)
-        if (options.choix === true && options.monchoixintdata !== '') {
+        /* if (options.choix === true && options.monchoixintdata !== '') {
             logger.info('LOGGGERRRER VERIFICATION ITERROGATION DATA PERSO', options.monchoixintdata)
-            requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${lastMessageContent}?`
-        }
+            requestBody.messages[requestBody.messages.length - 1].content = `reformuler en anglais la question suivante :${}?`
+        } */
         const request = requestBody.messages[requestBody.messages.length - 1].content
 
         const requestOptions: NitroFetchOptions<typeof CHAT_COMPLETION_ENDPOINT> = {
@@ -204,7 +226,7 @@ export function useLanguageModel() {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            question_reformule: result.text,
+                            question_reformule: request,
                             discussion_id: idconversation,
                         }),
                     })
@@ -221,23 +243,9 @@ export function useLanguageModel() {
                         deuxiemeApiResponse.forEach((element) => {
                             logger.info(element)
                         })
-                        // const resultStringArray = jsonToStringArray(deuxiemeApiResponse)
-                        const formattedDataArray = deuxiemeApiResponse.map(formatDataEntry)
-                        // Joindre les chaînes formatées en une seule chaîne (peut-être séparée par une ligne vide)
-                        const resultStringArray = formattedDataArray.join('\n\n')
-                        /*
-                        const tableBody = `
-  <tbody>
-    ${deuxiemeApiResponse.map(formatDataEntry).join('')}
-  </tbody>
-`
 
-                        const resultStringArray = `
-  <table>
-    ${tableHeader}
-    ${tableBody}
-  </table>
-` */
+                        const resultStringArray = jsonToTable(deuxiemeApiResponse)
+                        console.log(resultStringArray)
                         logger.info('TABLEAU CHAINEEEEEEEEEEEE  ', resultStringArray)
                         // let val = ' '
 
@@ -340,7 +348,7 @@ export function useLanguageModel() {
                 }
                 let quatrièmeApiResponse
                 try {
-                    const response = await fetch('http://192.168.1.31:5343/programme_externe', {
+                    const response = await fetch('http://192.168.192.2:5343/programme_externe', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -357,7 +365,7 @@ export function useLanguageModel() {
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la quatrième API :', error)
-                    result.text = 'je suis incapable de recupérer vos données pour l\'instant, contactez l\'administrateur svp'
+                    result.text = 'Désolé, je suis incapable de vous affficher ce graph pour l\'instant'
                 }
             }
 

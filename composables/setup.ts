@@ -16,6 +16,7 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
         const {
             currentConversation,
             conversationList,
+            addMessageToConversation,
             createConversation,
             updateConversationList,
             switchConversation,
@@ -59,8 +60,19 @@ export async function useSetup(options?: { disableStorage: boolean; embedded?: b
 
                 if (conversationList.value && conversationList.value.length === 0 && !options?.embedded) {
                     logger.info('No conversations present, creating a new one')
-                    const newConversation = await createConversation('Untitled Conversation')
+                    const newConversation = await createConversation('Conversation sans titre')
                     await switchConversation(newConversation.id)
+                    /* const nosDonnees = {
+                        id: string,
+                        text: string,
+                        role: 'user',
+                        name: 'user',
+                        delta: '',
+                        detail: '',
+                        parentMessageId: '',
+                        conversationId: newConversation.id,
+                    }
+                    const addData = addMessageToConversation() */
                 }
                 else if (!options?.embedded) {
                     logger.info('Switching to most recent conversation')

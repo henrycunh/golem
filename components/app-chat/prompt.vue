@@ -6,12 +6,17 @@ const { apiKey } = useSettings()
 let monchoix = false
 let monchoixGraph = ''
 let monchoixIntData = ''
+let desable = true
 
 const userMessageInput = ref('')
 const choices = ['interroger mes donnees', 'generer un graphe'] // Remplacez ces choix par les vôtres
 const selectedChoices = ref([]) // Pour stocker les choix sélectionnés
 
 const showChoices = ref(false)
+
+const isButtonDisabled = () => {
+    desable = true
+}
 
 const toggleChoice = () => {
     monchoix = true
@@ -21,9 +26,18 @@ const toggleChoice = () => {
     logger.info('monchoixGraph', monchoixGraph)
     logger.info('monchoix data', monchoixIntData)
 }
+const handleButtonClick = () => {
+    desable = !desable // Toggle the button state
+    if (!desable) {
+        toggleChoice() // Execute the first function if re-enabled
+    }
+    // Execute other actions if needed
+}
+
 logger.info('monchoix', monchoix)
 logger.info('monchoixGraph', monchoixGraph)
 logger.info('monchoix data', monchoixIntData)
+
 const onSendMessage = () => {
     sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
     console.log(`MON CHOIX ${monchoix}`)
@@ -86,8 +100,9 @@ function onHandlePromptClick() {
                 ]"
             >
                 <GoButton
+                    :disabled="desable"
                     text-12px
-                    @click="toggleChoice"
+                    @click="handleButtonClick"
                 >
                     <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -105,7 +120,7 @@ function onHandlePromptClick() {
                 <AppPromptInput
                     v-model="userMessageInput"
                     v-tooltip="{
-                        content: 'You have to add an API Key in the settings to send messages.',
+                        content: 'Vous devez ajouter une clé d\'API pour pouvoir envoyer des messages.',
                         shown: showPromptTooltip,
                         triggers: [],
                     }"
@@ -119,3 +134,16 @@ function onHandlePromptClick() {
         </div>
     </div>
 </template>
+
+<style>
+.inactive-button {
+    /* Ajoutez ici les styles que vous voulez lorsque le bouton est désactivé */
+    background-color: red;
+    /* Autres styles... */
+}
+.active-button {
+    /* Ajoutez ici les styles que vous voulez lorsque le bouton est activé */
+    background-color: green;
+    /* Autres styles... */
+}
+</style>

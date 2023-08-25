@@ -12,7 +12,7 @@ export function usePersona() {
             await createPersona({
                 id: nanoid(),
                 title: 'chatQuery',
-                instructions: 'You are chatQuery, a large language model based assistant. Answer as concisely as possible.',
+                instructions: 'You are chatQuery, a large language model based assistant. Answer as concisely as possible or generate a python code when it necessary.',
             })
         }
     }
