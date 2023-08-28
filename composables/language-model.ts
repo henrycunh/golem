@@ -38,6 +38,74 @@ export function useLanguageModel() {
             const codeBlockRegex = /^```[a-zA-Z]*([\s\S]*?)```$/gm
             return codeBlockRegex.test(text)
         }
+        function extractCodeBlocks(text: string) {
+            const codeBlockRegex = /^```([a-zA-Z]*)\n([\s\S]*?)\n```$/gm
+            const codeBlocks = []
+            let match
+
+            while ((match = codeBlockRegex.exec(text)) !== null) {
+                const [, language, code] = match
+                if (!code.trim().startsWith('pip') && !code.trim().startsWith('conda')) {
+                    codeBlocks.push({ language, code })
+                }
+            }
+
+            return codeBlocks
+        }
+
+        function reformatCodeBlocks(codeBlocks: any[]) {
+            return codeBlocks.map((block: { code: string; language: any }) => {
+                if (block.language === 'python') {
+                    // Trouver l'indentation minimale du bloc de code
+                    const lines = block.code.split('\n')
+                    let minIndent = Infinity
+                    for (const line of lines) {
+                        const indent = line.match(/^\s*/)?.[0].length || 0
+                        if (indent < minIndent && line.trim() !== '') {
+                            minIndent = indent
+                        }
+                    }
+
+                    // Supprimer l'indentation minimale de chaque ligne
+                    const indentedCode = lines.map(line => line.slice(minIndent)).join('\n')
+                    return `\n${indentedCode}`
+                }
+                else {
+                    // Pour les autres langages, ajouter simplement l'indentation
+                    const indentedCode = block.code.split('\n').map((line: any) => `    ${line}`).join('\n')
+                    return `\n${indentedCode}`
+                }
+            }).join('\n\n')
+        }
+
+        /* const inputText = `
+\`\`\`python
+def bonjour():
+    print("Bonjour !")
+\`\`\`
+
+Et voici du texte entre les blocs de code.
+
+\`\`\`
+pip install package_name
+\`\`\`
+
+\`\`\`
+conda install package_name
+\`\`\`
+
+\`\`\`python
+print("Hello from JavaScript!");
+\`\`\`
+` */
+
+        /* const codeBlocks = extractCodeBlocks(inputText)
+        const reformattedCode = reformatCodeBlocks(codeBlocks)
+
+        logger.info(`dislocation=====${codeBlocks}`) */
+        // logger.info(`${reformattedCode}`)
+
+        // console.log(reformattedCode)
         function removeKeywords(inputText: any) {
             const keywordsToRemove = ['python', 'javascript']
             let outputText = inputText
@@ -336,32 +404,26 @@ export function useLanguageModel() {
                 logger.info('DEMANDE UN GRAPH AVEC CODE SUR SES DONNEES AVEC REQUESTTTTTTTTTTTTTTTT YOUSSSSSSSSSSSSSSS', result.text)
                 let codeContent
                 let code
-                const codeBlocks = inputString.match(/```([\s\S]*?)```/g)
-                console.log(`LE CONTENU DU BLOC DE CODE${codeBlocks}`)
-                if (codeBlocks) {
-                    codeBlocks.forEach((block) => {
-                        codeContent = block.replace(/^```([\s\S]*)```$/, '$1')
-                        console.log(`LE CONTENU DU BLOC DE CODE${codeContent}`)
-                    })
-
-                    code = removeKeywords(codeContent)
-                }
+                // const codeBlocks = inputString.match(/```([\s\S]*?)```/g)
+                // console.log(`LE CONTENU DU BLOC DE CODE${codeBlocks}`)
+                const codeBlocks = extractCodeBlocks(inputString)
+                const reformattedCode = reformatCodeBlocks(codeBlocks)
                 let quatrièmeApiResponse
                 try {
-                    const response = await fetch('http://192.168.192.2:5343/programme_externe', {
+                    const response = await fetch('http://54.39.185.58:5343/programme_externe', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            response: code,
+                            response: reformattedCode,
                         }),
                     })
 
                     quatrièmeApiResponse = await response.json()
                     result.text = quatrièmeApiResponse.response
                     logger.info('QUATRIEME API RESPONSE ', quatrièmeApiResponse)
-                    logger.info('CODE____________', code)
+                    logger.info('CODE____________', reformattedCode)
                 }
                 catch (error) {
                     logger.error('Erreur lors de l\'envoi à la quatrième API :', error)

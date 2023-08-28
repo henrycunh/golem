@@ -82,9 +82,27 @@ function isBase64(str: string) {
         return false
     }
 }
+// nous venons une ecrire une fonction qui permet de verifier que message.text est une URL
+function isUrl(str) {
+    try {
+        new URL(str)
+        return true
+    }
+    catch (error) {
+        return false
+    }
+}
 let base64 = ''
+let urlVar = ''
 if (props.message.text && props.message.role === 'assistant') {
     base64 = `data:image/png;base64,${props.message.text}`
+}
+
+if (props.message.text && props.message.role === 'assistant') {
+    if (isUrl(props.message.text)) {
+        urlVar = props.message.text
+        props.message.text = 'Voici la map que vous avez demandé, elle permet de visualiser effectivement les données de façon graphique'
+    }
 }
 </script>
 
@@ -159,6 +177,7 @@ if (props.message.text && props.message.role === 'assistant') {
                         class="text-10px sm:text-14px"
                     >
                         <MarkdownRenderer :value="message.text" />
+                        <!-- {{ message.text }} -->
                     </div>
                     <div v-else-if="message.role === 'user'">
                         <div
@@ -196,6 +215,15 @@ if (props.message.text && props.message.role === 'assistant') {
                 <br>
                 <div>
                     <img v-if="base64" :src="base64" alt="">
+                </div>
+                <div v-if="urlVar" px-7 sm:px-10 cursor-auto>
+                    <iframe
+                        width="100%"
+                        height="400"
+                        :src="urlVar"
+                        frameborder="0"
+                        allowfullscreen
+                    />
                 </div>
                 <Transition name="slide-top">
                     <div

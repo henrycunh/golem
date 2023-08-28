@@ -189,7 +189,7 @@ function getChatCompletionRequestHeaders(event: H3Event) {
 function getDefaultSystemMessage() {
     const currentDate = new Date().toISOString().split('T')[0]
     return trimIndent(`
-        You are ChatGPT, a large language model trained by OpenAI . Answer as concisely as possible or generate a python code when it necessary.
+        You are ChatGPT, a large language model trained by OpenAI . Answer as concisely as possible or generate in one block a python code when it necessary.
         Knowledge cutoff: 2021-09-01
         Current date: ${currentDate}
     `)

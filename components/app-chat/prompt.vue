@@ -3,6 +3,7 @@ const { sendMessage } = useConversations()
 const { isMobile } = useDevice()
 const { apiKey } = useSettings()
 
+const monchoixT = ref(false)
 let monchoix = false
 let monchoixGraph = ''
 let monchoixIntData = ''
@@ -18,8 +19,15 @@ const isButtonDisabled = () => {
     desable = true
 }
 
-const toggleChoice = () => {
-    monchoix = true
+function toggleChoice() {
+    if (monchoixT.value === true) {
+        monchoixT.value = false
+        monchoix = false
+    }
+    else if (monchoixT.value === false) {
+        monchoixT.value = true
+        monchoix = true
+    }
     monchoixIntData = 'interroger mes donnees'
     monchoixGraph = ''
     logger.info('monchoix', monchoix)
@@ -27,10 +35,8 @@ const toggleChoice = () => {
     logger.info('monchoix data', monchoixIntData)
 }
 const handleButtonClick = () => {
-    desable = !desable // Toggle the button state
-    if (!desable) {
-        toggleChoice() // Execute the first function if re-enabled
-    }
+    logger.info('monchoix', monchoix)
+    toggleChoice()
     // Execute other actions if needed
 }
 
@@ -42,6 +48,7 @@ const onSendMessage = () => {
     sendMessage(userMessageInput.value, monchoix, monchoixGraph, monchoixIntData)
     console.log(`MON CHOIX ${monchoix}`)
     userMessageInput.value = ''
+    monchoixT.value = false
     monchoix = false
     monchoixGraph = ''
     monchoixIntData = ''
@@ -100,8 +107,12 @@ function onHandlePromptClick() {
                 ]"
             >
                 <GoButton
-                    :disabled="desable"
                     text-12px
+                    :class="{
+                        'inactive-button': monchoixT, // Appliquer la classe 'inactive-button' si monchoix est vrai
+                        'active-button': !monchoixT, // Appliquer la classe 'active-button' si monchoix est faux
+                    }"
+                    :disabled="monchoixT"
                     @click="handleButtonClick"
                 >
                     <svg class="w-3 h-3 sm:w-5 sm:h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -137,12 +148,13 @@ function onHandlePromptClick() {
 
 <style>
 .inactive-button {
-    /* Ajoutez ici les styles que vous voulez lorsque le bouton est désactivé */
+    /* Styles pour le bouton désactivé */
     background-color: red;
     /* Autres styles... */
 }
+
 .active-button {
-    /* Ajoutez ici les styles que vous voulez lorsque le bouton est activé */
+    /* Styles pour le bouton activé */
     background-color: green;
     /* Autres styles... */
 }
