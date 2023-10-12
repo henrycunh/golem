@@ -1,5 +1,12 @@
 <div align="center">
-
+<h1>
+My name is Tucker.</br>
+I have an Intermediate's level of understanding how to code. </br>
+I implement code at a junior level 'cause I'm mostly exploring.</br>
+If you'd like to offer code reviews or simply update my code feel free.</br>
+Just add comments so I can learn</br>
+Okay, let's see if I can use autogen in the Golem UI</br>
+</h1>
 <img src="./public/image/logo-light-lettered.svg#gh-light-mode-only" width="300" />
 <img src="./public/image/logo-dark-lettered.svg#gh-dark-mode-only" width="300" />
 
